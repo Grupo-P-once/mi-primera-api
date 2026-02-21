@@ -5,7 +5,7 @@
   <!-- ===== META Y CONFIGURACIÓN BÁSICA ===== -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vive Bien – Grupo Inmobiliario | León, Guanajuato</title>
+  <title>Propiedades – Vive Bien Grupo Inmobiliario | León, Guanajuato</title>
   <meta name="description"
     content="Encuentra tu hogar ideal en León, Guanajuato. Casas, departamentos, terrenos y locales comerciales. Vive Bien Grupo Inmobiliario." />
 
@@ -24,6 +24,7 @@
     :root {
       --rojo: #8B1A1A;
       --rojo-claro: #C0392B;
+      --naranja-accion: #FF6B00;
       --azul: #1B365D;
       /* Azul marino más profundo como Delmor */
       --azul-claro: #3D5A73;
@@ -1703,6 +1704,35 @@
 </head>
 
 <body>
+  <!-- Modal de Propiedad -->
+  <div class="modal-overlay" id="modal-propiedad">
+    <div class="modal-content">
+      <button class="modal-close" onclick="cerrarModal()">&times;</button>
+      <div class="modal-gallery">
+        <div class="modal-bg-blur" id="m-bg-blur"></div>
+        <div class="slider-wrap" id="slider-modal">
+          <div class="slider-track" id="track-modal"></div>
+          <button class="slider-btn prev" onclick="moverSlider('slider-modal', -1)">&#8249;</button>
+          <button class="slider-btn next" onclick="moverSlider('slider-modal', 1)">&#8250;</button>
+          <div class="slider-dots" id="dots-modal"></div>
+        </div>
+      </div>
+      <div class="modal-info">
+        <h2 id="m-title">Título</h2>
+        <span class="modal-ubi" id="m-location">Ubicación</span>
+        <p class="modal-desc" id="m-description">Descripción...</p>
+        <div class="modal-features" id="m-features"></div>
+        <div class="modal-price-row">
+          <div class="modal-price" id="m-price">$0</div>
+          <div class="modal-btns">
+            <a href="javascript:void(0)" id="m-wa-link" class="btn-modal-wa" onclick="pedirRegistroDesdeModal()">
+              <i class="fab fa-whatsapp"></i> Pedir Informes
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal de Aviso de Privacidad (LFPDPPP México) -->
   <div class="modal-overlay" id="modal-privacidad">
@@ -1832,8 +1862,8 @@
     </div>
 
     <nav>
-      <a href="index.html" class="activo">Inicio</a>
-      <a href="propiedades.html">Propiedades</a>
+      <a href="index.html">Inicio</a>
+      <a href="propiedades.html" class="activo">Propiedades</a>
       <a href="#contacto">Contacto</a>
       <a href="dashboard.html" style="margin-left: 2rem; color: var(--azul); font-weight: 700;"><i
           class="fa fa-lock"></i> Ingresar</a>
@@ -1841,156 +1871,268 @@
   </header>
 
   <!-- =========================================================
-     HERO – Sección principal con buscador y widget del clima
+     BUSCADOR DE PROPIEDADES (sin hero)
      ========================================================= -->
-  <section id="hero">
-
-
-    <div class="hero-content">
-      <h1>Especialistas en Inmuebles Industriales y Residenciales</h1>
-      <p>Vive Bien Grupo Inmobiliario: Tu éxito patrimonial comienza con nosotros en León, Gto.</p>
-
-      <form class="buscador" id="form-busqueda" onsubmit="buscarPropiedad(event)">
-        <!-- Operación -->
-        <select id="filtro-op" aria-label="Operación">
-          <option value="venta">Comprar</option>
-          <option value="renta">Rentar</option>
-        </select>
-
-        <!-- Tipo -->
-        <select id="filtro-tipo" aria-label="Tipo de propiedad">
-          <option value="">Cualquier tipo</option>
-          <option value="casa">Casa</option>
-          <option value="nave">Nave/Bodega</option>
-          <option value="terreno">Terreno</option>
-          <option value="comercial">Local</option>
-        </select>
-
-
-        <!-- Rango de Precios -->
-        <div class="input-group">
-          <input type="number" id="p-desde" placeholder="Precio desde" aria-label="Desde">
-          <input type="number" id="p-hasta" placeholder="Precio hasta" aria-label="Hasta">
-        </div>
-
-        <!-- Mantenimiento -->
-        <div class="check-group">
-          <input type="checkbox" id="inc-manto">
-          <label for="inc-manto">Incluir Mantenimiento</label>
-        </div>
-
-        <button type="submit" class="btn-buscar">
-          <i class="fa fa-search"></i> Ver resultados
-        </button>
-      </form>
-    </div>
+  <section style="background: var(--azul); padding: 1.5rem 2rem; position: sticky; top: 72px; z-index: 999;">
+    <form class="buscador" id="form-busqueda" onsubmit="buscarPropiedad(event)"
+      style="max-width:1100px; margin:0 auto;">
+      <select id="filtro-op" aria-label="Operación">
+        <option value="venta">Comprar</option>
+        <option value="renta">Rentar</option>
+      </select>
+      <select id="filtro-tipo" aria-label="Tipo de propiedad">
+        <option value="">Cualquier tipo</option>
+        <option value="casa">Casa</option>
+        <option value="nave">Nave/Bodega</option>
+        <option value="terreno">Terreno</option>
+        <option value="comercial">Local</option>
+        <option value="departamento">Departamento</option>
+      </select>
+      <div class="input-group">
+        <input type="number" id="p-desde" placeholder="Precio desde" aria-label="Desde">
+        <input type="number" id="p-hasta" placeholder="Precio hasta" aria-label="Hasta">
+      </div>
+      <div class="check-group">
+        <input type="checkbox" id="inc-manto">
+        <label for="inc-manto" style="color:#fff;">Incluir Mantenimiento</label>
+      </div>
+      <button type="submit" class="btn-buscar">
+        <i class="fa fa-search"></i> Buscar
+      </button>
+    </form>
   </section>
 
 
-  </section>
 
   <!-- =========================================================
-     SECCIÓN: SOBRE NOSOTROS – ¿Qué es Vive Bien?
+     SECCIÓN NAVES INDUSTRIALES (NUEVA)
      ========================================================= -->
-  <section id="sobre">
-    <div class="seccion-sobre">
-      <div class="sobre-texto">
-        <h2>¿Qué es <span style="font-weight: 700;">Vive Bien</span>?</h2>
-        <p class="sobre-subtitulo">Grupo Inmobiliario · León, Guanajuato</p>
-        <p>Somos un equipo apasionado por conectar a las personas con el espacio perfecto. Desde naves industriales
-          hasta terrenos residenciales, en <strong>Vive Bien</strong> ofrecemos un acompañamiento personalizado durante
-          todo el proceso de renta o venta.</p>
-        <p>Nos distingue la atención directa, la transparencia en cada operación y nuestro profundo conocimiento del
-          mercado inmobiliario en la zona del Bajío.</p>
-      </div>
-      <div class="sobre-visual">
-        <div class="sobre-icono-grande">
-          <img src="./logo.png" alt="Logo Vive Bien Grupo Inmobiliario" />
+  <section id="naves">
+    <div class="seccion-titulo">
+      <h2><i class="fa fa-industry"></i> <span style="font-weight: 400;">Naves</span> Industriales</h2>
+      <p>Infraestructura de alto nivel para tu operación logística e industrial</p>
+    </div>
+    <div class="grid-propiedades">
+      <!-- ==========================================
+           Nave Industrial San Juan Bosco (REAL)
+           ========================================== -->
+      <div class="tarjeta" data-tipo="nave" data-operacion="renta" data-precio="118180" data-zona="San Juan Bosco"
+        data-recamaras="0" data-mantenimiento="false">
+        <div class="badge-status badge-disponible">Disponible</div>
+        <div class="slider-wrap" id="slider-sanjuan">
+          <div class="slider-track">
+            <img src="./3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto1.jpg"
+              alt="San Juan Bosco 1" />
+            <img src="./3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/fot2.jpg"
+              alt="San Juan Bosco 2" />
+            <img src="./3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto3.jpg"
+              alt="San Juan Bosco 3" />
+            <img src="./3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto4.jpg"
+              alt="San Juan Bosco 4" />
+          </div>
+          <button class="slider-btn prev" onclick="moverSlider('slider-sanjuan', -1)">&#8249;</button>
+          <button class="slider-btn next" onclick="moverSlider('slider-sanjuan',  1)">&#8250;</button>
+          <div class="slider-dots" id="dots-sanjuan">
+            <span class="activo" onclick="irSlide('slider-sanjuan',0)"></span>
+            <span onclick="irSlide('slider-sanjuan',1)"></span>
+            <span onclick="irSlide('slider-sanjuan',2)"></span>
+            <span onclick="irSlide('slider-sanjuan',3)"></span>
+          </div>
+          <span class="etiqueta comercial">En Renta</span>
+        </div>
+        <div class="tarjeta-body">
+          <h3>Bodega en Renta – 1,244 m²</h3>
+          <div class="tarjeta-meta">
+            <i class="fa fa-location-dot"></i> Blvd. San Juan Bosco, Cañada del Refugio<br>
+            <span style="display:inline-block; margin-left:14px; color:#777;">León, Gto.</span>
+          </div>
+          <div class="tarjeta-feat">
+            <span><i class="fa fa-ruler-combined"></i> 1,244 m²</span>
+            <span><i class="fa fa-industry"></i> Logística</span>
+          </div>
+          <div class="tarjeta-footer">
+            <span class="precio">Favor de Consultar</span>
+            <button class="btn-ver" style="padding: 0.45rem 0.6rem;" onclick="abrirModal('sanjuan')">Ver más</button>
+          </div>
+          <div class="tarjeta-contacto" style="margin-top:8px;">
+            <a href="javascript:void(0)" onclick="pedirRegistro('tel:+524778116501', 'Bodega en Renta – 1,244 m²')"
+              title="Llamar"><i class="fa fa-phone"></i></a>
+            <a href="javascript:void(0)"
+              onclick="pedirRegistro('https://wa.me/524778116501?text=Hola%2C%20quiero%20informes%20sobre%20la%20Bodega%20en%20Renta%20%E2%80%93%201%2C244%20m%C2%B2%20en%20San%20Juan%20Bosco', 'Bodega en Renta – 1,244 m²')"
+              title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <button onclick="pedirRegistro('#contacto', 'Bodega en Renta – 1,244 m²')" title="Contactar"><i
+                class="fa fa-envelope"></i></button>
+          </div>
         </div>
       </div>
     </div>
   </section>
+  <section id="casas">
+    <div class="seccion-titulo">
+      <h2><i class="fa fa-house"></i> <span style="font-weight: 400;">Casas</span>
+        en Venta</h2>
+      <p>Espacios familiares pensados para ti en las mejores colonias de León</p>
+    </div>
+
+    <div class="grid-propiedades">
+      <p style="grid-column: 1 / -1; text-align: center; color: #777; padding: 2rem;">Próximamente más casas...</p>
+    </div>
+  </section>
+
 
   <!-- =========================================================
-     SECCIÓN: BENEFICIOS DE RENTAR O VENDER CON NOSOTROS
+     SECCIÓN DEPARTAMENTOS
      ========================================================= -->
-  <section class="seccion-beneficios">
-    <div class="beneficios-inner">
-      <h2>¿Por qué <span style="font-weight: 700;">elegirnos</span>?</h2>
-      <p class="beneficios-sub">Beneficios de rentar o vender con Vive Bien</p>
+  <section id="departamentos">
+    <div class="seccion-titulo">
+      <h2><i class="fa fa-building"></i> <span style="font-weight: 400;">Departamentos</span></h2>
+      <p>Vivienda vertical con acabados de primera, ideales para jóvenes y familias</p>
+    </div>
 
-      <div class="beneficios-grid">
-        <div class="beneficio-card">
-          <div class="beneficio-icono"><i class="fa fa-bolt"></i></div>
-          <h3>Rapidez</h3>
-          <p>Publicamos y promocionamos tu propiedad rápidamente para encontrar al inquilino o comprador ideal.</p>
-        </div>
-
-        <div class="beneficio-card">
-          <div class="beneficio-icono"><i class="fa fa-shield-halved"></i></div>
-          <h3>Seguridad</h3>
-          <p>Procesos transparentes con contratos claros y revisión legal para proteger tu patrimonio.</p>
-        </div>
-
-        <div class="beneficio-card">
-          <div class="beneficio-icono"><i class="fa fa-user-tie"></i></div>
-          <h3>Atención Personal</h3>
-          <p>Sin intermediarios. Hablas directamente con nosotros por WhatsApp o teléfono.</p>
-        </div>
-
-        <div class="beneficio-card">
-          <div class="beneficio-icono"><i class="fa fa-chart-line"></i></div>
-          <h3>Plusvalía</h3>
-          <p>Te asesoramos sobre las zonas de mayor crecimiento y retorno de inversión en León.</p>
-        </div>
-
-        <div class="beneficio-card">
-          <div class="beneficio-icono"><i class="fa fa-camera"></i></div>
-          <h3>Presentación Premium</h3>
-          <p>Fotografía profesional y publicación atractiva para destacar tu propiedad.</p>
-        </div>
-
-        <div class="beneficio-card">
-          <div class="beneficio-icono"><i class="fa fa-peso-sign"></i></div>
-          <h3>Sin Costos Ocultos</h3>
-          <p>Comisiones claras desde el inicio. Sin sorpresas ni cargos adicionales.</p>
-        </div>
-      </div>
+    <div class="grid-propiedades">
+      <!-- Próximamente se agregarán departamentos aquí -->
+      <p style="grid-column: 1 / -1; text-align: center; color: #777; padding: 2rem;">Próximamente más
+        departamentos...
+      </p>
     </div>
   </section>
+
 
   <!-- =========================================================
-     SECCIÓN: MISIÓN Y VISIÓN
+     SECCIÓN TERRENOS
      ========================================================= -->
-  <section>
-    <div class="seccion-mision">
-      <h2>Nuestra <span style="font-weight: 700;">Esencia</span></h2>
+  <section id="terrenos">
+    <div class="seccion-titulo">
+      <h2><i class="fa fa-map"></i> <span style="font-weight: 400;">Terrenos</span>
+        en Venta</h2>
+      <p>Lotes residenciales e industriales con ubicación estratégica y alta plusvalía</p>
+    </div>
 
-      <div class="mision-grid">
-        <div class="mision-card card-mision">
-          <div class="mv-icono"><i class="fa fa-bullseye"></i></div>
-          <h3>Misión</h3>
-          <p>Facilitar el acceso a espacios que mejoren la calidad de vida de nuestros clientes, ofreciendo inmuebles de
-            calidad con un servicio honesto, ágil y cercano en la región del Bajío.</p>
+    <div class="grid-propiedades">
+
+      <!-- ==========================================
+           Terreno Panan II – Lote A (REAL)
+           Cluster Industrial Panan II, León, Gto.
+           Superficie: 600 m² | En venta
+           Fotos: plano del desarrollo, entrada y mapa
+           ========================================== -->
+      <div class="tarjeta pausada" data-tipo="terreno" data-operacion="venta" data-precio="500000" data-zona="Silao"
+        data-recamaras="0" data-mantenimiento="false">
+        <div class="badge-status badge-pausada">Pausada</div>
+        <div class="liston-pausado">Publicación Pausada</div>
+        <div class="slider-wrap" id="slider-pananA">
+          <div class="slider-track">
+            <img src="./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto1.jpg" alt="Panan Lote A" />
+            <img src="./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto2.jpg" alt="Panan Lote A 2" />
+            <img src="./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto3.jpg" alt="Panan Lote A 3" />
+          </div>
+          <button class="slider-btn prev" onclick="moverSlider('slider-pananA', -1)">&#8249;</button>
+          <button class="slider-btn next" onclick="moverSlider('slider-pananA',  1)">&#8250;</button>
+          <div class="slider-dots" id="dots-pananA">
+            <span class="activo" onclick="irSlide('slider-pananA',0)"></span>
+            <span onclick="irSlide('slider-pananA',1)"></span>
+            <span onclick="irSlide('slider-pananA',2)"></span>
+          </div>
+          <span class="etiqueta terreno">Terreno</span>
         </div>
-
-        <div class="mision-card card-vision">
-          <div class="mv-icono"><i class="fa fa-eye"></i></div>
-          <h3>Visión</h3>
-          <p>Ser el grupo inmobiliario de referencia en León y el Bajío, reconocido por la confianza, la innovación y el
-            compromiso con cada persona que busca su espacio ideal para vivir, trabajar o invertir.</p>
+        <div class="tarjeta-body">
+          <h3>Terreno Industrial Panan II – Lote A</h3>
+          <div class="tarjeta-meta">
+            <i class="fa fa-location-dot"></i> Panan II<br>
+            <span style="display:inline-block; margin-left:14px; color:#777;">Silao, Gto.</span>
+          </div>
+          <div class="tarjeta-feat">
+            <span><i class="fa fa-ruler-combined"></i> 600 m²</span>
+            <span><i class="fa fa-industry"></i> Industrial</span>
+          </div>
+          <div class="tarjeta-footer">
+            <span class="precio">Favor de Consultar</span>
+            <button class="btn-ver" style="padding: 0.45rem 0.6rem;" onclick="abrirModal('pananA')">Ver más</button>
+          </div>
+          <div class="tarjeta-contacto" style="margin-top:8px;">
+            <a href="javascript:void(0)" onclick="pedirRegistro('tel:+524778116501', 'Terreno Panan II – Lote A')"
+              title="Llamar"><i class="fa fa-phone"></i></a>
+            <a href="javascript:void(0)"
+              onclick="pedirRegistro('https://wa.me/524778116501?text=Hola%2C%20quiero%20informes%20sobre%20el%20Terreno%20Industrial%20Panan%20II%20%E2%80%93%20Lote%20A', 'Terreno Panan II – Lote A')"
+              title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <button onclick="pedirRegistro('#contacto', 'Terreno Panan II – Lote A')" title="Contactar"><i
+                class="fa fa-envelope"></i></button>
+          </div>
         </div>
       </div>
-    </div>
+
+      <!-- ==========================================
+           Terreno Industrial Panan II – Lote B (REAL)
+           ========================================== -->
+      <div class="tarjeta pausada" data-tipo="terreno" data-operacion="venta" data-precio="500000" data-zona="Silao"
+        data-recamaras="0" data-mantenimiento="false">
+        <div class="badge-status badge-pausada">Pausada</div>
+        <div class="liston-pausado">Publicación Pausada</div>
+        <div class="slider-wrap" id="slider-pananB">
+          <div class="slider-track">
+            <img src="./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto2.jpg" alt="Panan Lote B" />
+            <img src="./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto1.jpg" alt="Panan Lote B 2" />
+            <img src="./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto3.jpg" alt="Panan Lote B 3" />
+          </div>
+          <button class="slider-btn prev" onclick="moverSlider('slider-pananB', -1)">&#8249;</button>
+          <button class="slider-btn next" onclick="moverSlider('slider-pananB',  1)">&#8250;</button>
+          <div class="slider-dots" id="dots-pananB">
+            <span class="activo" onclick="irSlide('slider-pananB',0)"></span>
+            <span onclick="irSlide('slider-pananB',1)"></span>
+            <span onclick="irSlide('slider-pananB',2)"></span>
+          </div>
+          <span class="etiqueta terreno">Terreno</span>
+        </div>
+        <div class="tarjeta-body">
+          <h3>Terreno Industrial Panan II – Lote B</h3>
+          <div class="tarjeta-meta">
+            <i class="fa fa-location-dot"></i> Panan II<br>
+            <span style="display:inline-block; margin-left:14px; color:#777;">Silao, Gto.</span>
+          </div>
+          <div class="tarjeta-feat">
+            <span><i class="fa fa-ruler-combined"></i> 600 m²</span>
+            <span><i class="fa fa-industry"></i> Industrial</span>
+          </div>
+          <div class="tarjeta-footer">
+            <span class="precio">Favor de Consultar</span>
+            <button class="btn-ver" style="padding: 0.45rem 0.6rem;" onclick="abrirModal('pananB')">Ver más</button>
+          </div>
+          <div class="tarjeta-contacto" style="margin-top:8px;">
+            <a href="javascript:void(0)" onclick="pedirRegistro('tel:+524778116501', 'Terreno Panan II – Lote B')"
+              title="Llamar"><i class="fa fa-phone"></i></a>
+            <a href="javascript:void(0)"
+              onclick="pedirRegistro('https://wa.me/524778116501?text=Hola%2C%20quiero%20informes%20sobre%20el%20Terreno%20Industrial%20Panan%20II%20%E2%80%93%20Lote%20B', 'Terreno Panan II – Lote B')"
+              title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <button onclick="pedirRegistro('#contacto', 'Terreno Panan II – Lote B')" title="Contactar"><i
+                class="fa fa-envelope"></i></button>
+          </div>
+        </div>
+      </div>
   </section>
 
+
+  <!-- =========================================================
+     SECCIÓN LOCALES COMERCIALES
+     ========================================================= -->
+  <section id="comerciales">
+    <div class="seccion-titulo">
+      <h2><i class="fa fa-store"></i> <span style="font-weight: 400;">Locales</span> Comerciales</h2>
+      <p>Espacios estratégicos para que tu negocio crezca en León</p>
+    </div>
+
+    <div class="grid-propiedades">
+      <!-- Próximamente se agregarán locales aquí -->
+      <p style="grid-column: 1 / -1; text-align: center; color: #777; padding: 2rem;">Próximamente más locales
+        comerciales y oficinas...</p>
+    </div>
+  </section>
 
 
   <!-- =========================================================
      BANNER DE VENTAJAS / ¿POR QUÉ ELEGIRNOS?
      ========================================================= -->
   <section id="ventajas">
-    <h2>¿Por qué elegir <span style="font-weight: 700;">Vive Bien</span>?</h2>
+    <h2>¿Por qué elegir Vive Bien?</h2>
     <div class="ventajas-grid">
       <div class="ventaja">
         <i class="fa fa-shield-halved"></i>
@@ -2021,7 +2163,7 @@
      ========================================================= -->
   <section id="contacto">
     <div class="seccion-titulo">
-      <h2><i class="fa fa-envelope"></i> <span style="font-weight: 300;">Contáctanos</span></h2>
+      <h2><i class="fa fa-envelope"></i> Contáctanos</h2>
       <p>Déjanos tus datos y uno de nuestros asesores te contactará a la brevedad</p>
     </div>
 
@@ -2328,19 +2470,53 @@
 
       const op = document.getElementById('filtro-op').value;
       const tipo = document.getElementById('filtro-tipo').value;
-      const desde = document.getElementById('p-desde').value;
-      const hasta = document.getElementById('p-hasta').value;
+      const desde = parseFloat(document.getElementById('p-desde').value) || 0;
+      const hasta = parseFloat(document.getElementById('p-hasta').value) || Infinity;
       const incManto = document.getElementById('inc-manto').checked;
 
-      const params = new URLSearchParams();
-      if (op) params.append('op', op);
-      if (tipo) params.append('tipo', tipo);
-      if (desde) params.append('desde', desde);
-      if (hasta) params.append('hasta', hasta);
-      if (incManto) params.append('incManto', 'true');
+      const tarjetas = document.querySelectorAll('.tarjeta');
+      let encontrados = 0;
 
-      // Redirigir a propiedades.html con los filtros como parámetros en la URL
-      window.location.href = `propiedades.html?${params.toString()}`;
+      tarjetas.forEach(tarjeta => {
+        const tOp = tarjeta.getAttribute('data-operacion') || '';
+        const tTipo = tarjeta.getAttribute('data-tipo') || '';
+        const tPrecio = parseFloat(tarjeta.getAttribute('data-precio')) || 0;
+        const tManto = tarjeta.getAttribute('data-mantenimiento') === 'true';
+
+        let coincideOp = tOp === op;
+        let coincideTipo = !tipo || tTipo === tipo;
+        let coincidePrecio = (tPrecio >= desde) && (tPrecio <= hasta);
+        let coincideManto = !incManto || tManto === true;
+
+        if (coincideOp && coincideTipo && coincidePrecio && coincideManto) {
+          tarjeta.parentElement.style.display = 'block';
+          encontrados++;
+        } else {
+          tarjeta.parentElement.style.display = 'none';
+        }
+      });
+
+      const grid = document.querySelector('.grid-propiedades');
+      let noResultados = document.getElementById('no-resultados');
+
+      if (encontrados === 0) {
+        if (!noResultados) {
+          noResultados = document.createElement('div');
+          noResultados.id = 'no-resultados';
+          noResultados.style.textAlign = 'center';
+          noResultados.style.padding = '3rem';
+          noResultados.style.gridColumn = '1 / -1';
+          noResultados.innerHTML = `<i class="fa fa-house-circle-exclamation" style="font-size: 3rem; color: var(--azul); opacity: 0.3;"></i><p style="margin-top: 1.5rem; font-weight: 700; color: var(--azul);">No hay resultados para esta combinación de filtros.</p><button onclick="window.location.reload()" style="margin-top:1rem; border:none; background:var(--rojo); color:#fff; padding:8px 16px; border-radius:6px; cursor:pointer;">Limpiar filtros</button>`;
+          grid.appendChild(noResultados);
+        } else {
+          noResultados.style.display = 'block';
+        }
+      } else if (noResultados) {
+        noResultados.style.display = 'none';
+      }
+
+      // Scroll a la sección de resultados
+      document.getElementById('naves').scrollIntoView({ behavior: 'smooth' });
     }
 
 
@@ -2482,6 +2658,79 @@
       sliderIndex.set(id, indice);
     }
 
+    /* -------------------------------------------------------
+       7. LOGICA DEL MODAL (NUEVA)
+       ------------------------------------------------------- */
+    const dbPropiedades = {
+      'pananA': {
+        titulo: 'Terreno Industrial Panan II – Lote A',
+        ubicacion: 'Cluster Industrial Panan II, Silao, Gto.',
+        price: 'Favor de Consultar',
+        descripcion: 'Lote industrial de 600 m² en cluster privado con seguridad y pavimentación. Cercano a Carretera Federal 45.',
+        caracteristicas: ['600 m²', 'Seguridad 24/7', 'Acceso Pavimentado', 'Uso Industrial'],
+        fotos: [
+          './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto1.jpg',
+          './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto2.jpg',
+          './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto3.jpg'
+        ]
+      },
+      'pananB': {
+        titulo: 'Terreno Industrial Panan II – Lote B',
+        ubicacion: 'Cluster Industrial Panan II, Silao, Gto.',
+        precio: 'Favor de Consultar',
+        descripcion: 'Segundo lote disponible con excelentes acabados de urbanización y conectividad logística.',
+        caracteristicas: ['600 m²', 'Urbanizado', 'Conectividad Premium', 'Todos los servicios'],
+        fotos: [
+          './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto2.jpg',
+          './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto1.jpg',
+          './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto3.jpg'
+        ]
+      },
+      'sanjuan': {
+        titulo: 'Bodega en Renta – 1,244 m² en Blvd. San Juan Bosco',
+        ubicacion: 'Blvd. San Juan Bosco, Cañada del Refugio, 37358 León de los Aldama, Gto.',
+        precio: '$118,180. MNX + IVA',
+        descripcion: 'Excelente oportunidad para empresas que buscan una bodega amplia, funcional y con una ubicación privilegiada. La propiedad cuenta con 1,244 m² totales, con oficinas modernas distribuidas en 3 niveles (2 baños por nivel), excelente altura para maniobras e iluminación natural que reduce costos. Ubicación estratégica con acceso rápido a Blvd. Hidalgo, Morelos, Las Torres y Libramiento. Ideal para CEDIS, logística, almacenes o manufactura ligera.',
+        caracteristicas: ['1,244 m² Totales', 'Oficinas en 3 Niveles', '2 Baños por Nivel', 'Altura para Maniobras', 'Iluminación Natural', 'Ubicación Estratégica'],
+        fotos: [
+          './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto1.jpg',
+          './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/fot2.jpg',
+          './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto3.jpg',
+          './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto4.jpg',
+          './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto5.jpg',
+          './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto6.jpg'
+        ]
+      }
+    };
+
+    function abrirModal(id) {
+      const data = dbPropiedades[id];
+      if (!data) return;
+
+      document.getElementById('m-title').textContent = data.titulo;
+      document.getElementById('m-location').textContent = data.ubicacion;
+      document.getElementById('m-description').textContent = data.descripcion;
+      document.getElementById('m-price').textContent = data.price;
+      document.getElementById('m-wa-link').href = `https://wa.me/524778116501?text=${encodeURIComponent('Hola, quiero informes sobre: ' + data.titulo)}`;
+      document.getElementById('m-bg-blur').style.backgroundImage = `url('${data.fotos[0]}')`;
+
+      const track = document.getElementById('track-modal');
+      const dots = document.getElementById('dots-modal');
+      track.innerHTML = data.fotos.map(f => `<img src="${f}">`).join('');
+      dots.innerHTML = data.fotos.map((_, i) => `<span class="${i === 0 ? 'activo' : ''}" onclick="irSlide('slider-modal', ${i})"></span>`).join('');
+
+      const feat = document.getElementById('m-features');
+      feat.innerHTML = data.caracteristicas.map(c => `<span><i class="fa fa-check-circle" style="color:var(--rojo)"></i> ${c}</span>`).join('');
+
+      irSlide('slider-modal', 0);
+      document.getElementById('modal-propiedad').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModal() {
+      document.getElementById('modal-propiedad').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
 
     /* -------------------------------------------------------
        8. PRIVACIDAD Y COOKIES (NUEVO)
@@ -2523,6 +2772,40 @@
       if (event.target == modalProp) cerrarModal();
       if (event.target == modalPriv) cerrarPrivacidad();
     }
+
+    // Aplicar filtros de la URL al cargar la página si vienen desde index.html
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      let tieneFiltros = false;
+
+      if (params.has('op')) {
+        document.getElementById('filtro-op').value = params.get('op');
+        tieneFiltros = true;
+      }
+      if (params.has('tipo')) {
+        document.getElementById('filtro-tipo').value = params.get('tipo');
+        tieneFiltros = true;
+      }
+      if (params.has('desde')) {
+        document.getElementById('p-desde').value = params.get('desde');
+        tieneFiltros = true;
+      }
+      if (params.has('hasta')) {
+        document.getElementById('p-hasta').value = params.get('hasta');
+        tieneFiltros = true;
+      }
+      if (params.has('incManto')) {
+        document.getElementById('inc-manto').checked = true;
+        tieneFiltros = true;
+      }
+
+      if (tieneFiltros) {
+        // Esperamos un momento para que el DOM esté completamente listo (fotos, etc.)
+        setTimeout(() => {
+          buscarPropiedad({ preventDefault: () => { } });
+        }, 100);
+      }
+    });
   </script>
 
   <!-- Estilos de la animación de aparición (keyframe) -->

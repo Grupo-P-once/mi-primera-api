@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Privado - Vive Bien</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- Dependencia para Gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --rojo: #8B1A1A;
+            --rojo-claro: #C0392B;
+            --azul: #1B365D;
+            --azul-claro: #3D5A73;
+            --gris: #F4F6F8;
+            --blanco: #FFFFFF;
+            --texto: #222831;
+            --sombra: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--gris);
+            color: var(--texto);
+        }
+
+        /* ===== LOGIN OVERLAY ===== */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--azul);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+
+        .login-box {
+            background: var(--blanco);
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .login-box h2 {
+            color: var(--azul);
+            margin-bottom: 1rem;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: var(--rojo);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-box button:hover {
+            background: var(--rojo-claro);
+        }
+
+        #login-error {
+            color: var(--rojo);
+            font-size: 0.85rem;
+            display: none;
+            margin-top: 10px;
+        }
+
+        /* ===== DASHBOARD LAYOUT ===== */
+        #dashboard-content {
+            display: none;
+        }
+
+        header {
+            background: var(--blanco);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px var(--sombra);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            color: var(--azul);
+            font-size: 1.5rem;
+        }
+
+        header a {
+            color: var(--rojo);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Tarjetas KPI */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: var(--blanco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px var(--sombra);
+            border-left: 5px solid var(--azul);
+        }
+
+        .kpi-card:nth-child(2) {
+            border-color: var(--rojo);
+        }
+
+        .kpi-card:nth-child(3) {
+            border-color: #5B4FCF;
+        }
+
+        .kpi-card:nth-child(4) {
+            border-color: #279546;
+        }
+
+        .kpi-title {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--texto);
+        }
+
+        .kpi-trend {
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        .trend-up {
+            color: #279546;
+        }
+
+        .trend-down {
+            color: var(--rojo);
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-card {
+            background: var(--blanco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px var(--sombra);
+        }
+
+        .chart-card h3 {
+            color: var(--azul);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Table */
+        .table-card {
+            background: var(--blanco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px var(--sombra);
+            overflow-x: auto;
+        }
+
+        .table-card h3 {
+            color: var(--azul);
+            margin-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: var(--gris);
+            color: var(--texto);
+            font-weight: 600;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .bg-nave {
+            background: var(--azul);
+        }
+
+        .bg-casa {
+            background: var(--rojo);
+        }
+
+        .bg-terreno {
+            background: #279546;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PANTALLA DE LOGIN -->
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2><i class="fa fa-lock"></i> Acceso Privado</h2>
+            <p style="font-size: 0.9rem; color: #666;">Ingresa la contraseña para ver las métricas (admin123)</p>
+            <input type="password" id="password" placeholder="Contraseña..." onkeypress="checkEnter(event)" />
+            <button onclick="intentarLogin()">Ingresar</button>
+            <div id="login-error">Contraseña incorrecta. Intenta de nuevo.</div>
+            <a href="index.html" style="display:block; margin-top:20px; color:var(--azul); font-size:0.85rem;">&larr;
+                Volver al inicio</a>
+        </div>
+    </div>
+
+    <!-- DASHBOARD PRINCIPAL -->
+    <div id="dashboard-content">
+        <header>
+            <h1><i class="fa fa-chart-pie"></i> Panel de Estadísticas (Live)</h1>
+            <a href="javascript:void(0)" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a>
+        </header>
+
+        <div class="container">
+            <!-- KPIs -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-title">Visitas Hoy</div>
+                    <div class="kpi-value">124</div>
+                    <div class="kpi-trend trend-up"><i class="fa fa-arrow-up"></i> 12% vs ayer</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Visitas Este Mes</div>
+                    <div class="kpi-value">3,450</div>
+                    <div class="kpi-trend trend-up"><i class="fa fa-arrow-up"></i> 8% vs mes pasado</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Leads Generados</div>
+                    <div class="kpi-value">28</div>
+                    <div class="kpi-trend trend-down"><i class="fa fa-arrow-down"></i> 2% vs semana pasada</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Propiedades Vistas</div>
+                    <div class="kpi-value">412</div>
+                    <div class="kpi-trend trend-up"><i class="fa fa-arrow-up"></i> 15% vs ayer</div>
+                </div>
+            </div>
+
+            <!-- Gráficas -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Zonas Más Buscadas (León y Bajío)</h3>
+                    <div class="chart-container">
+                        <canvas id="zonasChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Propiedades Populares</h3>
+                    <div class="chart-container">
+                        <canvas id="tiposChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Ultimos Contactos -->
+            <div class="table-card">
+                <h3>Últimos Leads (Entradas de Formulario)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>Interés</th>
+                            <th>Contacto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Hoy, 10:45 AM</td>
+                            <td>Carlos Gómez</td>
+                            <td><span class="badge bg-nave">Nave Industrial</span></td>
+                            <td>477 125 4589</td>
+                        </tr>
+                        <tr>
+                            <td>Ayer, 16:30 PM</td>
+                            <td>María López</td>
+                            <td><span class="badge bg-casa">Casa</span></td>
+                            <td>maria@ejemplo.com</td>
+                        </tr>
+                        <tr>
+                            <td>Ayer, 09:15 AM</td>
+                            <td>Grupo Logístico Mx</td>
+                            <td><span class="badge bg-terreno">Terreno</span></td>
+                            <td>477 896 3214</td>
+                        </tr>
+                        <tr>
+                            <td>19 Feb, 11:20 AM</td>
+                            <td>Roberto R.</td>
+                            <td><span class="badge bg-nave">Nave Industrial</span></td>
+                            <td>roberto.r@empresa.com</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== LOGIN LOGICA =====
+        const PASSWORD_CORRECTA = "admin123";
+
+        function intentarLogin() {
+            const pass = document.getElementById('password').value;
+            const errorMsg = document.getElementById('login-error');
+
+            if (pass === PASSWORD_CORRECTA) {
+                // Cifrado/Login muy básico para propósitos de UI
+                sessionStorage.setItem('isAdminLoggedIn', 'true');
+                mostrarDashboard();
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        function checkEnter(e) {
+            if (e.key === 'Enter') intentarLogin();
+        }
+
+        function mostrarDashboard() {
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('dashboard-content').style.display = 'block';
+            inicializarGraficas(); // Dibujamos gráficas hasta que entramos
+        }
+
+        function cerrarSesion() {
+            sessionStorage.removeItem('isAdminLoggedIn');
+            location.reload();
+        }
+
+        // Chequeo inicial
+        window.onload = () => {
+            if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
+                mostrarDashboard();
+            }
+        };
+
+        // ===== CHARTS LOGICA =====
+        let chartsDrawn = false;
+        function inicializarGraficas() {
+            if (chartsDrawn) return;
+            chartsDrawn = true;
+
+            // Colores de la marca
+            const colorAzul = '#1B365D';
+            const colorRojo = '#8B1A1A';
+            const colorVerde = '#279546';
+            const colorMorado = '#5B4FCF';
+
+            // Gráfica de Barras: Zonas Más Buscadas
+            const ctxZonas = document.getElementById('zonasChart').getContext('2d');
+            new Chart(ctxZonas, {
+                type: 'bar',
+                data: {
+                    labels: ['San Juan Bosco', 'Silao (Panan II)', 'Cañada del Refugio', 'Campestre', 'Centro'],
+                    datasets: [{
+                        label: 'Búsquedas esta semana',
+                        data: [120, 95, 76, 55, 30],
+                        backgroundColor: colorAzul,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            // Gráfica de Dona: Tipos de Propiedad
+            const ctxTipos = document.getElementById('tiposChart').getContext('2d');
+            new Chart(ctxTipos, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Naves', 'Casas', 'Terrenos', 'Locales'],
+                    datasets: [{
+                        data: [45, 25, 20, 10],
+                        backgroundColor: [colorAzul, colorRojo, colorVerde, '#D97706'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
