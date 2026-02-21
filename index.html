@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <!-- ===== META Y CONFIGURACIÓN BÁSICA ===== -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vive Bien – Grupo Inmobiliario | León, Guanajuato</title>
+  <meta name="description"
+    content="Encuentra tu hogar ideal en León, Guanajuato. Casas, departamentos, terrenos y locales comerciales. Vive Bien Grupo Inmobiliario." />
+
+  <!-- ===== FUENTES DE GOOGLE ===== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+
+  <!-- ===== ÍCONOS DE FONT AWESOME ===== -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    /* ===== VARIABLES DE COLOR (paleta rojo oscuro + azul grisáceo) ===== */
+    :root {
+      --rojo: #8B1A1A;
+      --rojo-claro: #C0392B;
+      --azul: #3D5A73;
+      --azul-claro: #5B8BA3;
+      --gris: #F4F6F8;
+      --blanco: #FFFFFF;
+      --texto: #222831;
+      --sombra: rgba(0, 0, 0, .15);
+    }
+
+    /* ===== RESET GENERAL ===== */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      color: var(--texto);
+      background: var(--blanco);
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    /* ===== BARRA DE NAVEGACIÓN ===== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--blanco);
+      box-shadow: 0 2px 12px var(--sombra);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 72px;
+    }
+
+    /* Contenedor del logo + nombre de empresa */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+    }
+
+    .brand img {
+      height: 52px;
+      object-fit: contain;
+    }
+
+    /* Nombre de la empresa en dos colores */
+    .brand-name {
+      line-height: 1.15;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .brand-name span.vive {
+      color: var(--rojo);
+      font-weight: 800;
+      font-size: 1.4rem;
+    }
+
+    .brand-name span.bien {
+      color: var(--rojo);
+      /* Cambiado a rojo para igualar logo */
+      font-weight: 800;
+      font-size: 1.4rem;
+    }
+
+    .brand-name span.grupo {
+      color: var(--azul);
+      font-weight: 600;
+      font-size: .78rem;
+      display: block;
+      letter-spacing: .06em;
+    }
+
+    /* Menú de navegación */
+    nav a {
+      color: var(--texto);
+      font-weight: 600;
+      margin-left: 1.6rem;
+      font-size: .9rem;
+      transition: color .2s;
+    }
+
+    nav a:hover {
+      color: var(--rojo);
+    }
+
+    /* ===== HERO / PORTADA ===== */
+    #hero {
+      position: relative;
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      /* Imagen de fondo de una ciudad / colonia moderna */
+      background: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&auto=format&fit=crop') center/cover no-repeat;
+    }
+
+    /* Superposición oscura degradada para legibilidad */
+    #hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+          rgba(139, 26, 26, .72) 0%,
+          rgba(61, 90, 115, .68) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      color: var(--blanco);
+      padding: 2rem 1rem;
+      max-width: 820px;
+    }
+
+    .hero-content h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, .4);
+    }
+
+    .hero-content p {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      margin-bottom: 2.4rem;
+      opacity: .92;
+    }
+
+    /* ===== BUSCADOR DE PROPIEDADES ===== */
+    .buscador {
+      background: rgba(255, 255, 255, .14);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, .3);
+      border-radius: 16px;
+      padding: 1.4rem 1.6rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .8rem;
+      justify-content: center;
+    }
+
+    .buscador select,
+    .buscador input {
+      flex: 1 1 120px;
+      padding: .7rem .8rem;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      font-size: .85rem;
+      font-family: 'Open Sans', sans-serif;
+      background: rgba(255, 255, 255, .95);
+      color: var(--texto);
+      transition: border-color 0.2s;
+    }
+
+    .buscador .input-group {
+      display: flex;
+      gap: 5px;
+      flex: 1 1 200px;
+    }
+
+    .buscador .check-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .btn-buscar {
+      background: var(--rojo-claro);
+      color: var(--blanco);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      padding: .7rem 1.8rem;
+      cursor: pointer;
+      font-size: .95rem;
+      transition: background .2s, transform .1s;
+    }
+
+    .btn-buscar:hover {
+      background: var(--rojo);
+      transform: scale(1.03);
+    }
+
+    /* ===== WIDGET DEL CLIMA (Open-Meteo) ===== */
+    /* ===== WIDGET DEL CLIMA (Header Pill) ===== */
+    #clima-widget {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 50px;
+      padding: 0.35rem 0.9rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      font-family: 'Montserrat', sans-serif;
+      transition: all 0.3s ease;
+      cursor: default;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .clima-info {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--azul);
+      line-height: 1;
+    }
+
+    .clima-ciudad {
+      color: var(--rojo);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 800;
+    }
+
+    .clima-desc {
+      font-size: 0.6rem;
+      color: #666;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    /* ===== SECCIÓN GENÉRICA ===== */
+    section {
+      padding: 5rem 2rem;
+    }
+
+    .seccion-titulo {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .seccion-titulo h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      color: var(--rojo);
+    }
+
+    .seccion-titulo p {
+      color: var(--azul);
+      font-size: 1.05rem;
+      margin-top: .4rem;
+    }
+
+    /* Línea decorativa debajo del título */
+    .seccion-titulo h2::after {
+      content: '';
+      display: block;
+      width: 64px;
+      height: 4px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--rojo), var(--azul));
+      margin: .5rem auto 0;
+    }
+
+    /* ===== GRID DE TARJETAS DE PROPIEDADES ===== */
+    .grid-propiedades {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 1.8rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Tarjeta individual */
+    .tarjeta {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px var(--sombra);
+      background: var(--blanco);
+      transition: transform .25s, box-shadow .25s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tarjeta:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, .2);
+    }
+
+
+    .etiqueta {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: .25rem .75rem;
+      border-radius: 20px;
+      font-size: .75rem;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--blanco);
+      letter-spacing: .04em;
+      z-index: 10;
+    }
+
+    .etiqueta.casa {
+      background: var(--rojo);
+    }
+
+    .etiqueta.depto {
+      background: #5B4FCF;
+    }
+
+    .etiqueta.terreno {
+      background: #279546;
+    }
+
+    .etiqueta.comercial {
+      background: #D97706;
+    }
+
+    .tarjeta-body {
+      padding: 1.1rem 1.2rem 1.4rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tarjeta-body h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--texto);
+      margin-bottom: .35rem;
+    }
+
+    .tarjeta-meta {
+      font-size: .82rem;
+      color: #666;
+      margin-bottom: .7rem;
+    }
+
+    .tarjeta-meta i {
+      color: var(--azul);
+      margin-right: .3rem;
+    }
+
+    .tarjeta-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1rem;
+      padding-top: .85rem;
+      border-top: 1px solid #EEE;
+    }
+
+    .precio {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--rojo);
+    }
+
+    .btn-ver:hover {
+      opacity: .85;
+    }
+
+    /* ===== SLIDER / CONTENEDOR DE IMAGEN EN TARJETA ===== */
+    .tarjeta .slider-wrap {
+      height: 220px;
+    }
+
+    .slider-wrap {
+      aspect-ratio: 16 / 9;
+      position: relative;
+      overflow: hidden;
+      background: #f0f0f0;
+      /* Fondo por si la imagen tarda en cargar */
+    }
+
+    .slider-track {
+      display: flex;
+      height: 100%;
+      transition: transform .4s ease;
+    }
+
+    .slider-track img {
+      min-width: 100%;
+      height: 100%;
+      object-fit: cover;
+      flex-shrink: 0;
+      transition: transform .4s;
+    }
+
+    .tarjeta:hover .slider-track img {
+      transform: scale(1.07);
+    }
+
+    .tarjeta-feat {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .tarjeta-feat span {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 600;
+      color: #444;
+    }
+
+    .tarjeta-feat span i {
+      color: var(--azul);
+      width: 16px;
+      text-align: center;
+    }
+
+    /* Etiquetas de estado sobre la imagen */
+    .badge-status {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      pointer-events: none;
+    }
+
+    .badge-disponible {
+      background: #279546;
+      color: #fff;
+    }
+
+    .badge-pausada {
+      background: #666;
+      color: #fff;
+    }
+
+    /* Animación Pulso para WhatsApp */
+    @keyframes pulse-green {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+      }
+
+      70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+      }
+
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+      }
+    }
+
+    .btn-whatsapp {
+      animation: pulse-green 2s infinite;
+    }
+
+
+    /* ===== SECCIONES POR CATEGORÍA (fondo alternado) ===== */
+    #casas {
+      background: var(--blanco);
+    }
+
+    #departamentos {
+      background: #F0EEF9;
+    }
+
+    #terrenos {
+      background: #EEF5F0;
+    }
+
+    #comerciales {
+      background: #FFF8EE;
+    }
+
+    /* ===== BANNER "¿POR QUÉ ELEGIRNOS?" ===== */
+    #ventajas {
+      background: linear-gradient(135deg, var(--rojo) 0%, var(--azul) 100%);
+      color: var(--blanco);
+      text-align: center;
+    }
+
+    #ventajas h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 800;
+      margin-bottom: 2.5rem;
+    }
+
+    .ventajas-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .ventaja {
+      flex: 1 1 180px;
+      background: rgba(255, 255, 255, .12);
+      border-radius: 14px;
+      padding: 1.6rem 1.2rem;
+      backdrop-filter: blur(6px);
+    }
+
+    .ventaja i {
+      font-size: 2rem;
+      margin-bottom: .7rem;
+    }
+
+    .ventaja h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      margin-bottom: .4rem;
+    }
+
+    .ventaja p {
+      font-size: .85rem;
+      opacity: .88;
+    }
+
+    /* ===== FORMULARIO DE CONTACTO ===== */
+    #contacto {
+      background: var(--gris);
+    }
+
+    .contacto-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      background: var(--blanco);
+      border-radius: 20px;
+      box-shadow: 0 6px 32px var(--sombra);
+      padding: 2.5rem 2rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-grid .full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
+
+    .form-group label {
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--azul);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: .75rem 1rem;
+      border: 1.5px solid #DDE;
+      border-radius: 8px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: .92rem;
+      color: var(--texto);
+      transition: border-color .2s;
+      background: var(--blanco);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--azul);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .btn-enviar {
+      width: 100%;
+      margin-top: 1.2rem;
+      padding: .9rem;
+      background: linear-gradient(135deg, var(--rojo), var(--rojo-claro));
+      color: var(--blanco);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: opacity .2s, transform .1s;
+    }
+
+    .btn-enviar:hover {
+      opacity: .9;
+      transform: scale(1.01);
+    }
+
+    /* Mensaje de respuesta del formulario */
+    #form-respuesta {
+      margin-top: 1rem;
+      padding: .8rem 1rem;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    #form-respuesta.ok {
+      background: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #6EE7B7;
+    }
+
+    #form-respuesta.err {
+      background: #FEE2E2;
+      color: #7F1D1D;
+      border: 1px solid #FCA5A5;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: linear-gradient(135deg, #1a0808 0%, #0d1e2c 100%);
+      color: rgba(255, 255, 255, .85);
+      padding: 3.5rem 2rem 2rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      max-width: 1100px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .footer-col h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--blanco);
+      margin-bottom: 1rem;
+    }
+
+    .footer-col p,
+    .footer-col a {
+      font-size: .875rem;
+      line-height: 1.9;
+      color: rgba(255, 255, 255, .7);
+      display: block;
+    }
+
+    .footer-col a:hover {
+      color: var(--blanco);
+    }
+
+    .footer-col i {
+      margin-right: .5rem;
+      color: var(--rojo-claro);
+    }
+
+    /* Redes sociales */
+    .redes {
+      display: flex;
+      gap: .8rem;
+      margin-top: .8rem;
+    }
+
+    .redes a {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+      font-size: .95rem;
+    }
+
+    .redes a:hover {
+      background: var(--rojo);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      font-size: .8rem;
+      color: rgba(255, 255, 255, .45);
+      border-top: 1px solid rgba(255, 255, 255, .1);
+      padding-top: 1.5rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      header {
+        padding: 0 1rem;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      nav {
+        display: none;
+      }
+
+      #clima-widget {
+        position: static;
+        min-width: auto;
+        padding: 0.2rem 0.6rem;
+      }
+
+      .clima-info {
+        font-size: 0.7rem;
+      }
+
+      .clima-ciudad,
+      .clima-desc {
+        font-size: 0.55rem;
+      }
+
+      .buscador {
+        flex-direction: column;
+        width: 100%;
+        padding: 1rem;
+      }
+
+      .buscador select,
+      .buscador input,
+      .buscador .input-group {
+        flex: 1 1 auto;
+        width: 100%;
+      }
+
+      .buscador .input-group {
+        flex-direction: column;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== BOTÓN FLOTANTE WHATSAPP ===== */
+    .btn-whatsapp {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 60px;
+      height: 60px;
+      background-color: #25d366;
+      color: #fff;
+      border-radius: 50%;
+      text-align: center;
+      font-size: 30px;
+      box-shadow: 2px 2px 3px #999;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .3s;
+    }
+
+    .btn-whatsapp:hover {
+      transform: scale(1.1);
+      color: #fff;
+    }
+
+    /* ===== SLIDER DE FOTOS EN TARJETA ===== */
+    /* Contenedor relativo que oculta lo que sobresale */
+    .slider-track img {
+      min-width: 100%;
+      height: 100%;
+      object-fit: cover;
+      flex-shrink: 0;
+      transition: transform .4s;
+    }
+
+    /* Botones de navegación anterior / siguiente */
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, .45);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      font-size: .9rem;
+      cursor: pointer;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+    }
+
+    .slider-btn:hover {
+      background: rgba(0, 0, 0, .7);
+    }
+
+    .slider-btn.prev {
+      left: 8px;
+    }
+
+    .slider-btn.next {
+      right: 8px;
+    }
+
+    /* Puntos indicadores de la diapositiva activa */
+    .slider-dots {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
+      z-index: 5;
+    }
+
+    .slider-dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .5);
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .slider-dots span.activo {
+      background: #fff;
+    }
+
+    /* ===== MODAL DE DETALLE ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .85);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-content {
+      background: var(--blanco);
+      width: 100%;
+      max-width: 1000px;
+      height: 85vh;
+      border-radius: 24px;
+      overflow: hidden;
+      display: flex;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, .5);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, .1);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 10;
+      transition: background .2s;
+    }
+
+    .modal-close:hover {
+      background: var(--rojo);
+      color: #fff;
+    }
+
+    .modal-gallery {
+      flex: 1.4;
+      background: #0a0a0a;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Fondo dinámico difuminado para el modal */
+    .modal-bg-blur {
+      position: absolute;
+      inset: -20px;
+      background-size: cover;
+      background-position: center;
+      filter: blur(30px) brightness(0.4);
+      z-index: 0;
+      opacity: 0.7;
+    }
+
+    .modal-gallery .slider-wrap {
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+      background: transparent;
+    }
+
+    .modal-gallery .slider-track img {
+      object-fit: contain;
+      /* Evita el zoom */
+      background: transparent;
+    }
+
+    .modal-info {
+      flex: 1;
+      padding: 3rem 2.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-info h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: .5rem;
+      color: var(--rojo);
+    }
+
+    .modal-info .modal-ubi {
+      color: var(--azul);
+      font-weight: 600;
+      margin-bottom: 2rem;
+      display: block;
+    }
+
+    .modal-info .modal-desc {
+      line-height: 1.6;
+      color: #555;
+      margin-bottom: 2rem;
+    }
+
+    .modal-info .modal-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      padding: 1.5rem;
+      background: var(--gris);
+      border-radius: 16px;
+    }
+
+    .modal-info .modal-price-row {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .modal-info .modal-price {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--rojo);
+      font-family: 'Montserrat';
+    }
+
+    .modal-info .modal-btns {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .modal-info .btn-modal-wa {
+      flex: 1;
+      background: #25d366;
+      color: #fff;
+      text-align: center;
+      padding: 1rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-family: 'Montserrat';
+    }
+
+    @media (max-width: 800px) {
+      .modal-content {
+        flex-direction: column;
+        height: 95vh;
+      }
+
+      .modal-gallery {
+        flex: none;
+        height: 40%;
+      }
+    }
+
+    /* ===== LISTÓN DE PUBLICACIÓN PAUSADA ===== */
+    .tarjeta.pausada {
+      position: relative;
+    }
+
+    .liston-pausado {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 44px;
+      height: 100%;
+      transform: translateX(-50%);
+      background: var(--rojo);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 150;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      border-left: 1px solid rgba(255, 255, 255, 0.3);
+      border-right: 1px solid rgba(255, 255, 255, 0.3);
+      pointer-events: none;
+    }
+
+    .tarjeta.pausada .tarjeta-body,
+    .tarjeta.pausada .slider-wrap {
+      filter: grayscale(0.6) opacity(0.6);
+      pointer-events: none;
+    }
+
+    /* ===== COOKIE BANNER ===== */
+    .cookie-banner {
+      position: fixed;
+      bottom: -100px;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.1);
+      z-index: 2000;
+      padding: 1.5rem 2rem;
+      transition: bottom 0.5s ease;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .cookie-banner.show {
+      bottom: 0;
+    }
+
+    .cookie-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .cookie-content p {
+      font-size: 0.9rem;
+      color: var(--azul);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .cookie-content p i {
+      color: var(--rojo);
+      margin-right: 8px;
+    }
+
+    .cookie-content a {
+      color: var(--rojo);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .cookie-btns {
+      display: flex;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .btn-cookie-ok,
+    .btn-cookie-no {
+      padding: 0.6rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.85rem;
+    }
+
+    .btn-cookie-ok {
+      background: var(--azul);
+      color: #fff;
+      border: none;
+    }
+
+    .btn-cookie-no {
+      background: transparent;
+      color: var(--azul);
+      border: 1px solid var(--azul);
+    }
+
+    .btn-cookie-ok:hover {
+      background: var(--rojo);
+      transform: translateY(-2px);
+    }
+
+    /* ===== LEGAL MODAL ===== */
+    .legal-modal {
+      max-width: 800px;
+      height: 70vh;
+    }
+
+    .legal-modal .modal-info {
+      padding: 2.5rem;
+    }
+
+    .legal-modal .modal-desc ul {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+    }
+
+    .legal-modal .modal-desc li {
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    /* ===== PRIVACY CHECKBOX ===== */
+    .privacy-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 0.5rem;
+    }
+
+    .privacy-check input {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      cursor: pointer;
+    }
+
+    .privacy-check label {
+      font-size: 0.85rem;
+      color: #666;
+      cursor: pointer;
+      line-height: 1.4;
+    }
+
+    .privacy-check a {
+      color: var(--rojo);
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .cookie-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+
+      .cookie-banner {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Modal de Propiedad -->
+  <div class="modal-overlay" id="modal-propiedad">
+    <div class="modal-content">
+      <button class="modal-close" onclick="cerrarModal()">&times;</button>
+      <div class="modal-gallery">
+        <div class="modal-bg-blur" id="m-bg-blur"></div>
+        <div class="slider-wrap" id="slider-modal">
+          <div class="slider-track" id="track-modal"></div>
+          <button class="slider-btn prev" onclick="moverSlider('slider-modal', -1)">&#8249;</button>
+          <button class="slider-btn next" onclick="moverSlider('slider-modal', 1)">&#8250;</button>
+          <div class="slider-dots" id="dots-modal"></div>
+        </div>
+      </div>
+      <div class="modal-info">
+        <h2 id="m-title">Título</h2>
+        <span class="modal-ubi" id="m-location">Ubicación</span>
+        <p class="modal-desc" id="m-description">Descripción...</p>
+        <div class="modal-features" id="m-features"></div>
+        <div class="modal-price-row">
+          <div class="modal-price" id="m-price">$0</div>
+          <div class="modal-btns">
+            <a href="#" id="m-wa-link" target="_blank" class="btn-modal-wa">
+              <i class="fab fa-whatsapp"></i> Pedir Informes
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Aviso de Privacidad (LFPDPPP México) -->
+  <div class="modal-overlay" id="modal-privacidad">
+    <div class="modal-content legal-modal">
+      <button class="modal-close" onclick="cerrarPrivacidad()">&times;</button>
+      <div class="modal-info">
+        <h2>Aviso de Privacidad</h2>
+        <div class="modal-desc">
+          <p><strong>Vive Bien Grupo Inmobiliario</strong>, con domicilio en <strong>Blvd. Campestre 2910 Local 10,
+              Cañada del Refugio, C.P. 37358, León, Guanajuato</strong>, es responsable del tratamiento de sus datos
+            personales conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares
+            (LFPDPPP) de México.</p>
+
+          <p><strong>Finalidades:</strong> Los datos personales que recabamos de usted (Nombre, Teléfono, Correo
+            Electrónico) serán utilizados exclusivamente para las siguientes finalidades necesarias para el servicio que
+            solicita:</p>
+          <ul>
+            <li>Establecer contacto para brindarle información sobre servicios inmobiliarios.</li>
+            <li>Seguimiento a sus solicitudes de compra, venta o renta de inmuebles.</li>
+            <li>Atención personalizada y asesoría técnica/comercial.</li>
+          </ul>
+
+          <p><strong>Seguridad:</strong> Implementamos medidas de seguridad administrativas, técnicas y físicas para
+            proteger sus datos personales contra daño, pérdida, alteración, destrucción o el uso, acceso o tratamiento
+            no autorizado.</p>
+
+          <p><strong>Derechos ARCO:</strong> Usted tiene derecho a conocer qué datos personales tenemos de usted, para
+            qué los utilizamos y las condiciones del uso que les damos (Acceso). Asimismo, es su derecho solicitar la
+            corrección de su información personal en caso de que esté desactualizada, sea inexacta o incompleta
+            (Rectificación); que la eliminemos de nuestros registros o bases de datos cuando considere que la misma no
+            está siendo utilizada conforme a los principios, deberes y obligaciones previstas en la normativa
+            (Cancelación); así como oponerse al uso de sus datos personales para fines específicos (Oposición).</p>
+
+          <p><strong>Contacto:</strong> Para el ejercicio de cualquiera de los derechos ARCO, así como para cualquier
+            duda sobre el tratamiento de sus datos, puede contactarnos en: <strong>jpepeponce200903@gmail.com</strong>.
+          </p>
+
+          <p><small>Última actualización: Febrero 2025.</small></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Banner de Cookies -->
+  <div id="cookie-banner" class="cookie-banner">
+    <div class="cookie-content">
+      <p><i class="fa fa-cookie-bite"></i> Utilizamos cookies para mejorar su experiencia y analizar nuestro tráfico. Al
+        continuar navegando, acepta nuestro uso de cookies. <a href="javascript:void(0)" onclick="abrirPrivacidad()">Ver
+          más detalles</a>.</p>
+      <div class="cookie-btns">
+        <button class="btn-cookie-ok" onclick="aceptarCookies()">Aceptar</button>
+        <button class="btn-cookie-no" onclick="rechazarCookies()">Rechazar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+     HEADER – Barra de navegación fija con logo y menú
+     ========================================================= -->
+  <header>
+    <!-- Logotipo e identidad de marca -->
+    <div class="brand">
+      <img src="logo.png.png" alt="Logo Vive Bien Grupo Inmobiliario"
+        onerror="this.src='https://via.placeholder.com/50x50?text=VIVE'" />
+      <div class="brand-name">
+        <span class="vive">Vive </span><span class="bien">Bien</span>
+        <span class="grupo">Grupo Inmobiliario</span>
+      </div>
+    </div>
+
+    <!-- Widget del clima (Relocalizado y Rediseñado) -->
+    <div id="clima-widget">
+      <div class="clima-info">
+        <span class="clima-ciudad">León</span>
+        <span id="clima-icono">⏳</span>
+        <span id="clima-temp">--°C</span>
+      </div>
+      <div id="clima-desc" class="clima-desc">Cargando...</div>
+    </div>
+
+    <nav>
+      <a href="#naves">Naves</a>
+      <a href="#casas">Casas</a>
+      <a href="#departamentos">Deptos</a>
+      <a href="#terrenos">Terrenos</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </header>
+
+  <!-- =========================================================
+     HERO – Sección principal con buscador y widget del clima
+     ========================================================= -->
+  <section id="hero">
+
+
+    <div class="hero-content">
+      <h1>Especialistas en Inmuebles Industriales y Residenciales</h1>
+      <p>Vive Bien Grupo Inmobiliario: Tu éxito patrimonial comienza con nosotros en León, Gto.</p>
+
+      <form class="buscador" id="form-busqueda" onsubmit="buscarPropiedad(event)">
+        <!-- Operación -->
+        <select id="filtro-op" aria-label="Operación">
+          <option value="venta">Comprar</option>
+          <option value="renta">Rentar</option>
+        </select>
+
+        <!-- Tipo -->
+        <select id="filtro-tipo" aria-label="Tipo de propiedad">
+          <option value="">Cualquier tipo</option>
+          <option value="casa">Casa</option>
+          <option value="nave">Nave/Bodega</option>
+          <option value="terreno">Terreno</option>
+          <option value="comercial">Local</option>
+        </select>
+
+
+        <!-- Rango de Precios -->
+        <div class="input-group">
+          <input type="number" id="p-desde" placeholder="Precio desde" aria-label="Desde">
+          <input type="number" id="p-hasta" placeholder="Precio hasta" aria-label="Hasta">
+        </div>
+
+        <!-- Mantenimiento -->
+        <div class="check-group">
+          <input type="checkbox" id="inc-manto">
+          <label for="inc-manto">Incluir Mantenimiento</label>
+        </div>
+
+        <button type="submit" class="btn-buscar">
+          <i class="fa fa-search"></i> Ver resultados
+        </button>
+      </form>
+    </div>
+  </section>
+
+
+  </section>
+
+  <!-- =========================================================
+     SECCIÓN NAVES INDUSTRIALES (NUEVA)
+     ========================================================= -->
+  <section id="naves">
+    <div class="seccion-titulo">
+      <h2><i class="fa fa-industry"></i> Naves Industriales</h2>
+      <p>Infraestructura de alto nivel para tu operación logística e industrial</p>
+    </div>
+    <div class="grid-propiedades">
+      <!-- ==========================================
+           Nave Industrial San Juan Bosco (REAL)
+           ========================================== -->
+      <div class="tarjeta" data-tipo="nave" data-operacion="renta" data-precio="118180" data-zona="San Juan Bosco"
+        data-recamaras="0" data-mantenimiento="false">
+        <div class="badge-status badge-disponible">Disponible</div>
+        <div class="slider-wrap" id="slider-sanjuan">
+          <div class="slider-track">
+            <img src="./3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto1.jpg"
+              alt="San Juan Bosco 1" />
+            <img src="./3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/fot2.jpg"
+              alt="San Juan Bosco 2" />
+            <img src="./3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto3.jpg"
+              alt="San Juan Bosco 3" />
+            <img src="./3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto4.jpg"
+              alt="San Juan Bosco 4" />
+          </div>
+          <button class="slider-btn prev" onclick="moverSlider('slider-sanjuan', -1)">&#8249;</button>
+          <button class="slider-btn next" onclick="moverSlider('slider-sanjuan',  1)">&#8250;</button>
+          <div class="slider-dots" id="dots-sanjuan">
+            <span class="activo" onclick="irSlide('slider-sanjuan',0)"></span>
+            <span onclick="irSlide('slider-sanjuan',1)"></span>
+            <span onclick="irSlide('slider-sanjuan',2)"></span>
+            <span onclick="irSlide('slider-sanjuan',3)"></span>
+          </div>
+          <span class="etiqueta comercial">En Renta</span>
+        </div>
+        <div class="tarjeta-body">
+          <h3>Bodega en Renta – 1,244 m²</h3>
+          <div class="tarjeta-meta">
+            <i class="fa fa-location-dot"></i> Blvd. San Juan Bosco, Cañada del Refugio, León, Gto.
+          </div>
+          <div class="tarjeta-feat">
+            <span><i class="fa fa-ruler-combined"></i> 1,244 m²</span>
+            <span><i class="fa fa-industry"></i> Logística</span>
+          </div>
+          <div class="tarjeta-footer">
+            <span class="precio">Favor de Consultar</span>
+            <div style="display:flex; gap:5px;">
+              <button class="btn-ver" style="padding: 0.45rem 0.6rem;" onclick="abrirModal('sanjuan')">Ver más</button>
+              <a href="https://wa.me/524778116501?text=Hola, quiero informes sobre la Bodega en Renta – 1,244 m² en San Juan Bosco"
+                target="_blank" class="btn-ver" style="background:#25d366; padding:0.45rem 0.6rem;"><i
+                  class="fab fa-whatsapp"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="casas">
+    <div class="seccion-titulo">
+      <h2><i class="fa fa-house"></i> Casas en Venta</h2>
+      <p>Espacios familiares pensados para ti en las mejores colonias de León</p>
+    </div>
+
+    <div class="grid-propiedades">
+      <p style="grid-column: 1 / -1; text-align: center; color: #777; padding: 2rem;">Próximamente más casas...</p>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+     SECCIÓN DEPARTAMENTOS
+     ========================================================= -->
+  <section id="departamentos">
+    <div class="seccion-titulo">
+      <h2><i class="fa fa-building"></i> Departamentos</h2>
+      <p>Vivienda vertical con acabados de primera, ideales para jóvenes y familias</p>
+    </div>
+
+    <div class="grid-propiedades">
+      <!-- Próximamente se agregarán departamentos aquí -->
+      <p style="grid-column: 1 / -1; text-align: center; color: #777; padding: 2rem;">Próximamente más
+        departamentos...
+      </p>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+     SECCIÓN TERRENOS
+     ========================================================= -->
+  <section id="terrenos">
+    <div class="seccion-titulo">
+      <h2><i class="fa fa-map"></i> Terrenos en Venta</h2>
+      <p>Lotes residenciales e industriales con ubicación estratégica y alta plusvalía</p>
+    </div>
+
+    <div class="grid-propiedades">
+
+      <!-- ==========================================
+           Terreno Panan II – Lote A (REAL)
+           Cluster Industrial Panan II, León, Gto.
+           Superficie: 600 m² | En venta
+           Fotos: plano del desarrollo, entrada y mapa
+           ========================================== -->
+      <div class="tarjeta pausada" data-tipo="terreno" data-operacion="venta" data-precio="500000" data-zona="Silao"
+        data-recamaras="0" data-mantenimiento="false">
+        <div class="badge-status badge-pausada">Pausada</div>
+        <div class="liston-pausado">Publicación Pausada</div>
+        <div class="slider-wrap" id="slider-pananA">
+          <div class="slider-track">
+            <img src="./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto1.jpg" alt="Panan Lote A" />
+            <img src="./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto2.jpg" alt="Panan Lote A 2" />
+            <img src="./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto3.jpg" alt="Panan Lote A 3" />
+          </div>
+          <button class="slider-btn prev" onclick="moverSlider('slider-pananA', -1)">&#8249;</button>
+          <button class="slider-btn next" onclick="moverSlider('slider-pananA',  1)">&#8250;</button>
+          <div class="slider-dots" id="dots-pananA">
+            <span class="activo" onclick="irSlide('slider-pananA',0)"></span>
+            <span onclick="irSlide('slider-pananA',1)"></span>
+            <span onclick="irSlide('slider-pananA',2)"></span>
+          </div>
+          <span class="etiqueta terreno">Terreno</span>
+        </div>
+        <div class="tarjeta-body">
+          <h3>Terreno Industrial Panan II – Lote A</h3>
+          <div class="tarjeta-meta">
+            <i class="fa fa-location-dot"></i> Panan II, Silao, Gto.
+          </div>
+          <div class="tarjeta-feat">
+            <span><i class="fa fa-ruler-combined"></i> 600 m²</span>
+            <span><i class="fa fa-industry"></i> Industrial</span>
+          </div>
+          <div class="tarjeta-footer">
+            <span class="precio">Favor de Consultar</span>
+            <div style="display:flex; gap:5px;">
+              <button class="btn-ver" style="padding: 0.45rem 0.6rem;" onclick="abrirModal('pananA')">Ver más</button>
+              <a href="https://wa.me/524778116501?text=Hola, quiero informes sobre el Terreno Industrial Panan II – Lote A"
+                target="_blank" class="btn-ver" style="background:#25d366; padding:0.45rem 0.6rem;"><i
+                  class="fab fa-whatsapp"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           Terreno Industrial Panan II – Lote B (REAL)
+           ========================================== -->
+      <div class="tarjeta pausada" data-tipo="terreno" data-operacion="venta" data-precio="500000" data-zona="Silao"
+        data-recamaras="0" data-mantenimiento="false">
+        <div class="badge-status badge-pausada">Pausada</div>
+        <div class="liston-pausado">Publicación Pausada</div>
+        <div class="slider-wrap" id="slider-pananB">
+          <div class="slider-track">
+            <img src="./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto2.jpg" alt="Panan Lote B" />
+            <img src="./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto1.jpg" alt="Panan Lote B 2" />
+            <img src="./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto3.jpg" alt="Panan Lote B 3" />
+          </div>
+          <button class="slider-btn prev" onclick="moverSlider('slider-pananB', -1)">&#8249;</button>
+          <button class="slider-btn next" onclick="moverSlider('slider-pananB',  1)">&#8250;</button>
+          <div class="slider-dots" id="dots-pananB">
+            <span class="activo" onclick="irSlide('slider-pananB',0)"></span>
+            <span onclick="irSlide('slider-pananB',1)"></span>
+            <span onclick="irSlide('slider-pananB',2)"></span>
+          </div>
+          <span class="etiqueta terreno">Terreno</span>
+        </div>
+        <div class="tarjeta-body">
+          <h3>Terreno Industrial Panan II – Lote B</h3>
+          <div class="tarjeta-meta">
+            <i class="fa fa-location-dot"></i> Panan II, Silao, Gto.
+          </div>
+          <div class="tarjeta-feat">
+            <span><i class="fa fa-ruler-combined"></i> 600 m²</span>
+            <span><i class="fa fa-industry"></i> Industrial</span>
+          </div>
+          <div class="tarjeta-footer">
+            <span class="precio">Favor de Consultar</span>
+            <div style="display:flex; gap:5px;">
+              <button class="btn-ver" style="padding: 0.45rem 0.6rem;" onclick="abrirModal('pananB')">Ver más</button>
+              <a href="https://wa.me/524778116501?text=Hola, quiero informes sobre el Terreno Industrial Panan II – Lote B"
+                target="_blank" class="btn-ver" style="background:#25d366; padding:0.45rem 0.6rem;"><i
+                  class="fab fa-whatsapp"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+
+
+  <!-- =========================================================
+     SECCIÓN LOCALES COMERCIALES
+     ========================================================= -->
+  <section id="comerciales">
+    <div class="seccion-titulo">
+      <h2><i class="fa fa-store"></i> Locales Comerciales</h2>
+      <p>Espacios estratégicos para que tu negocio crezca en León</p>
+    </div>
+
+    <div class="grid-propiedades">
+      <!-- Próximamente se agregarán locales aquí -->
+      <p style="grid-column: 1 / -1; text-align: center; color: #777; padding: 2rem;">Próximamente más locales
+        comerciales y oficinas...</p>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+     BANNER DE VENTAJAS / ¿POR QUÉ ELEGIRNOS?
+     ========================================================= -->
+  <section id="ventajas">
+    <h2>¿Por qué elegir Vive Bien?</h2>
+    <div class="ventajas-grid">
+      <div class="ventaja">
+        <i class="fa fa-shield-halved"></i>
+        <h3>100% Confiable</h3>
+        <p>15 años de experiencia en el mercado inmobiliario de León.</p>
+      </div>
+      <div class="ventaja">
+        <i class="fa fa-hands-holding-circle"></i>
+        <h3>Asesoría Integral</h3>
+        <p>Te acompañamos desde la búsqueda hasta la firma de escrituras.</p>
+      </div>
+      <div class="ventaja">
+        <i class="fa fa-tag"></i>
+        <h3>Mejores Precios</h3>
+        <p>Propiedades valoradas con transparencia y al precio justo del mercado.</p>
+      </div>
+      <div class="ventaja">
+        <i class="fa fa-headset"></i>
+        <h3>Atención 24/7</h3>
+        <p>Siempre disponibles para resolver tus dudas por WhatsApp o teléfono.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+     FORMULARIO DE CONTACTO
+     ========================================================= -->
+  <section id="contacto">
+    <div class="seccion-titulo">
+      <h2><i class="fa fa-envelope"></i> Contáctanos</h2>
+      <p>Déjanos tus datos y uno de nuestros asesores te contactará a la brevedad</p>
+    </div>
+
+    <div class="contacto-wrap">
+      <!-- Formulario con validación básica y envío simulado via Fetch -->
+      <form id="form-contacto" novalidate>
+        <!-- FormSubmit.co Configuration -->
+        <input type="hidden" name="_subject" value="Nuevo contacto desde Vive Bien">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+
+        <div class="form-grid">
+
+          <!-- Nombre -->
+          <div class="form-group">
+            <label for="nombre">Nombre completo *</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Juan Pérez" required />
+          </div>
+
+          <!-- Teléfono -->
+          <div class="form-group">
+            <label for="telefono">Teléfono *</label>
+            <input type="tel" id="telefono" name="telefono" placeholder="477 123 4567" required />
+          </div>
+
+          <!-- Correo electrónico -->
+          <div class="form-group">
+            <label for="email">Correo electrónico *</label>
+            <input type="email" id="email" name="email" placeholder="juan@ejemplo.com" required />
+          </div>
+
+          <!-- Tipo de interés -->
+          <div class="form-group">
+            <label for="interes">Me interesa</label>
+            <select id="interes" name="interes">
+              <option value="casa">Casa</option>
+              <option value="departamento">Departamento</option>
+              <option value="terreno">Terreno</option>
+              <option value="comercial">Local comercial</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+
+          <!-- Mensaje (ocupa toda la fila) -->
+          <div class="form-group full">
+            <label for="mensaje">Mensaje</label>
+            <textarea id="mensaje" name="mensaje"
+              placeholder="Cuéntanos qué necesitas o alguna duda que tengas..."></textarea>
+          </div>
+
+          <!-- Aceptación de Privacidad -->
+          <div class="form-group full privacy-check">
+            <input type="checkbox" id="acepto-privacidad" name="acepto-privacidad" required />
+            <label for="acepto-privacidad">He leído y acepto el <a href="javascript:void(0)"
+                onclick="abrirPrivacidad()">Aviso de Privacidad</a></label>
+          </div>
+
+        </div><!-- /form-grid -->
+
+        <!-- Botón de envío -->
+        <button type="submit" class="btn-enviar">
+          <i class="fa fa-paper-plane"></i> Enviar mensaje
+        </button>
+
+        <!-- Área donde aparece la respuesta (éxito o error) -->
+        <div id="form-respuesta" role="alert"></div>
+      </form>
+    </div>
+  </section>
+
+
+  <!-- =========================================================
+     FOOTER – Información de contacto y redes sociales
+     ========================================================= -->
+  <footer>
+    <div class="footer-grid">
+
+      <!-- Columna 1: Descripción de la empresa -->
+      <div class="footer-col">
+        <h4>Vive Bien Grupo Inmobiliario</h4>
+        <p>Tu aliado de confianza en el mercado inmobiliario de León, Guanajuato. Ayudándote a encontrar el espacio
+          ideal desde 2009.</p>
+        <!-- Íconos      <!-- Redes sociales -->
+        <div class="redes">
+          <a href="https://www.facebook.com/profile.php?id=61582687400323" target="_blank" aria-label="Facebook"><i
+              class="fab fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/vive_bien_mx/" target="_blank" aria-label="Instagram"><i
+              class="fab fa-instagram"></i></a>
+          <a href="https://wa.me/524778116501" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+
+      <!-- Columna 2: Contacto -->
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <p><i class="fa fa-phone"></i> 477 811 6501</p>
+        <p><i class="fa fa-envelope"></i> jpepeponce200903@gmail.com</p>
+        <p><i class="fa fa-clock"></i> Lun – Vie: 9:00 – 18:00</p>
+        <p><i class="fa fa-clock"></i> Sáb – Dom: 11:00 – 14:00</p>
+      </div>
+
+      <!-- Columna 3: Dirección -->
+      <div class="footer-col">
+        <h4>Ubicación</h4>
+        <p><i class="fa fa-location-dot"></i> Blvd. Campestre 2910 - LOCAL 10,<br />
+          Cañada del Refugio, C.P. 37358,<br />
+          León, Guanajuato.</p>
+      </div>
+
+      <!-- Columna 4: Enlace rápidos -->
+      <div class="footer-col">
+        <h4>Propiedades</h4>
+        <a href="#casas">Casas en venta</a>
+        <a href="#departamentos">Departamentos</a>
+        <a href="#terrenos">Terrenos</a>
+        <a href="#comerciales">Locales comerciales</a>
+      </div>
+
+    </div><!-- /footer-grid -->
+
+    <!-- Pie de página con copyright -->
+    <div class="footer-bottom">
+      &copy; 2025 Vive Bien Grupo Inmobiliario. Todos los derechos reservados. &nbsp;|&nbsp; León, Guanajuato,
+      México.
+    </div>
+  </footer>
+
+
+  <!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+  <script>
+    /* -------------------------------------------------------
+       1. WIDGET DEL CLIMA – Open-Meteo API
+          Obtiene la temperatura actual de León, Guanajuato
+          (coordenadas aproximadas: lat 21.1219, lon -101.6830)
+          La API es gratuita y no requiere llave.
+       ------------------------------------------------------- */
+    async function obtenerClima() {
+      // URL de Open-Meteo con los parámetros necesarios:
+      // - latitude/longitude: ubicación de León, Gto.
+      // - current: variables que queremos en tiempo real
+      // - timezone: para ajustar la hora local
+      const url =
+        'https://api.open-meteo.com/v1/forecast' +
+        '?latitude=21.1219&longitude=-101.6830' +
+        '&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m' +
+        '&timezone=America%2FMexico_City';
+
+      try {
+        // Llamada a la API (fetch devuelve una promesa)
+        const respuesta = await fetch(url);
+
+        // Convertimos la respuesta a JSON
+        const datos = await respuesta.json();
+
+        // Extraemos los valores actuales del objeto recibido
+        const actual = datos.current;
+        const temperatura = Math.round(actual.temperature_2m);  // °C redondeado
+        const codigoClima = actual.weather_code;                 // código WMO
+
+        // Actualizamos el DOM con la temperatura obtenida
+        document.getElementById('clima-temp').textContent = temperatura + '°C';
+
+        // Traducimos el código WMO a ícono emoji y descripción legible
+        const { icono, desc } = interpretarClima(codigoClima);
+        document.getElementById('clima-icono').textContent = icono;
+        document.getElementById('clima-desc').textContent = desc;
+
+      } catch (error) {
+        // Si hay error de red o de API mostramos un mensaje amigable
+        document.getElementById('clima-temp').textContent = 'N/D';
+        document.getElementById('clima-desc').textContent = 'Sin conexión';
+        document.getElementById('clima-icono').textContent = '🌐';
+        console.error('Error al obtener el clima:', error);
+      }
+    }
+
+    /* -------------------------------------------------------
+       Función auxiliar: convierte el código WMO a emoji + texto
+       Referencia: https://open-meteo.com/en/docs#weathervariables
+       ------------------------------------------------------- */
+    function interpretarClima(codigo) {
+      if (codigo === 0) return { icono: '☀️', desc: 'Despejado' };
+      if (codigo <= 3) return { icono: '⛅', desc: 'Parcialmente nublado' };
+      if (codigo <= 48) return { icono: '🌫️', desc: 'Niebla' };
+      if (codigo <= 55) return { icono: '🌦️', desc: 'Llovizna' };
+      if (codigo <= 65) return { icono: '🌧️', desc: 'Lluvia' };
+      if (codigo <= 75) return { icono: '❄️', desc: 'Nieve' };
+      if (codigo <= 82) return { icono: '🌧️', desc: 'Chubascos' };
+      if (codigo <= 99) return { icono: '⛈️', desc: 'Tormenta' };
+      return { icono: '🌡️', desc: 'Clima variado' };
+    }
+
+    // Llamamos a la función inmediatamente al cargar la página
+    obtenerClima();
+
+
+
+    /* -------------------------------------------------------
+       2. BUSCADOR DE PROPIEDADES
+          Muestra una alerta con los filtros seleccionados.
+          En un proyecto real, esto filtraría las tarjetas o
+          haría una solicitud a tu backend.
+       ------------------------------------------------------- */
+    function buscarPropiedad(evento) {
+      evento.preventDefault();
+
+      const op = document.getElementById('filtro-op').value;
+      const tipo = document.getElementById('filtro-tipo').value;
+      const desde = parseFloat(document.getElementById('p-desde').value) || 0;
+      const hasta = parseFloat(document.getElementById('p-hasta').value) || Infinity;
+      const incManto = document.getElementById('inc-manto').checked;
+
+      const tarjetas = document.querySelectorAll('.tarjeta');
+      let encontrados = 0;
+
+      tarjetas.forEach(tarjeta => {
+        const tOp = tarjeta.getAttribute('data-operacion') || '';
+        const tTipo = tarjeta.getAttribute('data-tipo') || '';
+        const tPrecio = parseFloat(tarjeta.getAttribute('data-precio')) || 0;
+        const tManto = tarjeta.getAttribute('data-mantenimiento') === 'true';
+
+        let coincideOp = tOp === op;
+        let coincideTipo = !tipo || tTipo === tipo;
+        let coincidePrecio = (tPrecio >= desde) && (tPrecio <= hasta);
+        let coincideManto = !incManto || tManto === true;
+
+        if (coincideOp && coincideTipo && coincidePrecio && coincideManto) {
+          tarjeta.parentElement.style.display = 'block';
+          encontrados++;
+        } else {
+          tarjeta.parentElement.style.display = 'none';
+        }
+      });
+
+      const grid = document.querySelector('.grid-propiedades');
+      let noResultados = document.getElementById('no-resultados');
+
+      if (encontrados === 0) {
+        if (!noResultados) {
+          noResultados = document.createElement('div');
+          noResultados.id = 'no-resultados';
+          noResultados.style.textAlign = 'center';
+          noResultados.style.padding = '3rem';
+          noResultados.style.gridColumn = '1 / -1';
+          noResultados.innerHTML = `<i class="fa fa-house-circle-exclamation" style="font-size: 3rem; color: var(--azul); opacity: 0.3;"></i><p style="margin-top: 1.5rem; font-weight: 700; color: var(--azul);">No hay resultados para esta combinación de filtros.</p><button onclick="window.location.reload()" style="margin-top:1rem; border:none; background:var(--rojo); color:#fff; padding:8px 16px; border-radius:6px; cursor:pointer;">Limpiar filtros</button>`;
+          grid.appendChild(noResultados);
+        } else {
+          noResultados.style.display = 'block';
+        }
+      } else if (noResultados) {
+        noResultados.style.display = 'none';
+      }
+
+      // Scroll a la sección de resultados
+      document.getElementById('naves').scrollIntoView({ behavior: 'smooth' });
+    }
+
+
+
+    /* -------------------------------------------------------
+       3. BOTÓN "VER MÁS" EN TARJETAS
+          En un proyecto real navegaría a la página de detalle.
+       ------------------------------------------------------- */
+    function verDetalle(nombre) {
+      alert(`📋 Ver detalle de:\n"${nombre}"\n\n(Aquí abrirías la página de detalle de la propiedad.)`);
+    }
+
+
+    /* -------------------------------------------------------
+       4. FORMULARIO DE CONTACTO
+          Simula el envío de los datos usando JSONPlaceholder
+          como API de prueba (igual que en ejercicios anteriores).
+          En producción reemplazarías la URL con tu propio endpoint.
+       ------------------------------------------------------- */
+    document.getElementById('form-contacto').addEventListener('submit', async function (e) {
+      // Evitamos el comportamiento por defecto del formulario
+      e.preventDefault();
+
+      // Referencia al div de respuesta
+      const respuestaDiv = document.getElementById('form-respuesta');
+
+      // Leemos los valores del formulario
+      const nombre = document.getElementById('nombre').value.trim();
+      const telefono = document.getElementById('telefono').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const interes = document.getElementById('interes').value;
+      const mensaje = document.getElementById('mensaje').value.trim();
+
+      // Validación básica en el cliente
+      if (!nombre || !telefono || !email) {
+        mostrarRespuesta('Por favor completa los campos obligatorios (*).', 'err');
+        return;
+      }
+
+      // Objeto con los datos que enviaremos a la API
+      const payload = { nombre, telefono, email, interes, mensaje };
+
+      // Deshabilitamos el botón mientras espera respuesta
+      const btnEnviar = document.querySelector('.btn-enviar');
+      btnEnviar.disabled = true;
+      btnEnviar.textContent = 'Enviando...';
+
+      try {
+        // Enviamos los datos reales a tu correo usando FormSubmit.co
+        const respuesta = await fetch('https://formsubmit.co/ajax/jpepeponce200903@gmail.com', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        // Verificamos que la solicitud fue exitosa (código 2xx)
+        if (!respuesta.ok) throw new Error('Error HTTP: ' + respuesta.status);
+
+        // Parseamos la respuesta JSON de la API
+        const datos = await respuesta.json();
+        console.log('Respuesta de la API:', datos);
+
+        // Mostramos mensaje de éxito al usuario
+        mostrarRespuesta('✅ ¡Mensaje enviado! Un asesor te contactará pronto.', 'ok');
+
+        // Limpiamos los campos del formulario
+        e.target.reset();
+
+      } catch (error) {
+        // Mostramos mensaje de error si algo salió mal
+        mostrarRespuesta('❌ Hubo un error al enviar. Intenta de nuevo.', 'err');
+        console.error('Error al enviar formulario:', error);
+
+      } finally {
+        // Volvemos a habilitar el botón sin importar el resultado
+        btnEnviar.disabled = false;
+        btnEnviar.innerHTML = '<i class="fa fa-paper-plane"></i> Enviar mensaje';
+      }
+    });
+
+    /* Función auxiliar para mostrar el mensaje de respuesta del formulario */
+    function mostrarRespuesta(texto, tipo) {
+      const div = document.getElementById('form-respuesta');
+      div.textContent = texto;
+      div.className = tipo;          // aplica clase 'ok' o 'err'
+      div.style.display = 'block';
+
+      // Ocultamos el mensaje después de 6 segundos automáticamente
+      setTimeout(() => { div.style.display = 'none'; }, 6000);
+    }
+
+
+    /* -------------------------------------------------------
+       5. ANIMACIÓN DE APARICIÓN AL HACER SCROLL
+          Usa IntersectionObserver para animar las tarjetas
+          cuando el usuario baja la página.
+       ------------------------------------------------------- */
+    const observador = new IntersectionObserver((entradas) => {
+      entradas.forEach(entrada => {
+        if (entrada.isIntersecting) {
+          // Añadimos la clase 'visible' cuando el elemento aparece en pantalla
+          entrada.target.style.animation = 'fadeUp 0.5s ease forwards';
+          observador.unobserve(entrada.target); // dejamos de observarlo
+        }
+      });
+    }, { threshold: 0.15 });
+
+    // Aplicamos la animación a todas las tarjetas de propiedades
+    document.querySelectorAll('.tarjeta').forEach(tarjeta => {
+      // Comenzamos con la tarjeta invisible
+      tarjeta.style.opacity = '0';
+      tarjeta.style.transform = 'translateY(30px)';
+      observador.observe(tarjeta);
+    });
+
+    /* -------------------------------------------------------
+       6. SLIDER DE FOTOS EN TARJETAS
+          Cada slider es independiente: se guarda el índice
+          actual en un Map para no mezclar el estado entre
+          distintas tarjetas.
+       ------------------------------------------------------- */
+    const sliderIndex = new Map();
+
+    function moverSlider(id, direccion) {
+      const wrap = document.getElementById(id);
+      const track = wrap.querySelector('.slider-track');
+      const total = track.children.length;
+      const actual = sliderIndex.get(id) ?? 0;
+      const siguiente = (actual + direccion + total) % total;
+      irSlide(id, siguiente);
+    }
+
+    function irSlide(id, indice) {
+      const wrap = document.getElementById(id);
+      const track = wrap.querySelector('.slider-track');
+      const dots = document.querySelectorAll('#dots-' + id.replace('slider-', '') + ' span');
+      track.style.transform = `translateX(-${indice * 100}%)`;
+      dots.forEach((d, i) => d.classList.toggle('activo', i === indice));
+      sliderIndex.set(id, indice);
+    }
+
+    /* -------------------------------------------------------
+       7. LOGICA DEL MODAL (NUEVA)
+       ------------------------------------------------------- */
+    const dbPropiedades = {
+      'pananA': {
+        titulo: 'Terreno Industrial Panan II – Lote A',
+        ubicacion: 'Cluster Industrial Panan II, Silao, Gto.',
+        price: 'Favor de Consultar',
+        descripcion: 'Lote industrial de 600 m² en cluster privado con seguridad y pavimentación. Cercano a Carretera Federal 45.',
+        caracteristicas: ['600 m²', 'Seguridad 24/7', 'Acceso Pavimentado', 'Uso Industrial'],
+        fotos: [
+          './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto1.jpg',
+          './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto2.jpg',
+          './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto3.jpg'
+        ]
+      },
+      'pananB': {
+        titulo: 'Terreno Industrial Panan II – Lote B',
+        ubicacion: 'Cluster Industrial Panan II, Silao, Gto.',
+        precio: 'Favor de Consultar',
+        descripcion: 'Segundo lote disponible con excelentes acabados de urbanización y conectividad logística.',
+        caracteristicas: ['600 m²', 'Urbanizado', 'Conectividad Premium', 'Todos los servicios'],
+        fotos: [
+          './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto2.jpg',
+          './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto1.jpg',
+          './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto3.jpg'
+        ]
+      },
+      'sanjuan': {
+        titulo: 'Bodega en Renta – 1,244 m² en Blvd. San Juan Bosco',
+        ubicacion: 'Blvd. San Juan Bosco, Cañada del Refugio, 37358 León de los Aldama, Gto.',
+        precio: '$118,180. MNX + IVA',
+        descripcion: 'Excelente oportunidad para empresas que buscan una bodega amplia, funcional y con una ubicación privilegiada. La propiedad cuenta con 1,244 m² totales, con oficinas modernas distribuidas en 3 niveles (2 baños por nivel), excelente altura para maniobras e iluminación natural que reduce costos. Ubicación estratégica con acceso rápido a Blvd. Hidalgo, Morelos, Las Torres y Libramiento. Ideal para CEDIS, logística, almacenes o manufactura ligera.',
+        caracteristicas: ['1,244 m² Totales', 'Oficinas en 3 Niveles', '2 Baños por Nivel', 'Altura para Maniobras', 'Iluminación Natural', 'Ubicación Estratégica'],
+        fotos: [
+          './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto1.jpg',
+          './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/fot2.jpg',
+          './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto3.jpg',
+          './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto4.jpg',
+          './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto5.jpg',
+          './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto6.jpg'
+        ]
+      }
+    };
+
+    function abrirModal(id) {
+      const data = dbPropiedades[id];
+      if (!data) return;
+
+      document.getElementById('m-title').textContent = data.titulo;
+      document.getElementById('m-location').textContent = data.ubicacion;
+      document.getElementById('m-description').textContent = data.descripcion;
+      document.getElementById('m-price').textContent = data.price;
+      document.getElementById('m-wa-link').href = `https://wa.me/524778116501?text=${encodeURIComponent('Hola, quiero informes sobre: ' + data.titulo)}`;
+      document.getElementById('m-bg-blur').style.backgroundImage = `url('${data.fotos[0]}')`;
+
+      const track = document.getElementById('track-modal');
+      const dots = document.getElementById('dots-modal');
+      track.innerHTML = data.fotos.map(f => `<img src="${f}">`).join('');
+      dots.innerHTML = data.fotos.map((_, i) => `<span class="${i === 0 ? 'activo' : ''}" onclick="irSlide('slider-modal', ${i})"></span>`).join('');
+
+      const feat = document.getElementById('m-features');
+      feat.innerHTML = data.caracteristicas.map(c => `<span><i class="fa fa-check-circle" style="color:var(--rojo)"></i> ${c}</span>`).join('');
+
+      irSlide('slider-modal', 0);
+      document.getElementById('modal-propiedad').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModal() {
+      document.getElementById('modal-propiedad').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    /* -------------------------------------------------------
+       8. PRIVACIDAD Y COOKIES (NUEVO)
+       ------------------------------------------------------- */
+    function abrirPrivacidad() {
+      document.getElementById('modal-privacidad').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarPrivacidad() {
+      document.getElementById('modal-privacidad').style.display = 'none';
+      if (document.getElementById('modal-propiedad').style.display !== 'flex') {
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    function aceptarCookies() {
+      localStorage.setItem('cookiesViveBien', 'aceptado');
+      document.getElementById('cookie-banner').classList.remove('show');
+    }
+
+    function rechazarCookies() {
+      localStorage.setItem('cookiesViveBien', 'rechazado');
+      document.getElementById('cookie-banner').classList.remove('show');
+    }
+
+    window.addEventListener('load', () => {
+      if (!localStorage.getItem('cookiesViveBien')) {
+        setTimeout(() => {
+          document.getElementById('cookie-banner').classList.add('show');
+        }, 1500);
+      }
+    });
+
+    // Cerrar al click afuera modificado
+    window.onclick = function (event) {
+      const modalProp = document.getElementById('modal-propiedad');
+      const modalPriv = document.getElementById('modal-privacidad');
+      if (event.target == modalProp) cerrarModal();
+      if (event.target == modalPriv) cerrarPrivacidad();
+    }
+  </script>
+
+  <!-- Estilos de la animación de aparición (keyframe) -->
+  <style>
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+
+  <!-- Botón flotante de WhatsApp -->
+  <a href="https://wa.me/524778116501" class="btn-whatsapp" target="_blank" title="Contáctanos por WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+</body>
+
+</html>
