@@ -796,6 +796,17 @@
 
       nav.show {
         display: flex;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: var(--blanco);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        padding-bottom: 1rem;
+      }
+
+      #seccion-buscador-sticky {
+        position: static !important;
       }
 
       nav a {
@@ -837,6 +848,14 @@
       .form-grid {
         grid-template-columns: 1fr;
       }
+    }
+
+    #seccion-buscador-sticky {
+      background: var(--azul);
+      padding: 1.5rem 2rem;
+      position: sticky;
+      top: 72px;
+      z-index: 999;
     }
 
     /* ===== BOTÓN FLOTANTE WHATSAPP ===== */
@@ -1909,7 +1928,7 @@
   <!-- =========================================================
      BUSCADOR DE PROPIEDADES (sin hero)
      ========================================================= -->
-  <section style="background: var(--azul); padding: 1.5rem 2rem; position: sticky; top: 72px; z-index: 999;">
+  <section id="seccion-buscador-sticky">
     <form class="buscador" id="form-busqueda" onsubmit="buscarPropiedad(event)"
       style="max-width:1100px; margin:0 auto;">
       <select id="filtro-op" aria-label="Operación">
