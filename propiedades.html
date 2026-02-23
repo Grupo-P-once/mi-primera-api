@@ -1855,7 +1855,7 @@
   <!-- =========================================================
      MODAL DE REGISTRO – Captura de datos antes de contacto
      ========================================================= -->
-  <div class="modal-overlay" id="modal-registro" style="display:none">
+  <div class="modal-overlay" id="modal-registro" style="display:none; z-index: 3000;">
     <div class="registro-modal-content">
       <button class="reg-close" onclick="cerrarRegistro()">&times;</button>
 
@@ -2449,6 +2449,13 @@
       // Configurar el link de WhatsApp del paso 2
       document.getElementById('reg-wa-link').href = _waUrlPendiente;
 
+      // Ocultar modal de propiedad si estaba abierto para prevenir solapamientos
+      const modalProp = document.getElementById('modal-propiedad');
+      if (modalProp.style.display === 'flex' || modalProp.style.display === 'block') {
+        modalProp.style.display = 'none';
+        modalProp.classList.add('was-open');
+      }
+
       // Mostrar el modal
       document.getElementById('modal-registro').style.display = 'flex';
       document.body.style.overflow = 'hidden';
@@ -2524,7 +2531,15 @@
       document.getElementById('reg-nombre').value = '';
       document.getElementById('reg-tel').value = '';
       document.getElementById('reg-email').value = '';
-      document.body.style.overflow = 'auto';
+
+      // Si el modal de propiedad estaba abierto pero invisible, lo restauramos
+      const modalProp = document.getElementById('modal-propiedad');
+      if (modalProp.style.display === 'none' && modalProp.classList.contains('was-open')) {
+        modalProp.style.display = 'flex';
+        modalProp.classList.remove('was-open');
+      } else {
+        document.body.style.overflow = 'auto'; // Solo si no hay otro modal debajo
+      }
     }
 
     // Cerrar modal de registro al click afuera
