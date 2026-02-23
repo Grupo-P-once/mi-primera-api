@@ -1938,7 +1938,7 @@
      ========================================================= -->
   <section id="seccion-buscador-sticky">
     <form class="buscador" id="form-busqueda" onsubmit="buscarPropiedad(event)"
-      style="max-width:1100px; margin:0 auto;">
+      style="max-width:850px; margin:0 auto; padding: 1.2rem;">
       <select id="filtro-op" aria-label="Operación">
         <option value="venta">Comprar</option>
         <option value="renta">Rentar</option>
@@ -2619,7 +2619,60 @@
         document.getElementById('grid-comerciales').innerHTML = '';
 
         if (snap.empty) {
-          console.log("No hay propiedades públicas disponibles.");
+          console.log("No hay propiedades públicas disponibles. Cargando Demo...");
+          const demoData = [
+            {
+              id: 'sanjuan', tipo: 'nave', operacion: 'renta', precioNum: 118180, zona: 'San Juan Bosco', estado: 'disponible',
+              titulo: 'Bodega en Renta – 1,244 m²', ubicacion: 'Blvd. San Juan Bosco, Cañada del Refugio, León',
+              precio: '$118,180 MXN + IVA/mes', imagen: './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto1.jpg',
+              fotos: ['./3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto1.jpg', './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/fot2.jpg'],
+              descripcion: 'Bodega de 1,244 m² con oficinas y gran altura.', features: ['1,244 m²', 'Logística']
+            },
+            {
+              id: 'pananA', tipo: 'terreno', operacion: 'venta', precioNum: 500000, zona: 'Silao', estado: 'pausada',
+              titulo: 'Terreno Industrial Panan II – Lote A', ubicacion: 'Cluster Industrial Panan II, Silao, Gto.', precio: 'Favor de Consultar',
+              imagen: './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto1.jpg', fotos: ['./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto1.jpg'],
+              descripcion: 'Lote industrial de 600 m² en cluster privado.', features: ['600 m²', 'Industrial']
+            },
+            {
+              id: 'pananB', tipo: 'terreno', operacion: 'venta', precioNum: 500000, zona: 'Silao', estado: 'pausada',
+              titulo: 'Terreno Industrial Panan II – Lote B', ubicacion: 'Cluster Industrial Panan II, Silao, Gto.', precio: 'Favor de Consultar',
+              imagen: './3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto2.jpg', fotos: ['./3vive_bien_fotos/terrenos/terreno_panam_silao_venta/foto2.jpg'],
+              descripcion: 'Segundo lote disponible con excelentes acabados.', features: ['600 m²', 'Industrial']
+            }
+          ];
+
+          demoData.forEach(d => {
+            dbPropiedades[d.id] = { titulo: d.titulo, ubicacion: d.ubicacion, precio: d.precio, descripcion: d.descripcion, caracteristicas: d.features, fotos: d.fotos };
+            const badgeHtml = d.estado === 'pausada' ? `<div class="badge-status badge-pausada">Pausada</div><div class="liston-pausado">Publicación Pausada</div>` : `<div class="badge-status badge-disponible">Disponible</div>`;
+            const iconType = d.tipo === 'nave' ? 'fa-industry' : 'fa-map';
+            const html = `
+              <div class="tarjeta ${d.estado === 'pausada' ? 'pausada' : ''}" data-tipo="${d.tipo}" data-operacion="${d.operacion}" data-precio="${d.precioNum}" data-zona="${d.zona}" data-recamaras="0" data-mantenimiento="false">
+                ${badgeHtml}
+                <div class="slider-wrap" id="slider-${d.id}">
+                  <div class="slider-track" style="transform: translateX(0%);"><img src="${d.imagen}" alt="${d.titulo}"/></div>
+                  <div class="slider-dots" id="dots-${d.id}"><span class="activo"></span></div>
+                  <span class="etiqueta comercial">${d.operacion === 'renta' ? 'En Renta' : 'En Venta'}</span>
+                </div>
+                <div class="tarjeta-body">
+                  <h3>${d.titulo}</h3>
+                  <div class="tarjeta-meta"><i class="fa fa-location-dot"></i> ${d.ubicacion}</div>
+                  <div class="tarjeta-feat"><span><i class="fa ${iconType}"></i> ${d.tipo.toUpperCase()}</span></div>
+                  <div class="tarjeta-footer">
+                    <span class="precio">${d.precio}</span>
+                    <button class="btn-ver" style="padding: 0.45rem 0.6rem;" onclick="abrirModal('${d.id}')">Ver más</button>
+                  </div>
+                  <div class="tarjeta-contacto" style="margin-top:8px;">
+                    <a href="javascript:void(0)" onclick="pedirRegistro('tel:+524778116501', '${d.titulo}')" title="Llamar"><i class="fa fa-phone"></i></a>
+                    <a href="javascript:void(0)" onclick="pedirRegistro('https://wa.me/524778116501?text=Hola', '${d.titulo}')" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <button onclick="pedirRegistro('#contacto', '${d.titulo}')" title="Contactar"><i class="fa fa-envelope"></i></button>
+                  </div>
+                </div>
+              </div>`;
+            if (d.tipo === 'nave') { document.getElementById('grid-naves').innerHTML += html; document.getElementById('grid-naves').querySelector('p').style.display = 'none'; }
+            if (d.tipo === 'terreno') { document.getElementById('grid-terrenos').innerHTML += html; document.getElementById('grid-terrenos').querySelector('p').style.display = 'none'; }
+          });
+          setTimeout(() => buscarPropiedad({ preventDefault: () => { } }), 200);
           return;
         }
 
