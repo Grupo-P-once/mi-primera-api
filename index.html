@@ -1921,6 +1921,9 @@
           <option value="comercial">Local</option>
         </select>
 
+        <!-- Zona -->
+        <input type="text" id="filtro-zona" placeholder="📍 Zona o colonia (ej. Campestre)" aria-label="Zona"
+          style="flex:1 1 180px" />
 
         <!-- Rango de Precios -->
         <div class="input-group">
@@ -2394,6 +2397,7 @@
       const desde = document.getElementById('p-desde').value;
       const hasta = document.getElementById('p-hasta').value;
       const incManto = document.getElementById('inc-manto').checked;
+      const zona = document.getElementById('filtro-zona').value.trim();
 
       const params = new URLSearchParams();
       if (op) params.append('op', op);
@@ -2401,8 +2405,19 @@
       if (desde) params.append('desde', desde);
       if (hasta) params.append('hasta', hasta);
       if (incManto) params.append('incManto', 'true');
+      if (zona) params.append('zona', zona);
 
-      // Redirigir a propiedades.html con los filtros como parámetros en la URL
+      // Guardar búsqueda en Firebase
+      if (zona && window._dbFirebase) {
+        window._addDoc(window._collection(window._dbFirebase, 'busquedas'), {
+          zona,
+          tipo: tipo || 'cualquiera',
+          operacion: op,
+          fecha: new Date().toLocaleString('es-MX'),
+          timestamp: new Date().toISOString()
+        }).catch(e => console.warn('Firebase busqueda:', e));
+      }
+
       window.location.href = `propiedades.html?${params.toString()}`;
     }
 
@@ -2456,7 +2471,6 @@
         // 1) Guardar en Firebase Firestore
         if (window._dbFirebase) {
           await window._addDoc(window._collection(window._dbFirebase, 'contactos'), payload);
-          console.log('Contacto guardado en Firebase');
         }
 
         // 2) Enviar a correo vía FormSubmit.co como respaldo
@@ -2466,19 +2480,25 @@
           body: JSON.stringify(payload)
         }).catch(err => console.log('FormSubmit (no crítico):', err));
 
-        // Mostramos mensaje de éxito al usuario
-        mostrarRespuesta('✅ ¡Mensaje enviado! Un asesor te contactará pronto.', 'ok');
-
-        // Limpiamos los campos del formulario
+        // 3) Mostrar mensaje de éxito + botón de WhatsApp al cliente
+        const waMsg = encodeURIComponent(`Hola, soy ${nombre}. Acabo de enviar mi solicitud en el sitio de Vive Bien. Quedamos en contacto.`);
+        const respuestaDiv = document.getElementById('form-respuesta');
+        respuestaDiv.innerHTML = `
+          ✅ ¡Mensaje enviado! Un asesor te contactará pronto.
+          <br><br>
+          <a href="https://wa.me/524778116501?text=${waMsg}" target="_blank"
+             style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;padding:10px 20px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.9rem;margin-top:8px">
+            <i class="fab fa-whatsapp"></i> Confirmar por WhatsApp
+          </a>`;
+        respuestaDiv.className = 'ok';
+        respuestaDiv.style.display = 'block';
         e.target.reset();
 
       } catch (error) {
-        // Mostramos mensaje de error si algo salió mal
         mostrarRespuesta('❌ Hubo un error al enviar. Intenta de nuevo.', 'err');
         console.error('Error al enviar formulario:', error);
 
       } finally {
-        // Volvemos a habilitar el botón sin importar el resultado
         btnEnviar.disabled = false;
         btnEnviar.innerHTML = '<i class="fa fa-paper-plane"></i> Enviar mensaje';
       }

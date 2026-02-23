@@ -387,6 +387,24 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Tabla Ranking de Zonas Buscadas -->
+            <div class="table-card" style="margin-top:2rem">
+                <h3><i class="fa fa-map-marker-alt" style="color:var(--rojo)"></i> Zonas Más Buscadas (Firebase)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Zona</th>
+                            <th>Búsquedas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-zonas">
+                        <tr>
+                            <td colspan="2" style="text-align:center;color:#999">Cargando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -442,25 +460,13 @@
             const colorVerde = '#279546';
             const colorMorado = '#5B4FCF';
 
-            // Gráfica de Barras: Zonas Más Buscadas
+            // Gráfica de Barras: se llenará con datos reales de Firebase
+            window._zonasChart = null;
             const ctxZonas = document.getElementById('zonasChart').getContext('2d');
-            new Chart(ctxZonas, {
+            window._zonasChart = new Chart(ctxZonas, {
                 type: 'bar',
-                data: {
-                    labels: ['San Juan Bosco', 'Silao (Panan II)', 'Cañada del Refugio', 'Campestre', 'Centro'],
-                    datasets: [{
-                        label: 'Búsquedas esta semana',
-                        data: [120, 95, 76, 55, 30],
-                        backgroundColor: colorAzul,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
-                }
+                data: { labels: ['Cargando...'], datasets: [{ label: 'Búsquedas por zona', data: [0], backgroundColor: colorAzul, borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
 
             // Gráfica de Dona: Tipos de Propiedad
@@ -549,6 +555,35 @@
                         </tr>`);
                     });
                     tbLeads.innerHTML = rows.join('');
+                }
+
+                // --- Cargar Búsquedas por Zona ---
+                const busquedasSnap = await getDocs(collection(db, 'busquedas'));
+                const zonaCont = {};
+                busquedasSnap.forEach(doc => {
+                    const z = (doc.data().zona || 'Sin zona').toLowerCase().trim();
+                    zonaCont[z] = (zonaCont[z] || 0) + 1;
+                });
+                // Ordenar por frecuencia y tomar top 8
+                const zonasSorted = Object.entries(zonaCont).sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+                // Actualizar gráfica
+                if (window._zonasChart && zonasSorted.length > 0) {
+                    window._zonasChart.data.labels = zonasSorted.map(([z]) => z.charAt(0).toUpperCase() + z.slice(1));
+                    window._zonasChart.data.datasets[0].data = zonasSorted.map(([, c]) => c);
+                    window._zonasChart.update();
+                }
+
+                // Tabla ranking de zonas
+                const tbZonas = document.getElementById('tabla-zonas');
+                if (tbZonas) {
+                    if (zonasSorted.length === 0) {
+                        tbZonas.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#999">Sin búsquedas aún</td></tr>';
+                    } else {
+                        tbZonas.innerHTML = zonasSorted.map(([z, c], i) =>
+                            `<tr><td>${i + 1}. ${z.charAt(0).toUpperCase() + z.slice(1)}</td><td><strong>${c}</strong> búsqueda${c !== 1 ? 's' : ''}</td></tr>`
+                        ).join('');
+                    }
                 }
 
             } catch (err) {

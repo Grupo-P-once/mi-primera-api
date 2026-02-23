@@ -1951,6 +1951,8 @@
         <option value="comercial">Local</option>
         <option value="departamento">Departamento</option>
       </select>
+      <!-- Zona -->
+      <input type="text" id="filtro-zona" placeholder="📍 Zona o colonia" aria-label="Zona" />
       <div class="input-group">
         <input type="number" id="p-desde" placeholder="Precio desde" aria-label="Desde">
         <input type="number" id="p-hasta" placeholder="Precio hasta" aria-label="Hasta">
@@ -2536,6 +2538,7 @@
       const desde = parseFloat(document.getElementById('p-desde').value) || 0;
       const hasta = parseFloat(document.getElementById('p-hasta').value) || Infinity;
       const incManto = document.getElementById('inc-manto').checked;
+      const zona = (document.getElementById('filtro-zona').value || '').trim().toLowerCase();
 
       const tarjetas = document.querySelectorAll('.tarjeta');
       let encontrados = 0;
@@ -2545,13 +2548,15 @@
         const tTipo = tarjeta.getAttribute('data-tipo') || '';
         const tPrecio = parseFloat(tarjeta.getAttribute('data-precio')) || 0;
         const tManto = tarjeta.getAttribute('data-mantenimiento') === 'true';
+        const tTexto = tarjeta.textContent.toLowerCase(); // para filtrar por zona
 
         let coincideOp = tOp === op;
         let coincideTipo = !tipo || tTipo === tipo;
         let coincidePrecio = (tPrecio >= desde) && (tPrecio <= hasta);
         let coincideManto = !incManto || tManto === true;
+        let coincideZona = !zona || tTexto.includes(zona);
 
-        if (coincideOp && coincideTipo && coincidePrecio && coincideManto) {
+        if (coincideOp && coincideTipo && coincidePrecio && coincideManto && coincideZona) {
           tarjeta.parentElement.style.display = 'block';
           encontrados++;
         } else {
@@ -2578,7 +2583,6 @@
         noResultados.style.display = 'none';
       }
 
-      // Scroll a la sección de resultados
       document.getElementById('naves').scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -2600,61 +2604,59 @@
           En producción reemplazarías la URL con tu propio endpoint.
        ------------------------------------------------------- */
     document.getElementById('form-contacto').addEventListener('submit', async function (e) {
-      // Evitamos el comportamiento por defecto del formulario
       e.preventDefault();
 
-      // Referencia al div de respuesta
-      const respuestaDiv = document.getElementById('form-respuesta');
-
-      // Leemos los valores del formulario
       const nombre = document.getElementById('nombre').value.trim();
       const telefono = document.getElementById('telefono').value.trim();
       const email = document.getElementById('email').value.trim();
       const interes = document.getElementById('interes').value;
       const mensaje = document.getElementById('mensaje').value.trim();
 
-      // Validación básica en el cliente
       if (!nombre || !telefono || !email) {
         mostrarRespuesta('Por favor completa los campos obligatorios (*).', 'err');
         return;
       }
 
-      // Objeto con los datos que enviaremos a la API
-      const payload = { nombre, telefono, email, interes, mensaje };
+      const payload = {
+        nombre, telefono, email, interes, mensaje,
+        fecha: new Date().toLocaleString('es-MX'),
+        timestamp: new Date().toISOString()
+      };
 
-      // Deshabilitamos el botón mientras espera respuesta
       const btnEnviar = document.querySelector('.btn-enviar');
       btnEnviar.disabled = true;
       btnEnviar.textContent = 'Enviando...';
 
       try {
-        // Enviamos los datos reales a tu correo usando FormSubmit.co
-        const respuesta = await fetch('https://formsubmit.co/ajax/jpepeponce200903@gmail.com', {
+        // 1) Guardar en Firebase
+        if (window._dbFirebase) {
+          await window._addDoc(window._collection(window._dbFirebase, 'contactos'), payload);
+        }
+
+        // 2) Respaldo por email
+        fetch('https://formsubmit.co/ajax/jpepeponce200903@gmail.com', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
-        });
+        }).catch(() => { });
 
-        // Verificamos que la solicitud fue exitosa (código 2xx)
-        if (!respuesta.ok) throw new Error('Error HTTP: ' + respuesta.status);
-
-        // Parseamos la respuesta JSON de la API
-        const datos = await respuesta.json();
-        console.log('Respuesta de la API:', datos);
-
-        // Mostramos mensaje de éxito al usuario
-        mostrarRespuesta('✅ ¡Mensaje enviado! Un asesor te contactará pronto.', 'ok');
-
-        // Limpiamos los campos del formulario
+        // 3) Mostrar éxito + botón WhatsApp
+        const waMsg = encodeURIComponent(`Hola, soy ${nombre}. Acabo de enviar mi solicitud en el sitio de Vive Bien. Quedamos en contacto.`);
+        const div = document.getElementById('form-respuesta');
+        div.innerHTML = `
+          ✅ ¡Mensaje enviado! Un asesor te contactará pronto.
+          <br><br>
+          <a href="https://wa.me/524778116501?text=${waMsg}" target="_blank"
+             style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;padding:10px 20px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.9rem">
+            <i class="fab fa-whatsapp"></i> Confirmar por WhatsApp
+          </a>`;
+        div.className = 'ok';
+        div.style.display = 'block';
         e.target.reset();
 
       } catch (error) {
-        // Mostramos mensaje de error si algo salió mal
         mostrarRespuesta('❌ Hubo un error al enviar. Intenta de nuevo.', 'err');
-        console.error('Error al enviar formulario:', error);
-
       } finally {
-        // Volvemos a habilitar el botón sin importar el resultado
         btnEnviar.disabled = false;
         btnEnviar.innerHTML = '<i class="fa fa-paper-plane"></i> Enviar mensaje';
       }
@@ -2861,6 +2863,10 @@
         document.getElementById('inc-manto').checked = true;
         tieneFiltros = true;
       }
+      if (params.has('zona')) {
+        document.getElementById('filtro-zona').value = params.get('zona');
+        tieneFiltros = true;
+      }
 
       if (tieneFiltros) {
         // Esperamos un momento para que el DOM esté completamente listo (fotos, etc.)
@@ -2892,6 +2898,26 @@
       document.querySelector('header nav').classList.toggle('show');
     });
   </script>
+
+  <!-- Firebase CDN -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js';
+    import { getFirestore, addDoc, collection } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js';
+    const firebaseConfig = {
+      apiKey: "AIzaSyAX8OiWKAdAG5i6YIrYDbcfg6iYJBsf0ok",
+      authDomain: "vivebien-f4027.firebaseapp.com",
+      projectId: "vivebien-f4027",
+      storageBucket: "vivebien-f4027.firebasestorage.app",
+      messagingSenderId: "842723346477",
+      appId: "1:842723346477:web:d32ad4cf96d3333d7cd0a4"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    window._dbFirebase = db;
+    window._addDoc = addDoc;
+    window._collection = collection;
+  </script>
+
 </body>
 
 </html>
