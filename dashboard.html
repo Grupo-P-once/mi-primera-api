@@ -280,6 +280,117 @@
         .bg-terreno {
             background: #279546;
         }
+
+        /* ===== TABS & PROPIEDADES ===== */
+        .dashboard-tabs {
+            background: var(--blanco);
+            padding: 0 2rem;
+            display: flex;
+            gap: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--azul);
+        }
+
+        .tab-btn.active {
+            color: var(--rojo);
+            border-bottom-color: var(--rojo);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-card {
+            background: var(--blanco);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px var(--sombra);
+            margin-bottom: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--azul);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        .btn-submit {
+            background: var(--rojo);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .prop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .prop-card {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px var(--sombra);
+        }
+
+        .prop-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .prop-card-body {
+            padding: 1rem;
+        }
     </style>
 </head>
 
@@ -301,11 +412,19 @@
     <!-- DASHBOARD PRINCIPAL -->
     <div id="dashboard-content">
         <header>
-            <h1><i class="fa fa-chart-pie"></i> Panel de Estadísticas (Live)</h1>
+            <h1><i class="fa fa-chart-pie"></i> Panel de Administración - Vive Bien</h1>
             <a href="javascript:void(0)" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a>
         </header>
 
-        <div class="container">
+        <nav class="dashboard-tabs">
+            <button class="tab-btn active" onclick="cambiarTab('metricas')" id="btn-metricas"><i
+                    class="fa fa-chart-bar"></i> Métricas y Leads</button>
+            <button class="tab-btn" onclick="cambiarTab('propiedades')" id="btn-propiedades"><i class="fa fa-home"></i>
+                Mis Propiedades</button>
+        </nav>
+
+        <!-- TAB: MÉTRICAS -->
+        <div class="container tab-content active" id="tab-metricas">
             <!-- KPIs -->
             <div class="kpi-grid">
                 <div class="kpi-card">
@@ -406,6 +525,91 @@
                 </table>
             </div>
         </div>
+
+        <!-- TAB: PROPIEDADES -->
+        <div class="container tab-content" id="tab-propiedades">
+
+            <div class="form-card">
+                <h3><i class="fa fa-plus-circle" style="color:var(--azul);"></i> Subir Nueva Propiedad</h3>
+                <p style="color:#666; font-size:0.9rem; margin-bottom:1.5rem;">Llena la información para que aparezca en
+                    la web y en los correos automáticos.</p>
+                <form id="form-propiedad" onsubmit="guardarPropiedad(event)">
+                    <div class="form-grid">
+                        <div class="form-group form-full">
+                            <label>Título de la Tarjeta</label>
+                            <input type="text" id="prop-titulo" placeholder="Ej. Bodega en Renta – 1,244 m²" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Ubicación Corta</label>
+                            <input type="text" id="prop-ubicacion" placeholder="Ej. Blvd. San Juan Bosco, León"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>Zona (Rápido para buscar)</label>
+                            <input type="text" id="prop-zona" placeholder="Ej. San Juan Bosco" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Precio Texto (Para mostrar)</label>
+                            <input type="text" id="prop-precio" placeholder="Ej. $118,180 MXN + IVA/mes" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Precio Numérico (Para ordenar/filtrar)</label>
+                            <input type="number" id="prop-precio-num" placeholder="Ej. 118180" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Inmueble</label>
+                            <select id="prop-tipo" required>
+                                <option value="nave">Nave / Bodega</option>
+                                <option value="terreno">Terreno</option>
+                                <option value="casa">Casa</option>
+                                <option value="departamento">Departamento</option>
+                                <option value="comercial">Local Comercial</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Operación</label>
+                            <select id="prop-operacion" required>
+                                <option value="venta">En Venta</option>
+                                <option value="renta">En Renta</option>
+                            </select>
+                        </div>
+                        <div class="form-group form-full">
+                            <label>Características (Separadas por comas)</label>
+                            <input type="text" id="prop-features"
+                                placeholder="Ej. 1244 m2, Seguridad 24/7, A pie de calle" required>
+                        </div>
+                        <div class="form-group form-full">
+                            <label>URL de la Imagen Principal (Para web y celular)</label>
+                            <input type="url" id="prop-imagen" placeholder="https://mi-imagen.com/foto.jpg" required>
+                        </div>
+                        <div class="form-group form-full">
+                            <label>Descripción Larga (Para modal de detalles)</label>
+                            <textarea id="prop-desc" rows="3" placeholder="Excelente oportunidad..."
+                                required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select id="prop-estado" required>
+                                <option value="disponible">Disponible (Público)</option>
+                                <option value="pausada">Pausada (Oculta temporamente)</option>
+                                <option value="vendida">Vendida (Mostrar etiqueta Vendido)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit"><i class="fa fa-save"></i> Guardar Propiedad en
+                        Firebase</button>
+                    <span id="prop-msg" style="margin-left: 1rem; font-weight: bold; color: green;"></span>
+                </form>
+            </div>
+
+            <div class="table-card" style="margin-top:2rem">
+                <h3><i class="fa fa-database" style="color:var(--rojo);"></i> Inventario en Tiempo Real</h3>
+                <div class="prop-grid" id="grid-mis-propiedades">
+                    <p style="color:#999;">Cargando inventario de Firebase...</p>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <script>
@@ -439,6 +643,19 @@
         function cerrarSesion() {
             sessionStorage.removeItem('isAdminLoggedIn');
             location.reload();
+        }
+
+        // ===== TABS LOGICA =====
+        function cambiarTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            document.getElementById('btn-' + tabId).classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            if (tabId === 'propiedades' && window.cargarPropiedadesFirebase) {
+                window.cargarPropiedadesFirebase();
+            }
         }
 
         // Chequeo inicial
@@ -588,6 +805,114 @@
 
             } catch (err) {
                 console.error('Error cargando Firebase:', err);
+            }
+        };
+
+        // ===== FUNCIONES PARA PROPIEDADES (ESTADO Y EVENTOS GLOBALES) =====
+        import { addDoc, deleteDoc, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js';
+
+        // Hacer la coleccion global para los demas eventos
+        window._colPropiedades = collection(db, 'propiedades');
+
+        window.guardarPropiedad = async function (e) {
+            e.preventDefault();
+            const rawFeatures = document.getElementById('prop-features').value;
+            const featuresArray = rawFeatures.split(',').map(f => f.trim()).filter(f => f !== '');
+
+            const propData = {
+                titulo: document.getElementById('prop-titulo').value.trim(),
+                ubicacion: document.getElementById('prop-ubicacion').value.trim(),
+                zona: document.getElementById('prop-zona').value.trim().toLowerCase(),
+                precio: document.getElementById('prop-precio').value.trim(),
+                precioNum: Number(document.getElementById('prop-precio-num').value),
+                tipo: document.getElementById('prop-tipo').value,
+                operacion: document.getElementById('prop-operacion').value,
+                features: featuresArray,
+                imagen: document.getElementById('prop-imagen').value.trim(),
+                descripcion: document.getElementById('prop-desc').value.trim(),
+                estado: document.getElementById('prop-estado').value,
+                creadaEn: new Date().toISOString()
+            };
+
+            const btn = e.target.querySelector('button');
+            const ogText = btn.innerHTML;
+            btn.innerHTML = 'Guardando...';
+            btn.disabled = true;
+
+            try {
+                await addDoc(window._colPropiedades, propData);
+                document.getElementById('prop-msg').textContent = '¡Propiedad guardada exitosamente!';
+                e.target.reset();
+                setTimeout(() => document.getElementById('prop-msg').textContent = '', 3000);
+                window.cargarPropiedadesFirebase(); // Recargar grid
+            } catch (err) {
+                console.error('Error al guardar propiedad:', err);
+                document.getElementById('prop-msg').textContent = 'Error al guardar.';
+                document.getElementById('prop-msg').style.color = 'red';
+            } finally {
+                btn.innerHTML = ogText;
+                btn.disabled = false;
+            }
+        };
+
+        window.cargarPropiedadesFirebase = async function () {
+            try {
+                const grid = document.getElementById('grid-mis-propiedades');
+                grid.innerHTML = '<p style="color:#999;">Cargando inventario de Firebase...</p>';
+
+                // Ordenar por las mas recientes
+                const q = query(window._colPropiedades, orderBy('creadaEn', 'desc'));
+                const snap = await getDocs(q);
+
+                if (snap.empty) {
+                    grid.innerHTML = '<p style="color:#999; grid-column:1/-1;">No tienes propiedades registradas aún.</p>';
+                    return;
+                }
+
+                let html = '';
+                snap.forEach(documento => {
+                    const d = documento.data();
+                    const badgeColor = d.estado === 'disponible' ? '#279546' : (d.estado === 'pausada' ? '#D97706' : '#8B1A1A');
+
+                    html += `
+                    <div class="prop-card">
+                        <div style="position:relative;">
+                            <img src="${d.imagen}" alt="foto" onerror="this.src='https://via.placeholder.com/300x200?text=Sin+Foto'">
+                            <span style="position:absolute; top:10px; left:10px; background:${badgeColor}; color:#fff; padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:bold; text-transform:uppercase;">
+                                ${d.estado}
+                            </span>
+                        </div>
+                        <div class="prop-card-body">
+                            <h4 style="color:var(--azul); margin-bottom:5px;">${d.titulo}</h4>
+                            <p style="font-size:0.8rem; color:#666; margin-bottom:10px;"><i class="fa fa-map-marker-alt"></i> ${d.ubicacion}</p>
+                            <p style="font-weight:bold; color:var(--texto); font-size:1.1rem; margin-bottom:15px;">${d.precio}</p>
+                            
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:0.75rem; color:#999; text-transform:uppercase;">${d.tipo} | ${d.operacion}</span>
+                                <button onclick="borrarPropiedad('${documento.id}')" style="background:var(--rojo); color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;" title="Eliminar Propiedad">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+
+                grid.innerHTML = html;
+            } catch (err) {
+                console.error(err);
+                document.getElementById('grid-mis-propiedades').innerHTML = '<p style="color:red;">Error al cargar propiedades.</p>';
+            }
+        };
+
+        window.borrarPropiedad = async function (id) {
+            if (confirm('¿Seguro que deseas eliminar esta propiedad definitivamente? Esto no se puede deshacer.')) {
+                try {
+                    await deleteDoc(doc(db, 'propiedades', id));
+                    window.cargarPropiedadesFirebase();
+                } catch (err) {
+                    console.error('Error al eliminar', err);
+                    alert('Error al eliminar la propiedad.');
+                }
             }
         };
     </script>
