@@ -311,14 +311,14 @@
                     <div class="kpi-trend trend-up"><i class="fa fa-arrow-up"></i> 8% vs mes pasado</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-title">Leads Generados</div>
-                    <div class="kpi-value">28</div>
-                    <div class="kpi-trend trend-down"><i class="fa fa-arrow-down"></i> 2% vs semana pasada</div>
+                    <div class="kpi-title">Leads en Firebase</div>
+                    <div class="kpi-value" id="kpi-leads">--</div>
+                    <div class="kpi-trend trend-up"><i class="fa fa-database"></i> Datos reales</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-title">Propiedades Vistas</div>
-                    <div class="kpi-value">412</div>
-                    <div class="kpi-trend trend-up"><i class="fa fa-arrow-up"></i> 15% vs ayer</div>
+                    <div class="kpi-title">Contactos en Firebase</div>
+                    <div class="kpi-value" id="kpi-contactos">--</div>
+                    <div class="kpi-trend trend-up"><i class="fa fa-envelope"></i> Datos reales</div>
                 </div>
             </div>
 
@@ -338,42 +338,43 @@
                 </div>
             </div>
 
-            <!-- Tabla de Ultimos Contactos -->
-            <div class="table-card">
-                <h3>Últimos Leads (Entradas de Formulario)</h3>
+            <!-- Tabla de Contactos desde Firebase -->
+            <div class="table-card" style="margin-bottom:2rem">
+                <h3><i class="fa fa-envelope" style="color:var(--rojo)"></i> Contactos del Formulario</h3>
                 <table>
                     <thead>
                         <tr>
                             <th>Fecha</th>
                             <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
                             <th>Interés</th>
-                            <th>Contacto</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tabla-contactos">
                         <tr>
-                            <td>Hoy, 10:45 AM</td>
-                            <td>Carlos Gómez</td>
-                            <td><span class="badge bg-nave">Nave Industrial</span></td>
-                            <td>477 125 4589</td>
+                            <td colspan="5" style="text-align:center;color:#999">Cargando...</td>
                         </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tabla de Leads desde Firebase -->
+            <div class="table-card">
+                <h3><i class="fa fa-user-plus" style="color:var(--azul)"></i> Leads (Registro antes de contactar)</h3>
+                <table>
+                    <thead>
                         <tr>
-                            <td>Ayer, 16:30 PM</td>
-                            <td>María López</td>
-                            <td><span class="badge bg-casa">Casa</span></td>
-                            <td>maria@ejemplo.com</td>
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Propiedad</th>
                         </tr>
+                    </thead>
+                    <tbody id="tabla-leads">
                         <tr>
-                            <td>Ayer, 09:15 AM</td>
-                            <td>Grupo Logístico Mx</td>
-                            <td><span class="badge bg-terreno">Terreno</span></td>
-                            <td>477 896 3214</td>
-                        </tr>
-                        <tr>
-                            <td>19 Feb, 11:20 AM</td>
-                            <td>Roberto R.</td>
-                            <td><span class="badge bg-nave">Nave Industrial</span></td>
-                            <td>roberto.r@empresa.com</td>
+                            <td colspan="5" style="text-align:center;color:#999">Cargando...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -405,7 +406,8 @@
         function mostrarDashboard() {
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('dashboard-content').style.display = 'block';
-            inicializarGraficas(); // Dibujamos gráficas hasta que entramos
+            inicializarGraficas();
+            cargarDatosFirebase(); // Cargar datos reales
         }
 
         function cerrarSesion() {
@@ -476,6 +478,77 @@
             });
         }
     </script>
+
+    <!-- Firebase CDN -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js';
+        import { getFirestore, collection, getDocs, orderBy, query } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAX8OiWKAdAG5i6YIrYDbcfg6iYJBsf0ok",
+            authDomain: "vivebien-f4027.firebaseapp.com",
+            projectId: "vivebien-f4027",
+            storageBucket: "vivebien-f4027.firebasestorage.app",
+            messagingSenderId: "842723346477",
+            appId: "1:842723346477:web:d32ad4cf96d3333d7cd0a4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Exponer función globalmente para que la llame mostrarDashboard()
+        window.cargarDatosFirebase = async function () {
+            try {
+                // --- Cargar Contactos ---
+                const contactosSnap = await getDocs(collection(db, 'contactos'));
+                const tbContactos = document.getElementById('tabla-contactos');
+                document.getElementById('kpi-contactos').textContent = contactosSnap.size;
+
+                if (contactosSnap.empty) {
+                    tbContactos.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999">Sin contactos aún</td></tr>';
+                } else {
+                    const rows = [];
+                    contactosSnap.forEach(doc => {
+                        const d = doc.data();
+                        rows.push(`<tr>
+                            <td>${d.fecha || '-'}</td>
+                            <td>${d.nombre || '-'}</td>
+                            <td>${d.telefono || '-'}</td>
+                            <td>${d.email || '-'}</td>
+                            <td>${d.interes || '-'}</td>
+                        </tr>`);
+                    });
+                    tbContactos.innerHTML = rows.join('');
+                }
+
+                // --- Cargar Leads ---
+                const leadsSnap = await getDocs(collection(db, 'leads'));
+                const tbLeads = document.getElementById('tabla-leads');
+                document.getElementById('kpi-leads').textContent = leadsSnap.size;
+
+                if (leadsSnap.empty) {
+                    tbLeads.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999">Sin leads aún</td></tr>';
+                } else {
+                    const rows = [];
+                    leadsSnap.forEach(doc => {
+                        const d = doc.data();
+                        rows.push(`<tr>
+                            <td>${d.fecha || '-'}</td>
+                            <td>${d.nombre || '-'}</td>
+                            <td>${d.telefono || '-'}</td>
+                            <td>${d.email || '-'}</td>
+                            <td>${d.propiedad || '-'}</td>
+                        </tr>`);
+                    });
+                    tbLeads.innerHTML = rows.join('');
+                }
+
+            } catch (err) {
+                console.error('Error cargando Firebase:', err);
+            }
+        };
+    </script>
+
 </body>
 
 </html>
