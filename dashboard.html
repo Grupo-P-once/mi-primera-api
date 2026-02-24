@@ -461,6 +461,20 @@
                 </form>
             </div>
 
+            <!-- GOOGLE SIGN IN BUTTON -->
+            <div style="text-align: center; margin: 15px 0;">
+                <span
+                    style="background: #fff; padding: 0 10px; color: #999; font-size: 0.9rem; position: relative; z-index: 1;">O
+                    continuar con</span>
+                <hr style="margin-top: -10px; border: none; border-top: 1px solid #eee; margin-bottom: 15px;">
+            </div>
+            <button id="btn-google" type="button"
+                style="width: 100%; background: #fff; color: #444; border: 1px solid #ddd; padding: 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: bold; font-size: 1rem; transition: background 0.2s;">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"
+                    style="width: 20px;"> Google
+            </button>
+            <div id="google-error" class="login-error"></div>
+
             <a href="index.html" style="display:block; margin-top:20px; color:var(--azul); font-size:0.85rem;">&larr;
                 Volver al inicio</a>
         </div>
@@ -783,7 +797,7 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js';
         import { getFirestore, collection, getDocs, orderBy, query, doc, setDoc, getDoc, addDoc, deleteDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js';
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAX8OiWKAdAG5i6YIrYDbcfg6iYJBsf0ok",
@@ -879,9 +893,39 @@
             } catch (err) {
                 if (err.code === 'auth/email-already-in-use') errDiv.innerHTML = 'El correo ya está en uso.';
                 else if (err.code === 'auth/weak-password') errDiv.innerHTML = 'La contraseña es muy débil (mín. 6 letras)';
-                else errDiv.innerHTML = 'Error al registrarse. Intenta de nuevo.';
+                else errDiv.innerHTML = 'Error de registro: ' + (err.code || err.message);
+
+                console.error("Fallo de registro: ", err);
                 errDiv.style.display = 'block';
                 btn.innerHTML = 'Registrarme'; btn.disabled = false;
+            }
+        });
+
+        // GOOGLE SIGN IN
+        const provider = new GoogleAuthProvider();
+        document.getElementById('btn-google').addEventListener('click', async () => {
+            const errDiv = document.getElementById('google-error');
+            errDiv.style.display = 'none';
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+
+                // Comprobar si existe o crear con rol cliente
+                const userRef = doc(db, 'usuarios', user.uid);
+                const userDoc = await getDoc(userRef);
+
+                if (!userDoc.exists()) {
+                    await setDoc(userRef, {
+                        nombre: user.displayName || 'Usuario Google',
+                        email: user.email,
+                        rol: 'cliente',
+                        creadoEn: new Date().toISOString()
+                    });
+                }
+            } catch (err) {
+                console.error("Error con Google Sign In", err);
+                errDiv.innerHTML = "Error conectando con Google: " + (err.code || err.message);
+                errDiv.style.display = 'block';
             }
         });
 
