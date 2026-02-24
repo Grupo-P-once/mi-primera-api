@@ -72,15 +72,45 @@
             max-width: 400px;
         }
 
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #888;
+            transition: 0.3s;
+        }
+
+        .auth-tab.active {
+            color: var(--rojo);
+            border-bottom: 2px solid var(--rojo);
+            margin-bottom: -2px;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
         .login-box h2 {
             color: var(--azul);
             margin-bottom: 1rem;
+            font-size: 1.5rem;
         }
 
         .login-box input {
             width: 100%;
             padding: 12px;
-            margin: 15px 0;
+            margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 6px;
             font-size: 1rem;
@@ -89,6 +119,7 @@
         .login-box button {
             width: 100%;
             padding: 12px;
+            margin-top: 10px;
             background: var(--rojo);
             color: white;
             border: none;
@@ -103,11 +134,11 @@
             background: var(--rojo-claro);
         }
 
-        #login-error {
+        .login-error {
             color: var(--rojo);
             font-size: 0.85rem;
-            display: none;
             margin-top: 10px;
+            display: none;
         }
 
         /* ===== DASHBOARD LAYOUT ===== */
@@ -396,14 +427,39 @@
 
 <body>
 
-    <!-- PANTALLA DE LOGIN -->
+    <!-- PANTALLA DE LOGIN / REGISTRO -->
     <div id="login-overlay">
         <div class="login-box">
-            <h2><i class="fa fa-lock"></i> Acceso Privado</h2>
-            <p style="font-size: 0.9rem; color: #666;">Ingresa la contraseña para ver las métricas (admin123)</p>
-            <input type="password" id="password" placeholder="Contraseña..." onkeypress="checkEnter(event)" />
-            <button onclick="intentarLogin()">Ingresar</button>
-            <div id="login-error">Contraseña incorrecta. Intenta de nuevo.</div>
+            <h2><i class="fa fa-user-circle"></i> Mi Cuenta</h2>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">Gestión de Propiedades y Favoritos</p>
+
+            <div class="auth-tabs">
+                <div class="auth-tab active" onclick="switchAuthTab('login')" id="tab-btn-login">Ingresar</div>
+                <div class="auth-tab" onclick="switchAuthTab('register')" id="tab-btn-register">Crear Cuenta</div>
+            </div>
+
+            <!-- FORM INICIAR SESION -->
+            <div id="form-login" class="auth-form active">
+                <form id="firebase-login-form">
+                    <input type="email" id="login-email" placeholder="Correo electrónico" required />
+                    <input type="password" id="login-password" placeholder="Contraseña" required />
+                    <button type="submit">Iniciar Sesión</button>
+                    <div id="login-error" class="login-error"></div>
+                </form>
+            </div>
+
+            <!-- FORM CREAR CUENTA -->
+            <div id="form-register" class="auth-form">
+                <form id="firebase-register-form">
+                    <input type="text" id="reg-name" placeholder="Nombre completo" required />
+                    <input type="email" id="reg-email" placeholder="Correo electrónico" required />
+                    <input type="password" id="reg-password" placeholder="Contraseña (mín. 6 caracteres)" minlength="6"
+                        required />
+                    <button type="submit">Registrarme</button>
+                    <div id="reg-error" class="login-error"></div>
+                </form>
+            </div>
+
             <a href="index.html" style="display:block; margin-top:20px; color:var(--azul); font-size:0.85rem;">&larr;
                 Volver al inicio</a>
         </div>
@@ -613,36 +669,53 @@
     </div>
 
     <script>
-        // ===== LOGIN LOGICA =====
-        const PASSWORD_CORRECTA = "admin123";
+        // ===== AUTH TABS LOGICA =====
+        function switchAuthTab(tab) {
+            document.getElementById('tab-btn-login').classList.remove('active');
+            document.getElementById('tab-btn-register').classList.remove('active');
+            document.getElementById('form-login').classList.remove('active');
+            document.getElementById('form-register').classList.remove('active');
 
-        function intentarLogin() {
-            const pass = document.getElementById('password').value;
-            const errorMsg = document.getElementById('login-error');
-
-            if (pass === PASSWORD_CORRECTA) {
-                // Cifrado/Login muy básico para propósitos de UI
-                sessionStorage.setItem('isAdminLoggedIn', 'true');
-                mostrarDashboard();
+            if (tab === 'login') {
+                document.getElementById('tab-btn-login').classList.add('active');
+                document.getElementById('form-login').classList.add('active');
             } else {
-                errorMsg.style.display = 'block';
+                document.getElementById('tab-btn-register').classList.add('active');
+                document.getElementById('form-register').classList.add('active');
             }
         }
 
-        function checkEnter(e) {
-            if (e.key === 'Enter') intentarLogin();
-        }
+        // Variable global para checar rol temporal
+        window.userRole = null;
 
-        function mostrarDashboard() {
+        function mostrarDashboard(role) {
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('dashboard-content').style.display = 'block';
-            inicializarGraficas();
-            cargarDatosFirebase(); // Cargar datos reales
+            window.userRole = role;
+
+            if (role === 'admin') {
+                // Mostrar Admin Tab
+                inicializarGraficas();
+                cargarDatosFirebase(); // Cargar datos reales administrativos
+            } else {
+                // Eslogan modificado para clientes
+                document.querySelector('header h1').innerHTML = '<i class="fa fa-heart"></i> Mis Favoritos - Vive Bien';
+                // Ocultar pestaña Metricas
+                document.getElementById('btn-metricas').style.display = 'none';
+                document.getElementById('tab-metricas').classList.remove('active');
+
+                // Mostrar y activar pestaña propiedades
+                document.getElementById('btn-propiedades').innerHTML = '<i class="fa fa-heart"></i> Propiedades Favoritas';
+                cambiarTab('propiedades');
+            }
         }
 
         function cerrarSesion() {
-            sessionStorage.removeItem('isAdminLoggedIn');
-            location.reload();
+            if (window._firebaseSignOut) {
+                window._firebaseSignOut();
+            } else {
+                location.reload();
+            }
         }
 
         // ===== TABS LOGICA =====
@@ -713,7 +786,8 @@
     <!-- Firebase CDN -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js';
-        import { getFirestore, collection, getDocs, orderBy, query } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js';
+        import { getFirestore, collection, getDocs, orderBy, query, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAX8OiWKAdAG5i6YIrYDbcfg6iYJBsf0ok",
@@ -726,6 +800,90 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Exponer método signout globalmente
+        window._firebaseSignOut = () => signOut(auth).then(() => location.reload());
+
+        // Manejo de estado de Autenticación
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // Usuario logueado, consultar su rol en Firestore
+                try {
+                    const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
+                    if (userDoc.exists()) {
+                        const rol = userDoc.data().rol;
+                        mostrarDashboard(rol);
+                    } else {
+                        // Por defecto cliente si no existe su doc
+                        mostrarDashboard('cliente');
+                    }
+                } catch (error) {
+                    console.error('Error al obtener rol', error);
+                    mostrarDashboard('cliente');
+                }
+            } else {
+                // No logueado, mostrar overlay
+                document.getElementById('login-overlay').style.display = 'flex';
+                document.getElementById('dashboard-content').style.display = 'none';
+            }
+        });
+
+        // LOGIN
+        document.getElementById('firebase-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const errDiv = document.getElementById('login-error');
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-password').value;
+
+            btn.innerHTML = 'Ingresando...'; btn.disabled = true; errDiv.style.display = 'none';
+            try {
+                // Admin estricto override temporal (Legacy) si no tiene cuenta admin real en firebase auth
+                if (pass === "admin123" && email === "admin@vivebien.com") {
+                    mostrarDashboard('admin');
+                    return;
+                }
+
+                await signInWithEmailAndPassword(auth, email, pass);
+            } catch (err) {
+                errDiv.innerHTML = 'Correo o contraseña incorrectos.';
+                errDiv.style.display = 'block';
+                btn.innerHTML = 'Iniciar Sesión'; btn.disabled = false;
+            }
+        });
+
+        // REGISTER
+        document.getElementById('firebase-register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const errDiv = document.getElementById('reg-error');
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-password').value;
+
+            btn.innerHTML = 'Registrando...'; btn.disabled = true; errDiv.style.display = 'none';
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                const user = userCredential.user;
+
+                // Crear documento inicial en Firestore rol=cliente
+                await setDoc(doc(db, 'usuarios', user.uid), {
+                    nombre: name,
+                    email: email,
+                    rol: 'cliente',
+                    creadoEn: new Date().toISOString()
+                });
+
+                // Se disparará el onAuthStateChanged y lo dejará pasar
+            } catch (err) {
+                if (err.code === 'auth/email-already-in-use') errDiv.innerHTML = 'El correo ya está en uso.';
+                else if (err.code === 'auth/weak-password') errDiv.innerHTML = 'La contraseña es muy débil (mín. 6 letras)';
+                else errDiv.innerHTML = 'Error al registrarse. Intenta de nuevo.';
+                errDiv.style.display = 'block';
+                btn.innerHTML = 'Registrarme'; btn.disabled = false;
+            }
+        });
 
         // Exponer función globalmente para que la llame mostrarDashboard()
         window.cargarDatosFirebase = async function () {
@@ -858,49 +1016,115 @@
         window.cargarPropiedadesFirebase = async function () {
             try {
                 const grid = document.getElementById('grid-mis-propiedades');
-                grid.innerHTML = '<p style="color:#999;">Cargando inventario de Firebase...</p>';
+                const formGroup = document.querySelector('#tab-propiedades .form-card');
 
-                // Ordenar por las mas recientes
-                const q = query(window._colPropiedades, orderBy('creadaEn', 'desc'));
-                const snap = await getDocs(q);
-
-                if (snap.empty) {
-                    grid.innerHTML = '<p style="color:#999; grid-column:1/-1;">No tienes propiedades registradas aún.</p>';
-                    return;
+                // Ocultar formulario si es cliente
+                if (window.userRole !== 'admin') {
+                    if (formGroup) formGroup.style.display = 'none';
+                    document.querySelector('#tab-propiedades h3').innerHTML = '<i class="fa fa-heart" style="color:var(--rojo);"></i> Mis Propiedades Favoritas';
+                    grid.innerHTML = '<p style="color:#999;">Cargando tus propiedades favoritas...</p>';
+                } else {
+                    grid.innerHTML = '<p style="color:#999;">Cargando inventario de Firebase...</p>';
                 }
 
-                let html = '';
-                snap.forEach(documento => {
-                    const d = documento.data();
-                    const badgeColor = d.estado === 'disponible' ? '#279546' : (d.estado === 'pausada' ? '#D97706' : '#8B1A1A');
+                if (window.userRole !== 'admin') {
+                    // LÓGICA PARA CLIENTES (FAVORITOS)
+                    const user = auth.currentUser;
+                    if (!user) return;
 
-                    html += `
-                    <div class="prop-card">
-                        <div style="position:relative;">
-                            <img src="${d.imagen}" alt="foto" onerror="this.src='https://via.placeholder.com/300x200?text=Sin+Foto'">
-                            <span style="position:absolute; top:10px; left:10px; background:${badgeColor}; color:#fff; padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:bold; text-transform:uppercase;">
-                                ${d.estado}
-                            </span>
-                        </div>
-                        <div class="prop-card-body">
-                            <h4 style="color:var(--azul); margin-bottom:5px;">${d.titulo}</h4>
-                            <p style="font-size:0.8rem; color:#666; margin-bottom:10px;"><i class="fa fa-map-marker-alt"></i> ${d.ubicacion}</p>
-                            <p style="font-weight:bold; color:var(--texto); font-size:1.1rem; margin-bottom:15px;">${d.precio}</p>
-                            
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:0.75rem; color:#999; text-transform:uppercase;">${d.tipo} | ${d.operacion}</span>
-                                <button onclick="borrarPropiedad('${documento.id}')" style="background:var(--rojo); color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;" title="Eliminar Propiedad">
-                                    <i class="fa fa-trash"></i>
-                                </button>
+                    const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
+                    const favs = userDoc.exists() && userDoc.data().favoritos ? userDoc.data().favoritos : [];
+
+                    if (favs.length === 0) {
+                        grid.innerHTML = '<p style="color:#999; grid-column:1/-1;">Aún no tienes propiedades guardadas en favoritos.</p>';
+                        return;
+                    }
+
+                    let html = '';
+                    for (let favId of favs) {
+                        const propSnap = await getDoc(doc(db, 'propiedades', favId));
+                        if (propSnap.exists()) {
+                            const d = propSnap.data();
+                            html += `
+                            <div class="prop-card">
+                                <div style="position:relative;">
+                                    <img src="${d.imagen}" alt="foto" onerror="this.src='https://via.placeholder.com/300x200?text=Sin+Foto'">
+                                </div>
+                                <div class="prop-card-body">
+                                    <h4 style="color:var(--azul); margin-bottom:5px;">${d.titulo}</h4>
+                                    <p style="font-size:0.8rem; color:#666; margin-bottom:10px;"><i class="fa fa-map-marker-alt"></i> ${d.ubicacion}</p>
+                                    <p style="font-weight:bold; color:var(--texto); font-size:1.1rem; margin-bottom:15px;">${d.precio}</p>
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <span style="font-size:0.75rem; color:#999; text-transform:uppercase;">${d.tipo} | ${d.operacion}</span>
+                                        <button onclick="removerFavorito('${propSnap.id}')" style="background:#f4f6f8; color:var(--rojo); border:1px solid #ddd; padding:5px 10px; border-radius:4px; cursor:pointer;" title="Quitar de Favoritos">
+                                            <i class="fa fa-heart-broken"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>`;
+                        }
+                    }
+                    grid.innerHTML = html;
+
+                } else {
+                    // LÓGICA PARA ADMINISTRATIVOS (INVENTARIO GENERAL)
+                    const q = query(window._colPropiedades, orderBy('creadaEn', 'desc'));
+                    const snap = await getDocs(q);
+
+                    if (snap.empty) {
+                        grid.innerHTML = '<p style="color:#999; grid-column:1/-1;">No tienes propiedades registradas aún.</p>';
+                        return;
+                    }
+
+                    let html = '';
+                    snap.forEach(documento => {
+                        const d = documento.data();
+                        const badgeColor = d.estado === 'disponible' ? '#279546' : (d.estado === 'pausada' ? '#D97706' : '#8B1A1A');
+
+                        html += `
+                        <div class="prop-card">
+                            <div style="position:relative;">
+                                <img src="${d.imagen}" alt="foto" onerror="this.src='https://via.placeholder.com/300x200?text=Sin+Foto'">
+                                <span style="position:absolute; top:10px; left:10px; background:${badgeColor}; color:#fff; padding:3px 8px; border-radius:4px; font-size:0.75rem; font-weight:bold; text-transform:uppercase;">
+                                    ${d.estado}
+                                </span>
                             </div>
-                        </div>
-                    </div>`;
-                });
-
-                grid.innerHTML = html;
+                            <div class="prop-card-body">
+                                <h4 style="color:var(--azul); margin-bottom:5px;">${d.titulo}</h4>
+                                <p style="font-size:0.8rem; color:#666; margin-bottom:10px;"><i class="fa fa-map-marker-alt"></i> ${d.ubicacion}</p>
+                                <p style="font-weight:bold; color:var(--texto); font-size:1.1rem; margin-bottom:15px;">${d.precio}</p>
+                                
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="font-size:0.75rem; color:#999; text-transform:uppercase;">${d.tipo} | ${d.operacion}</span>
+                                    <button onclick="borrarPropiedad('${documento.id}')" style="background:var(--rojo); color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;" title="Eliminar Propiedad">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                    grid.innerHTML = html;
+                }
             } catch (err) {
                 console.error(err);
                 document.getElementById('grid-mis-propiedades').innerHTML = '<p style="color:red;">Error al cargar propiedades.</p>';
+            }
+        };
+
+        window.removerFavorito = async function (propId) {
+            const user = auth.currentUser;
+            if (!user) return;
+            try {
+                const userRef = doc(db, 'usuarios', user.uid);
+                const userDoc = await getDoc(userRef);
+                if (userDoc.exists()) {
+                    let favs = userDoc.data().favoritos || [];
+                    favs = favs.filter(id => id !== propId);
+                    await setDoc(userRef, { favoritos: favs }, { merge: true });
+                    window.cargarPropiedadesFirebase(); // Recargar grilla
+                }
+            } catch (e) {
+                console.error("Error al remover fav", e);
             }
         };
 

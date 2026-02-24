@@ -2723,11 +2723,19 @@
           const iconOp = d.operacion === 'renta' ? 'En Renta' : 'En Venta';
           const iconType = d.tipo === 'nave' ? 'fa-industry' : (d.tipo === 'terreno' ? 'fa-map' : 'fa-house');
 
+          // Verificacion si la propiedad le gusta al usuario activo
+          const isFav = window.userFavoritos && window.userFavoritos.includes(id);
+          const favIcon = isFav ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>';
+          const favColor = isFav ? 'var(--rojo)' : 'white';
+
           // Plantilla HTML de la tarjeta
           const html = `
             <div class="tarjeta ${isVendida ? 'pausada' : ''}" data-tipo="${d.tipo}" data-operacion="${d.operacion}" data-precio="${d.precioNum}" data-zona="${d.zona}"
               data-recamaras="0" data-mantenimiento="false">
               ${badgeHtml}
+              <button onclick="toggleFavorito('${id}')" class="btn-fav-${id}" style="position:absolute; top:10px; right:10px; z-index:10; background:rgba(0,0,0,0.4); border:none; padding:8px; border-radius:50%; color:${favColor}; cursor:pointer; font-size:1.1rem; transition:0.3s;" title="Favorito">
+                 ${favIcon}
+              </button>
               <div class="slider-wrap" id="slider-${id}">
                 <div class="slider-track" style="transform: translateX(0%);"><img src="${d.imagen}" alt="${d.titulo}" onerror="this.src='https://via.placeholder.com/400x300?text=Sin+Foto'" /></div>
                 <div class="slider-dots" id="dots-${id}"><span class="activo"></span></div>
@@ -2908,7 +2916,9 @@
   <!-- Firebase CDN -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js';
-    import { getFirestore, addDoc, collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js';
+    import { getFirestore, addDoc, collection, getDocs, query, where, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js';
+
     const firebaseConfig = {
       apiKey: "AIzaSyAX8OiWKAdAG5i6YIrYDbcfg6iYJBsf0ok",
       authDomain: "vivebien-f4027.firebaseapp.com",
@@ -2919,6 +2929,8 @@
     };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
+
     window._dbFirebase = db;
     window._addDoc = addDoc;
     window._collection = collection;
@@ -2926,7 +2938,71 @@
     window._query = query;
     window._where = where;
 
-    // Disparar carga de propiedades
+    // Autenticación global para saber quién está navegando y qué favs tiene
+    window.currentUser = null;
+    window.userFavoritos = [];
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        window.currentUser = user;
+        try {
+          const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
+          if (userDoc.exists()) {
+            window.userFavoritos = userDoc.data().favoritos || [];
+          }
+        } catch (e) { console.error("Error al obtener favs", e); }
+        // Actualizar UI del header
+        const btnLogin = document.querySelector('nav a[href="dashboard.html"]');
+        if (btnLogin) btnLogin.innerHTML = '<i class="fa fa-user-circle"></i> Mi Cuenta';
+      } else {
+        window.currentUser = null;
+        window.userFavoritos = [];
+      }
+
+      // Dibujar propiedades despues de checar Auth para poner los ♥ pintados o vacios
+      if (window.cargarPropiedadesPublicas) {
+        window.cargarPropiedadesPublicas();
+      }
+    });
+
+    window.toggleFavorito = async function (propId) {
+      if (!window.currentUser) {
+        // Solicitar login
+        alert("¡Inicia Sesión o regístrate en 'Ingresar' para guardar tus propiedades favoritas!");
+        window.location.href = "dashboard.html";
+        return;
+      }
+
+      const userRef = doc(db, 'usuarios', window.currentUser.uid);
+      const isFav = window.userFavoritos.includes(propId);
+
+      try {
+        if (isFav) {
+          window.userFavoritos = window.userFavoritos.filter(id => id !== propId);
+        } else {
+          window.userFavoritos.push(propId);
+        }
+        await setDoc(userRef, { favoritos: window.userFavoritos }, { merge: true });
+
+        // Pinta el boton del color que toca iterando los botones
+        const btns = document.querySelectorAll(`.btn-fav-${propId}`);
+        btns.forEach(b => {
+          if (isFav) {
+            b.innerHTML = '<i class="fa-regular fa-heart"></i>';
+            b.style.color = 'white';
+          } else {
+            b.innerHTML = '<i class="fa-solid fa-heart"></i>';
+            b.style.color = 'var(--rojo)';
+          }
+        });
+
+      } catch (e) {
+        console.error("Error togglando favorito", e);
+      }
+    };
+
+    // Esto se ignora, la carga la lanza el auth state arriba
+    // Si no está el timeout o entra sin auth, el primer state se dispara igual.
     if (window.cargarPropiedadesPublicas) {
       window.cargarPropiedadesPublicas();
     }
