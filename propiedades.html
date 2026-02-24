@@ -2454,10 +2454,11 @@
         let coincideZona = !zona || tTexto.includes(zona);
 
         if (coincideOp && coincideTipo && coincidePrecio && coincideManto && coincideZona) {
-          tarjeta.parentElement.style.display = 'block';
+          tarjeta.style.display = 'flex';
+          tarjeta.parentElement.style.display = 'grid'; // Asegurar que el grid sea visible si hay reultados
           encontrados++;
         } else {
-          tarjeta.parentElement.style.display = 'none';
+          tarjeta.style.display = 'none';
         }
       });
 
