@@ -432,7 +432,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 1rem;
+      margin-top: auto;
       padding-top: .85rem;
       border-top: 1px solid #EEE;
     }
@@ -444,8 +444,24 @@
       color: var(--rojo);
     }
 
+    .btn-ver {
+      background: transparent;
+      color: var(--azul);
+      border: 1px solid var(--azul);
+      border-radius: 6px;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
     .btn-ver:hover {
-      opacity: .85;
+      background: var(--azul);
+      color: var(--blanco);
+      transform: translateY(-2px);
     }
 
     /* ===== SLIDER / CONTENEDOR DE IMAGEN EN TARJETA ===== */
@@ -2241,21 +2257,28 @@
           La API es gratuita y no requiere llave.
        ------------------------------------------------------- */
     async function obtenerClima() {
-      // URL de Open-Meteo con los parámetros necesarios:
-      // - latitude/longitude: ubicación de León, Gto.
-      // - current: variables que queremos en tiempo real
-      // - timezone: para ajustar la hora local
-      const url =
-        'https://api.open-meteo.com/v1/forecast' +
-        '?latitude=21.1219&longitude=-101.6830' +
-        '&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m' +
-        '&timezone=America%2FMexico_City';
-
       try {
+        // 1. Obtener ubicación del usuario por IP usando un servicio gratuito
+        const resGeo = await fetch('https://get.geojs.io/v1/ip/geo.json');
+        const dataGeo = await resGeo.json();
+
+        // Valores por defecto (León) por si falla la IP
+        const lat = dataGeo.latitude || 21.1219;
+        const lon = dataGeo.longitude || -101.6830;
+        const ciudad = dataGeo.city || 'León';
+        const tz = dataGeo.timezone || 'America/Mexico_City';
+
+        // Actualizar nombre de la ciudad en la interfaz
+        const ciudadEl = document.querySelector('.clima-ciudad');
+        if (ciudadEl) {
+          ciudadEl.textContent = ciudad;
+        }
+
+        // 2. Consultar el clima para esas coordenadas a Open-Meteo
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=${encodeURIComponent(tz)}`;
+
         // Llamada a la API (fetch devuelve una promesa)
         const respuesta = await fetch(url);
-
-        // Convertimos la respuesta a JSON
         const datos = await respuesta.json();
 
         // Extraemos los valores actuales del objeto recibido
@@ -2650,8 +2673,16 @@
               id: 'sanjuan', tipo: 'nave', operacion: 'renta', precioNum: 118180, zona: 'San Juan Bosco', estado: 'disponible',
               titulo: 'Bodega en Renta – 1,244 m²', ubicacion: 'Blvd. San Juan Bosco, Cañada del Refugio, León',
               precio: '$118,180 MXN + IVA/mes', imagen: './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto1.jpg',
-              fotos: ['./3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto1.jpg', './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/fot2.jpg'],
-              descripcion: 'Bodega de 1,244 m² con oficinas y gran altura.', features: ['1,244 m²', 'Logística']
+              fotos: [
+                './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto1.jpg',
+                './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/fot2.jpg',
+                './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto3.jpg',
+                './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto4.jpg',
+                './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto5.jpg',
+                './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto6.jpg'
+              ],
+              descripcion: 'Bodega en Renta – 1,244 m² en Blvd. San Juan Bosco, León, Gto.<br><br>Excelente oportunidad para empresas que buscan una bodega amplia, funcional y con una ubicación privilegiada.<br>La propiedad cuenta con 1,244 m² totales, distribuidos estratégicamente para maximizar la operación:<br>Las oficinas están diseñadas para brindar comodidad y una excelente imagen empresarial, con espacios ideales para administración, áreas operativas, salas de juntas o estaciones de trabajo.<br><br><b>Características destacadas:</b><ul><li>Oficinas modernas distribuidas en 3 niveles</li><li>2 baños por cada nivel</li><li>Excelente altura para maniobras, almacenaje o montacargas</li><li>Iluminación natural que reduce costos de operación</li><li>Acceso amplio para camiones y vehículos de carga</li><li>Estructura sólida y adaptable a distintos giros</li></ul><b>Ubicación:</b><br>Situada directamente sobre Blvd. San Juan Bosco, una de las avenidas con mayor conectividad en León, con acceso rápido a Blvd. Hidalgo, Morelos, Las Torres y Libramiento. Zona estratégica para distribución, fábricas, logística y empresas en crecimiento.<br><br><b>Ideal para:</b><ul><li>Centros de distribución</li><li>Empresas de logística</li><li>Almacenes comerciales</li><li>Proyectos industriales</li><li>Talleres o manufactura ligera</li></ul>',
+              features: ['1,244 m²', 'Logística', 'Oficinas 3 Niveles', 'Área de Maniobras']
             },
             {
               id: 'pananA', tipo: 'terreno', operacion: 'venta', precioNum: 500000, zona: 'Silao', estado: 'pausada',
@@ -2675,14 +2706,11 @@
             // Verificacion si la propiedad le gusta al usuario activo
             const isFav = window.userFavoritos && window.userFavoritos.includes(d.id);
             const favIcon = isFav ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>';
-            const favColor = isFav ? 'var(--rojo)' : 'white';
+            const favColor = isFav ? 'var(--rojo)' : 'var(--azul)';
 
             const html = `
               <div class="tarjeta ${d.estado === 'pausada' ? 'pausada' : ''}" data-tipo="${d.tipo}" data-operacion="${d.operacion}" data-precio="${d.precioNum}" data-zona="${d.zona}" data-recamaras="0" data-mantenimiento="false">
                 ${badgeHtml}
-                <button onclick="window.toggleFavorito('${d.id}')" class="btn-fav-${d.id}" style="position:absolute; top:10px; right:10px; z-index:10; background:rgba(0,0,0,0.4); border:none; padding:8px; border-radius:50%; color:${favColor}; cursor:pointer; font-size:1.1rem; transition:0.3s;" title="Favorito">
-                   ${favIcon}
-                </button>
                 <div class="slider-wrap" id="slider-${d.id}">
                   <div class="slider-track" style="transform: translateX(0%);"><img src="${d.imagen}" alt="${d.titulo}"/></div>
                   <div class="slider-dots" id="dots-${d.id}"><span class="activo"></span></div>
@@ -2694,12 +2722,15 @@
                   <div class="tarjeta-feat"><span><i class="fa ${iconType}"></i> ${d.tipo.toUpperCase()}</span></div>
                   <div class="tarjeta-footer">
                     <span class="precio">${d.precio}</span>
-                    <button class="btn-ver" style="padding: 0.45rem 0.6rem;" onclick="abrirModal('${d.id}')">Ver más</button>
+                    <button class="btn-ver" style="padding: 0.45rem 0.8rem;" onclick="abrirModal('${d.id}')">Ver más &rarr;</button>
                   </div>
                   <div class="tarjeta-contacto" style="margin-top:8px;">
                     <a href="javascript:void(0)" onclick="pedirRegistro('tel:+524778116501', '${d.titulo}')" title="Llamar"><i class="fa fa-phone"></i></a>
                     <a href="javascript:void(0)" onclick="pedirRegistro('https://wa.me/524778116501?text=Hola', '${d.titulo}')" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                     <button onclick="pedirRegistro('#contacto', '${d.titulo}')" title="Contactar"><i class="fa fa-envelope"></i></button>
+                    <button onclick="window.toggleFavorito('${d.id}')" class="btn-fav-${d.id}" title="Favorito" style="margin-left: auto; color: ${favColor}; background: transparent; border: none; font-size: 1.3rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
+                       ${favIcon}
+                    </button>
                   </div>
                 </div>
               </div>`;
@@ -2737,16 +2768,13 @@
           // Verificacion si la propiedad le gusta al usuario activo
           const isFav = window.userFavoritos && window.userFavoritos.includes(id);
           const favIcon = isFav ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>';
-          const favColor = isFav ? 'var(--rojo)' : 'white';
+          const favColor = isFav ? 'var(--rojo)' : 'var(--azul)';
 
           // Plantilla HTML de la tarjeta
           const html = `
             <div class="tarjeta ${isVendida ? 'pausada' : ''}" data-tipo="${d.tipo}" data-operacion="${d.operacion}" data-precio="${d.precioNum}" data-zona="${d.zona}"
               data-recamaras="0" data-mantenimiento="false">
               ${badgeHtml}
-              <button onclick="window.toggleFavorito('${id}')" class="btn-fav-${id}" style="position:absolute; top:10px; right:10px; z-index:10; background:rgba(0,0,0,0.4); border:none; padding:8px; border-radius:50%; color:${favColor}; cursor:pointer; font-size:1.1rem; transition:0.3s;" title="Favorito">
-                 ${favIcon}
-              </button>
               <div class="slider-wrap" id="slider-${id}">
                 <div class="slider-track" style="transform: translateX(0%);"><img src="${d.imagen}" alt="${d.titulo}" onerror="this.src='https://via.placeholder.com/400x300?text=Sin+Foto'" /></div>
                 <div class="slider-dots" id="dots-${id}"><span class="activo"></span></div>
@@ -2762,12 +2790,15 @@
                 </div>
                 <div class="tarjeta-footer">
                   <span class="precio">${d.precio}</span>
-                  <button class="btn-ver" style="padding: 0.45rem 0.6rem;" onclick="abrirModal('${id}')">Ver más</button>
+                  <button class="btn-ver" style="padding: 0.45rem 0.8rem;" onclick="abrirModal('${id}')">Ver más &rarr;</button>
                 </div>
                 <div class="tarjeta-contacto" style="margin-top:8px;">
                   <a href="javascript:void(0)" onclick="pedirRegistro('tel:+524778116501', '${d.titulo}')" title="Llamar"><i class="fa fa-phone"></i></a>
                   <a href="javascript:void(0)" onclick="pedirRegistro('${urlWa}', '${d.titulo}')" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                   <button onclick="pedirRegistro('#contacto', '${d.titulo}')" title="Contactar"><i class="fa fa-envelope"></i></button>
+                  <button onclick="window.toggleFavorito('${id}')" class="btn-fav-${id}" title="Favorito" style="margin-left: auto; color: ${favColor}; background: transparent; border: none; font-size: 1.3rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
+                     ${favIcon}
+                  </button>
                 </div>
               </div>
             </div>
@@ -2802,7 +2833,7 @@
 
       document.getElementById('m-title').textContent = data.titulo;
       document.getElementById('m-location').textContent = data.ubicacion;
-      document.getElementById('m-description').textContent = data.descripcion;
+      document.getElementById('m-description').innerHTML = data.descripcion;
       document.getElementById('m-price').textContent = data.precio;
       document.getElementById('m-wa-link').href = `https://wa.me/524778116501?text=${encodeURIComponent('Hola, quiero informes sobre: ' + data.titulo)}`;
       document.getElementById('m-bg-blur').style.backgroundImage = `url('${data.fotos[0]}')`;
@@ -3000,7 +3031,7 @@
         btns.forEach(b => {
           if (isFav) {
             b.innerHTML = '<i class="fa-regular fa-heart"></i>';
-            b.style.color = 'white';
+            b.style.color = 'var(--azul)';
           } else {
             b.innerHTML = '<i class="fa-solid fa-heart"></i>';
             b.style.color = 'var(--rojo)';

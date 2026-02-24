@@ -2226,21 +2226,28 @@
           La API es gratuita y no requiere llave.
        ------------------------------------------------------- */
     async function obtenerClima() {
-      // URL de Open-Meteo con los parámetros necesarios:
-      // - latitude/longitude: ubicación de León, Gto.
-      // - current: variables que queremos en tiempo real
-      // - timezone: para ajustar la hora local
-      const url =
-        'https://api.open-meteo.com/v1/forecast' +
-        '?latitude=21.1219&longitude=-101.6830' +
-        '&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m' +
-        '&timezone=America%2FMexico_City';
-
       try {
+        // 1. Obtener ubicación del usuario por IP usando un servicio gratuito
+        const resGeo = await fetch('https://get.geojs.io/v1/ip/geo.json');
+        const dataGeo = await resGeo.json();
+
+        // Valores por defecto (León) por si falla la IP
+        const lat = dataGeo.latitude || 21.1219;
+        const lon = dataGeo.longitude || -101.6830;
+        const ciudad = dataGeo.city || 'León';
+        const tz = dataGeo.timezone || 'America/Mexico_City';
+
+        // Actualizar nombre de la ciudad en la interfaz
+        const ciudadEl = document.querySelector('.clima-ciudad');
+        if (ciudadEl) {
+          ciudadEl.textContent = ciudad;
+        }
+
+        // 2. Consultar el clima para esas coordenadas a Open-Meteo
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=${encodeURIComponent(tz)}`;
+
         // Llamada a la API (fetch devuelve una promesa)
         const respuesta = await fetch(url);
-
-        // Convertimos la respuesta a JSON
         const datos = await respuesta.json();
 
         // Extraemos los valores actuales del objeto recibido
