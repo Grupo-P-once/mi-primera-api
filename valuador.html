@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valuador de Propiedades | Vive Bien Grupo Inmobiliario</title>
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <!-- Iconos de FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================================
+       VARIABLES Y ESTILOS GLOBALES (Misma paleta que el sitio)
+       ========================================================= */
+        :root {
+            --azul: #182542;
+            --azul-claro: #2A3B5E;
+            --rojo: #8B1A1A;
+            --rojo-claro: #A52A2A;
+            --blanco: #FFFFFF;
+            --gris: #F5F7FA;
+            --texto: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--gris);
+            color: var(--texto);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* ===== HEADER CORTADO (Minimalista) ===== */
+        header {
+            background: var(--blanco);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 2rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-logo {
+            height: 45px;
+            width: auto;
+        }
+
+        .brand-texts {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .brand-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.1rem;
+            letter-spacing: -0.5px;
+            color: var(--rojo);
+            text-transform: uppercase;
+        }
+
+        .brand-slogan {
+            font-size: 0.65rem;
+            color: var(--azul);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--azul);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.activo {
+            color: var(--rojo);
+        }
+
+        .btn-contacto {
+            background: var(--rojo);
+            color: #fff !important;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-contacto:hover {
+            background: var(--rojo-claro);
+            box-shadow: 0 4px 10px rgba(139, 26, 26, 0.3);
+        }
+
+        /* Mobile Nav */
+        #menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--azul);
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--blanco);
+                padding: 1.5rem;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+                gap: 15px;
+                text-align: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            #menu-toggle {
+                display: block;
+            }
+        }
+
+
+        /* ===== HERO DEL VALUADOR ===== */
+        .hero- valuador {
+            background: linear-gradient(rgba(24, 37, 66, 0.9), rgba(24, 37, 66, 0.9)), url('./slider1.jpg') center/cover no-repeat;
+            padding: 3rem 1rem;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-valuador h1 {
+            font-weight: 900;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-valuador p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+
+        /* ===== CONTENEDOR PRINCIPAL ===== */
+        .main-container {
+            max-width: 800px;
+            margin: -2rem auto 3rem auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            position: relative;
+            z-index: 10;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            color: var(--azul);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1.5px solid #E0E0E0;
+            border-radius: 8px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1rem;
+            color: var(--texto);
+            transition: border-color 0.3s;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--azul);
+        }
+
+        .calculadora-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .calculadora-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn-calcular {
+            width: 100%;
+            background: var(--azul);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-calcular:hover {
+            background: var(--azul-claro);
+            transform: translateY(-2px);
+        }
+
+        /* ===== ZONA DE RESULTADOS ===== */
+        #resultado-box {
+            margin-top: 2.5rem;
+            padding: 2rem;
+            background: var(--gris);
+            border-radius: 12px;
+            border-left: 5px solid var(--rojo);
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .res-titulo {
+            font-size: 1.2rem;
+            color: var(--azul);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .res-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .res-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .res-item p {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .res-item h3 {
+            font-size: 1.6rem;
+            color: var(--rojo);
+        }
+
+        .res-aviso {
+            font-size: 0.85rem;
+            color: #555;
+            text-align: center;
+            background: #FFF3CD;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #FFEEBA;
+            margin-bottom: 1.5rem;
+        }
+
+        .res-botones {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn-catastro {
+            background: #f8f9fa;
+            color: var(--azul);
+            border: 2px solid var(--azul);
+            padding: 12px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 8px;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-catastro:hover {
+            background: var(--azul);
+            color: white;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 8px;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-whatsapp:hover {
+            background: #1EBE5D;
+        }
+
+
+        /* ===== FOOTER ===== */
+        footer {
+            background-color: var(--azul);
+            color: #fff;
+            text-align: center;
+            padding: 2rem;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: #fff;
+            opacity: 0.8;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <a href="index.html" class="logo-container">
+            <img src="./logo.png" alt="Logo Vive Bien" class="brand-logo" />
+            <div class="brand-texts">
+                <span class="brand-name">Vive Bien</span>
+                <span class="brand-slogan">Grupo Inmobiliario</span>
+            </div>
+        </a>
+        <nav class="nav-links" id="nav-menu">
+            <a href="index.html">Inicio</a>
+            <a href="propiedades.html">Propiedades</a>
+            <a href="valuador.html" class="activo">Valuador</a>
+            <a href="index.html#contacto" class="btn-contacto">Contactar</a>
+        </nav>
+        <i class="fa fa-bars" id="menu-toggle"></i>
+    </header>
+
+    <!-- HERO -->
+    <div class="hero-valuador"
+        style="background: linear-gradient(rgba(24, 37, 66, 0.9), rgba(24, 37, 66, 0.9)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;">
+        <h1>Valuador Vive Bien</h1>
+        <p>Conoce un estimado del valor comercial de tu propiedad en León, Guanajuato basado en tu zona.</p>
+    </div>
+
+    <!-- CALCULADORA -->
+    <main class="main-container">
+
+        <div class="calculadora-grid">
+            <div class="form-group">
+                <label for="val-zona">Zona de la ciudad</label>
+                <select id="val-zona">
+                    <option value="" disabled selected>Selecciona una zona...</option>
+                    <option value="popular">Zona Popular / Periferia</option>
+                    <option value="industrial">Zona Industrial / Bodegas</option>
+                    <option value="centro">Zona Centro / Tradicional</option>
+                    <option value="residencial">Zona Residencial / Norte / Campestre</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="val-m2">Metros Cuadrados (m²)</label>
+                <input type="number" id="val-m2" placeholder="Ej. 120" min="1">
+            </div>
+        </div>
+
+        <button class="btn-calcular" onclick="calcularValor()">
+            <i class="fa-solid fa-calculator"></i> Calcular Estimado
+        </button>
+
+        <!-- RESULTADOS -->
+        <div id="resultado-box">
+            <h2 class="res-titulo">Estimación de Valor de Mercado</h2>
+
+            <div class="res-grid">
+                <div class="res-item">
+                    <p>Valor Mínimo Estimado</p>
+                    <h3 id="res-min">--</h3>
+                </div>
+                <div class="res-item">
+                    <p>Valor Máximo Estimado</p>
+                    <h3 id="res-max">--</h3>
+                </div>
+            </div>
+
+            <div class="res-aviso">
+                <i class="fa-solid fa-circle-info" style="color:#d39e00; margin-right:5px;"></i>
+                <strong>Aviso Importante:</strong> Estos valores son rangos <b>referenciales y no oficiales</b> basados
+                en estimaciones comerciales de mercado (2x a 4x el valor catastral base). Factores como acabados,
+                conservación y ubicación exacta en la calle pueden alterar este valor drásticamente. Para un Avalúo
+                Oficial certificado en León, se requiere una visita presencial.
+            </div>
+
+            <div class="res-botones">
+                <a href="https://leon.gob.mx/appportal/consultacartografica/" target="_blank" class="btn-catastro">
+                    <i class="fa-solid fa-map-location-dot"></i> Consultar Plano Catastral Oficial (León)
+                </a>
+                <a href="https://wa.me/524778116501?text=Hola%20Vive%20Bien.%20Us%C3%A9%20el%20Valuador%20web%20y%20me%20gustar%C3%ADa%20solicitar%20un%20aval%C3%BAo%20oficial%20o%20vender%20mi%20propiedad."
+                    target="_blank" class="btn-whatsapp">
+                    <i class="fa-brands fa-whatsapp"></i> Solicitar Avalúo Oficial con Vive Bien
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 Vive Bien Grupo Inmobiliario. León, Guanajuato.</p>
+        <p style="font-size:0.85rem; margin-top:5px; opacity:0.7;">Desarrollado para ayudarte a tomar la mejor decisión
+            patrimonial.</p>
+    </footer>
+
+    <script>
+        // Lógica del menú móvil
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            document.getElementById('nav-menu').classList.toggle('active');
+        });
+
+        // Lógica del valuador
+        function calcularValor() {
+            const zona = document.getElementById('val-zona').value;
+            const m2 = parseFloat(document.getElementById('val-m2').value);
+
+            if (!zona || !m2 || isNaN(m2) || m2 <= 0) {
+                alert("Por favor, selecciona una zona y escribe una cantidad válida de metros cuadrados.");
+                return;
+            }
+
+            // Definición de rangos por metro cuadrado
+            // Centro $3,500-6,000 | Residencial $5,000-12,000 | Popular $1,500-3,500 | Industrial $2,000-4,500
+            let precioMin = 0;
+            let precioMax = 0;
+
+            switch (zona) {
+                case 'popular':
+                    precioMin = 1500;
+                    precioMax = 3500;
+                    break;
+                case 'industrial':
+                    precioMin = 2000;
+                    precioMax = 4500;
+                    break;
+                case 'centro':
+                    precioMin = 3500;
+                    precioMax = 6000;
+                    break;
+                case 'residencial':
+                    precioMin = 5000;
+                    precioMax = 12000;
+                    break;
+            }
+
+            // Cálculo total
+            const totalMin = precioMin * m2;
+            const totalMax = precioMax * m2;
+
+            // Formateo de moneda (MXN)
+            const formateador = new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN',
+                maximumFractionDigits: 0
+            });
+
+            // Insertar en HTML
+            document.getElementById('res-min').textContent = formateador.format(totalMin);
+            document.getElementById('res-max').textContent = formateador.format(totalMax);
+
+            // Ocultar modal de cargando (si existiera) y mostrar caja
+            document.getElementById('resultado-box').style.display = 'block';
+
+            // Scroll suave hacia los resultados
+            document.getElementById('resultado-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // Redireccionar automáticamente al portal catastral oficial en una nueva pestaña (como pidió el user)
+            setTimeout(() => {
+                window.open('https://leon.gob.mx/appportal/consultacartografica/', '_blank');
+            }, 1500); // 1.5 segundos de 'suspenso' para que el usuario alcance a leer sus números
+        }
+    </script>
+</body>
+
+</html>
