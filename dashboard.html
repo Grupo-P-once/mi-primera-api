@@ -434,8 +434,9 @@
             <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">Gestión de Propiedades y Favoritos</p>
 
             <div class="auth-tabs">
-                <div class="auth-tab active" onclick="switchAuthTab('login')" id="tab-btn-login">Ingresar</div>
-                <div class="auth-tab" onclick="switchAuthTab('register')" id="tab-btn-register">Crear Cuenta</div>
+                <div class="auth-tab active" onclick="window.switchAuthTab('login')" id="tab-btn-login">Ingresar</div>
+                <div class="auth-tab" onclick="window.switchAuthTab('register')" id="tab-btn-register">Crear Cuenta
+                </div>
             </div>
 
             <!-- FORM INICIAR SESION -->
@@ -469,13 +470,15 @@
     <div id="dashboard-content">
         <header>
             <h1><i class="fa fa-chart-pie"></i> Panel de Administración - Vive Bien</h1>
-            <a href="javascript:void(0)" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar Sesión</a>
+            <a href="javascript:void(0)" onclick="window.cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar
+                Sesión</a>
         </header>
 
         <nav class="dashboard-tabs">
-            <button class="tab-btn active" onclick="cambiarTab('metricas')" id="btn-metricas"><i
+            <button class="tab-btn active" onclick="window.cambiarTab('metricas')" id="btn-metricas"><i
                     class="fa fa-chart-bar"></i> Métricas y Leads</button>
-            <button class="tab-btn" onclick="cambiarTab('propiedades')" id="btn-propiedades"><i class="fa fa-home"></i>
+            <button class="tab-btn" onclick="window.cambiarTab('propiedades')" id="btn-propiedades"><i
+                    class="fa fa-home"></i>
                 Mis Propiedades</button>
         </nav>
 
@@ -670,7 +673,7 @@
 
     <script>
         // ===== AUTH TABS LOGICA =====
-        function switchAuthTab(tab) {
+        window.switchAuthTab = function (tab) {
             document.getElementById('tab-btn-login').classList.remove('active');
             document.getElementById('tab-btn-register').classList.remove('active');
             document.getElementById('form-login').classList.remove('active');
@@ -683,12 +686,12 @@
                 document.getElementById('tab-btn-register').classList.add('active');
                 document.getElementById('form-register').classList.add('active');
             }
-        }
+        };
 
         // Variable global para checar rol temporal
         window.userRole = null;
 
-        function mostrarDashboard(role) {
+        window.mostrarDashboard = function (role) {
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('dashboard-content').style.display = 'block';
             window.userRole = role;
@@ -696,7 +699,7 @@
             if (role === 'admin') {
                 // Mostrar Admin Tab
                 inicializarGraficas();
-                cargarDatosFirebase(); // Cargar datos reales administrativos
+                if (window.cargarDatosFirebase) window.cargarDatosFirebase(); // Cargar datos reales administrativos
             } else {
                 // Eslogan modificado para clientes
                 document.querySelector('header h1').innerHTML = '<i class="fa fa-heart"></i> Mis Favoritos - Vive Bien';
@@ -706,20 +709,20 @@
 
                 // Mostrar y activar pestaña propiedades
                 document.getElementById('btn-propiedades').innerHTML = '<i class="fa fa-heart"></i> Propiedades Favoritas';
-                cambiarTab('propiedades');
+                window.cambiarTab('propiedades');
             }
-        }
+        };
 
-        function cerrarSesion() {
+        window.cerrarSesion = function () {
             if (window._firebaseSignOut) {
                 window._firebaseSignOut();
             } else {
                 location.reload();
             }
-        }
+        };
 
         // ===== TABS LOGICA =====
-        function cambiarTab(tabId) {
+        window.cambiarTab = function (tabId) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
@@ -728,13 +731,6 @@
 
             if (tabId === 'propiedades' && window.cargarPropiedadesFirebase) {
                 window.cargarPropiedadesFirebase();
-            }
-        }
-
-        // Chequeo inicial
-        window.onload = () => {
-            if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
-                mostrarDashboard();
             }
         };
 
