@@ -493,8 +493,15 @@
     <div id="dashboard-content">
         <header>
             <h1><i class="fa fa-chart-pie"></i> Panel de Administración - Vive Bien</h1>
-            <a href="javascript:void(0)" onclick="window.cerrarSesion()"><i class="fa fa-sign-out-alt"></i> Cerrar
-                Sesión</a>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <span id="auth-user-status"
+                    style="font-size: 0.9rem; color: #555; background: #f0f0f0; padding: 5px 15px; border-radius: 20px; font-weight: 600;">
+                    <i class="fa fa-user-circle"></i> Cargando sesión...
+                </span>
+                <a href="javascript:void(0)" onclick="window.cerrarSesion()"
+                    style="display: flex; align-items: center; gap: 5px;"><i class="fa fa-sign-out-alt"></i> Cerrar
+                    Sesión</a>
+            </div>
         </header>
 
         <nav class="dashboard-tabs">
@@ -714,10 +721,17 @@
         // Variable global para checar rol temporal
         window.userRole = null;
 
-        window.mostrarDashboard = function (role) {
+        window.mostrarDashboard = function (role, user = null) {
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('dashboard-content').style.display = 'block';
             window.userRole = role;
+
+            // Updated UI Auth Status
+            const authStatusEl = document.getElementById('auth-user-status');
+            if (authStatusEl && user) {
+                const displayName = user.displayName || user.email;
+                authStatusEl.innerHTML = `<i class="fa fa-user-circle"></i> Hola, ${displayName}`;
+            }
 
             if (role === 'admin') {
                 // Mostrar Admin Tab
@@ -833,14 +847,14 @@
                         const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
                         if (userDoc.exists()) {
                             const rol = userDoc.data().rol;
-                            window.mostrarDashboard(rol);
+                            window.mostrarDashboard(rol, user);
                         } else {
                             // Por defecto cliente si no existe su doc
-                            window.mostrarDashboard('cliente');
+                            window.mostrarDashboard('cliente', user);
                         }
                     } catch (error) {
                         console.error('Error al obtener rol', error);
-                        window.mostrarDashboard('cliente');
+                        window.mostrarDashboard('cliente', user);
                     }
                 } else {
                     // No logueado, mostrar overlay
@@ -861,7 +875,7 @@
                 try {
                     // Admin estricto override temporal (Legacy) si no tiene cuenta admin real en firebase auth
                     if (pass === "admin123" && email === "admin@vivebien.com") {
-                        window.mostrarDashboard('admin');
+                        window.mostrarDashboard('admin', { email: 'admin@vivebien.com', displayName: 'Administrador Demo' });
                         return;
                     }
 
