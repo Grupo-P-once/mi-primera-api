@@ -603,6 +603,16 @@
       border-radius: 14px;
       padding: 1.6rem 1.2rem;
       backdrop-filter: blur(6px);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .ventaja:hover {
+      transform: translateY(-8px) scale(1.02);
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
     }
 
     .ventaja i {
@@ -1694,7 +1704,7 @@
 
     .mision-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 2.5rem;
     }
 
@@ -1703,21 +1713,27 @@
       padding: 2.5rem 2rem;
       position: relative;
       overflow: hidden;
-      transition: transform .25s;
+      transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+      background: var(--blanco);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      border-top: 1px solid #efefef;
     }
 
     .mision-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-12px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     }
 
     .mision-card.card-mision {
-      background: var(--gris);
       border-left: 5px solid var(--rojo);
     }
 
     .mision-card.card-vision {
-      background: var(--gris);
       border-left: 5px solid var(--azul);
+    }
+
+    .mision-card.card-valores {
+      border-left: 5px solid #279546;
     }
 
     .mision-card .mv-icono {
@@ -1730,6 +1746,11 @@
       font-size: 1.3rem;
       color: #fff;
       margin-bottom: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .mision-card:hover .mv-icono {
+      transform: scale(1.1) rotate(5deg);
     }
 
     .card-mision .mv-icono {
@@ -1738,6 +1759,10 @@
 
     .card-vision .mv-icono {
       background: var(--azul);
+    }
+
+    .card-valores .mv-icono {
+      background: #279546;
     }
 
     .mision-card h3 {
@@ -1755,11 +1780,53 @@
       color: var(--azul);
     }
 
+    .card-valores h3 {
+      color: #279546;
+    }
+
     .mision-card p {
       font-family: 'Open Sans', sans-serif;
       font-size: .92rem;
       line-height: 1.75;
-      color: var(--texto);
+      color: #555;
+    }
+
+    .valores-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .valores-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.9rem;
+      color: #555;
+      font-weight: 600;
+      transition: transform 0.2s ease, color 0.2s ease;
+      cursor: default;
+    }
+
+    .valores-list li:hover {
+      transform: translateX(5px);
+      color: #279546;
+    }
+
+    .valores-list li i {
+      color: #279546;
+      background: rgba(39, 149, 70, 0.1);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
     }
 
     /* --- Responsive para las nuevas secciones --- */
@@ -1795,7 +1862,7 @@
 
       .mision-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 2rem;
       }
 
       .seccion-mision {
@@ -2114,6 +2181,18 @@
           <h3>Visión</h3>
           <p>Ser el grupo inmobiliario de referencia en León y el Bajío, reconocido por la confianza, la innovación y el
             compromiso con cada persona que busca su espacio ideal para vivir, trabajar o invertir.</p>
+        </div>
+
+        <div class="mision-card card-valores">
+          <div class="mv-icono"><i class="fa fa-gem"></i></div>
+          <h3>Valores</h3>
+          <ul class="valores-list">
+            <li><i class="fa fa-handshake"></i> Honestidad ante todo</li>
+            <li><i class="fa fa-users"></i> Empatía con cada cliente</li>
+            <li><i class="fa fa-check-double"></i> Compromiso con los resultados</li>
+            <li><i class="fa fa-user-tie"></i> Profesionalismo continuo</li>
+            <li><i class="fa fa-lightbulb"></i> Innovación con sentido humano</li>
+          </ul>
         </div>
       </div>
     </div>
