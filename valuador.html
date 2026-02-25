@@ -78,6 +78,32 @@
             object-fit: contain;
         }
 
+        /* Nombre de la empresa en dos colores */
+        .brand-name {
+            line-height: 1.15;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .brand-name span.vive {
+            color: var(--rojo);
+            font-weight: 800;
+            font-size: 1.4rem;
+        }
+
+        .brand-name span.bien {
+            color: var(--rojo);
+            font-weight: 800;
+            font-size: 1.4rem;
+        }
+
+        .brand-name span.grupo {
+            color: var(--azul);
+            font-weight: 600;
+            font-size: .78rem;
+            display: block;
+            letter-spacing: .06em;
+        }
+
         /* ===== NAV PILL (Reproduces the requested visual exactly) ===== */
         .nav-pill {
             background: rgba(255, 255, 255, 0.6);
@@ -453,11 +479,12 @@
 
     <!-- HEADER -->
     <header>
-        <a href="index.html" class="logo-container">
-            <img src="./logo_transparent.png" alt="Logo Vive Bien" class="brand-logo" />
-            <div class="brand-texts">
-                <span class="brand-name">Vive Bien</span>
-                <span class="brand-slogan">Grupo Inmobiliario</span>
+        <a href="index.html" class="brand" style="text-decoration: none;">
+            <img src="logo_transparent.png" alt="Logo Vive Bien">
+            <div class="brand-name">
+                <span class="vive">Vive</span>
+                <span class="bien">Bien</span>
+                <span class="grupo">Grupo Inmobiliario</span>
             </div>
         </a>
         <nav class="nav-links" id="nav-menu">
