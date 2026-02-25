@@ -510,6 +510,9 @@
             <button class="tab-btn" onclick="window.cambiarTab('propiedades')" id="btn-propiedades"><i
                     class="fa fa-home"></i>
                 Mis Propiedades</button>
+            <button class="tab-btn" onclick="window.cambiarTab('usuarios')" id="btn-usuarios"><i
+                    class="fa fa-users"></i>
+                Usuarios Registrados</button>
         </nav>
 
         <!-- TAB: MÉTRICAS -->
@@ -699,6 +702,30 @@
             </div>
 
         </div>
+
+        <!-- TAB: USUARIOS -->
+        <div class="container tab-content" id="tab-usuarios">
+            <div class="table-card">
+                <h3><i class="fa fa-users" style="color:var(--azul)"></i> Usuarios Registrados en Vive Bien</h3>
+                <p style="color:#666; font-size:0.9rem; margin-bottom:1.5rem;">Lista completa de perfiles registrados
+                    (Admins y Clientes).</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha Registro</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-usuarios-body">
+                        <tr>
+                            <td colspan="4" style="text-align:center;color:#999">Cargando usuarios de Firebase...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -740,9 +767,11 @@
             } else {
                 // Eslogan modificado para clientes
                 document.querySelector('header h1').innerHTML = '<i class="fa fa-heart"></i> Mis Favoritos - Vive Bien';
-                // Ocultar pestaña Metricas
+                // Ocultar pestaña Metricas y Usuarios
                 document.getElementById('btn-metricas').style.display = 'none';
+                document.getElementById('btn-usuarios').style.display = 'none';
                 document.getElementById('tab-metricas').classList.remove('active');
+                document.getElementById('tab-usuarios').classList.remove('active');
 
                 // Mostrar y activar pestaña propiedades
                 document.getElementById('btn-propiedades').innerHTML = '<i class="fa fa-heart"></i> Propiedades Favoritas';
@@ -768,6 +797,9 @@
 
             if (tabId === 'propiedades' && window.cargarPropiedadesFirebase) {
                 window.cargarPropiedadesFirebase();
+            }
+            if (tabId === 'usuarios' && window.cargarUsuariosFirebase) {
+                window.cargarUsuariosFirebase();
             }
         };
 
@@ -1038,6 +1070,42 @@
 
         // Hacer la coleccion global para los demas eventos
         window._colPropiedades = collection(db, 'propiedades');
+
+        window.cargarUsuariosFirebase = async function () {
+            if (window.userRole !== 'admin') return;
+            try {
+                const querySnapshot = await getDocs(collection(db, 'usuarios'));
+                const tablaBody = document.getElementById('tabla-usuarios-body');
+                if (!tablaBody) return;
+
+                if (querySnapshot.empty) {
+                    tablaBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#999">No hay usuarios registrados</td></tr>';
+                    return;
+                }
+
+                const rows = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const fecha = data.creadoEn ? new Date(data.creadoEn).toLocaleDateString() : '-';
+                    const rolBadge = data.rol === 'admin' ?
+                        '<span class="badge bg-nave">Admin</span>' :
+                        '<span class="badge bg-terreno">Cliente</span>';
+
+                    rows.push(`
+                        <tr>
+                            <td>${fecha}</td>
+                            <td>${data.nombre || data.displayName || 'Sin nombre'}</td>
+                            <td>${data.email || '-'}</td>
+                            <td>${rolBadge}</td>
+                        </tr>
+                    `);
+                });
+                tablaBody.innerHTML = rows.join('');
+            } catch (error) {
+                console.error("Error al cargar usuarios:", error);
+                document.getElementById('tabla-usuarios-body').innerHTML = '<tr><td colspan="4" style="text-align:center;color:red">Error al cargar datos.</td></tr>';
+            }
+        };
 
         window.guardarPropiedad = async function (e) {
             e.preventDefault();
