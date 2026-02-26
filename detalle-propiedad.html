@@ -359,6 +359,171 @@
                 display: none;
             }
         }
+
+        /* ===== MODAL REGISTRO (Consistencia con propiedades.html) ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            padding: 20px;
+        }
+
+        .registro-modal-content {
+            background: #fff;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            text-align: left;
+        }
+
+        .reg-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.8rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .reg-paso-1 h2 {
+            font-family: 'Montserrat';
+            color: var(--azul);
+            margin-bottom: 0.5rem;
+        }
+
+        .reg-sub {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .reg-field {
+            margin-bottom: 1.2rem;
+        }
+
+        .reg-field label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            color: var(--azul);
+        }
+
+        .reg-field input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        .btn-reg-continuar {
+            width: 100%;
+            background: var(--rojo);
+            color: #fff;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .reg-error {
+            color: #d93025;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .reg-paso-2 {
+            display: none;
+            text-align: center;
+        }
+
+        .reg-paso-2.activo {
+            display: block;
+        }
+
+        .reg-paso-1.oculto {
+            display: none;
+        }
+
+        .reg-gracias {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #25d366;
+            margin-bottom: 0.5rem;
+        }
+
+        .reg-contacto-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .btn-reg-wa {
+            background: #25d366;
+            color: #fff;
+            padding: 0.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .btn-reg-tel {
+            background: var(--azul);
+            color: #fff;
+            padding: 0.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .reg-disclaimer {
+            font-size: 11px;
+            color: #666;
+            margin-top: 15px;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .reg-disclaimer a {
+            text-decoration: underline;
+            color: var(--azul);
+        }
+
+        /* LEGAL MODAL */
+        .modal-legal-content {
+            background: #fff;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            border-radius: 20px;
+            overflow-y: auto;
+            padding: 3rem;
+            position: relative;
+        }
+
+        .legal-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 2rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -477,19 +642,10 @@
                                 rows="3">Estoy interesado en esta propiedad. Por favor, contáctenme.</textarea>
                         </div>
                         <button type="submit" class="btn-submit">QUIERO MÁS INFORMACIÓN</button>
-                        <a href="#" id="btn-wa" target="_blank" class="btn-wa-panel">
+                        <a href="javascript:void(0)" onclick="pedirRegistroProp()" class="btn-wa-panel">
                             <i class="fab fa-whatsapp"></i> HABLAR POR WHATSAPP
                         </a>
                     </form>
-
-                    <div class="agent-info">
-                        <div class="agent-img"><i class="fa fa-user-tie"></i></div>
-                        <div>
-                            <div style="font-weight: 800; color: var(--azul);">Asesor Inmobiliario</div>
-                            <div style="font-size: 0.8rem; color: #25d366;"><i class="fa fa-circle"></i> En línea ahora
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </aside>
         </main>
@@ -509,9 +665,60 @@
         </div>
     </footer>
 
+    <!-- MODAL DE REGISTRO -->
+    <div class="modal-overlay" id="modal-registro">
+        <div class="registro-modal-content">
+            <button class="reg-close" onclick="cerrarRegistro()">&times;</button>
+            <div id="reg-paso-1" class="reg-paso-1">
+                <h2><i class="fa fa-user-plus"></i> Regístrate</h2>
+                <p class="reg-sub">Déjanos tus datos para darte la mejor atención</p>
+                <div class="reg-field">
+                    <label>Nombre completo *</label>
+                    <input type="text" id="reg-nombre" placeholder="Ej. Juan Pérez">
+                </div>
+                <div class="reg-field">
+                    <label>Teléfono *</label>
+                    <input type="tel" id="reg-tel" placeholder="Ej. 477 123 4567">
+                </div>
+                <div class="reg-field">
+                    <label>Correo electrónico *</label>
+                    <input type="email" id="reg-email" placeholder="Ej. correo@ejemplo.com">
+                </div>
+                <p class="reg-error" id="reg-error"></p>
+                <button class="btn-reg-continuar" onclick="enviarRegistro()">Continuar <i
+                        class="fa fa-arrow-right"></i></button>
+                <p class="reg-disclaimer">
+                    Al enviar estás aceptando los <a href="javascript:void(0)" onclick="abrirLegal('terminos')">Términos
+                        y condiciones de Uso</a> y la <a href="javascript:void(0)"
+                        onclick="abrirLegal('privacidad')">Política de Privacidad</a>
+                </p>
+            </div>
+            <div id="reg-paso-2" class="reg-paso-2">
+                <p class="reg-gracias"><i class="fa fa-check-circle"></i> ¡Gracias!</p>
+                <p style="margin-bottom: 20px;">Elige cómo quieres contactarnos:</p>
+                <div class="reg-contacto-btns">
+                    <a href="tel:+524778116501" class="btn-reg-tel">Llamar</a>
+                    <a href="#" id="reg-wa-link" target="_blank" class="btn-reg-wa">WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LEGAL -->
+    <div class="modal-overlay" id="modal-legal">
+        <div class="modal-legal-content">
+            <button class="legal-close" onclick="cerrarLegal()">&times;</button>
+            <div id="legal-content">
+                <h2 id="legal-title" style="font-family:'Montserrat'; margin-bottom: 1.5rem;">Aviso</h2>
+                <div id="legal-body" style="font-size: 0.9rem; line-height: 1.6;"></div>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
         import { getFirestore, doc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
 
         // Inlined config to avoid CORS errors on file:// protocol
         const firebaseConfig = {
@@ -525,6 +732,11 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Variable global para persistir usuario logueado
+        let _currentUser = null;
+        onAuthStateChanged(auth, (user) => { _currentUser = user; });
 
         const params = new URLSearchParams(window.location.search);
         const id = params.get('id');
@@ -536,18 +748,25 @@
                 const snap = await getDoc(doc(db, 'propiedades', id));
                 let data = snap.exists() ? snap.data() : null;
 
-                // Fallback robusto para desarrollo/demo
+                // Fallback robusto para demo San Juan Bosco
                 if (!data && id === 'sanjuan') {
                     data = {
-                        titulo: 'Bodega en Renta Premium – 1,244 m²',
-                        ubicacion: 'Blvd. San Juan Bosco, Cañada del Refugio, León',
+                        titulo: 'Bodega en Renta Estratégica – 1,244 m²',
+                        ubicacion: 'Blvd. San Juan Bosco, León, Guanajuato',
                         precio: '$118,180 MXN + IVA/mes',
-                        operacion: 'renta', tipo: 'nave', zona: 'San Juan Bosco',
-                        m2: '1,244', recamaras: '0', banos: '6', estacionamiento: '10',
-                        mantenimiento: '$8,500',
-                        descripcion: 'Excelente bodega con oficinas en 3 niveles, ideal para logística o CEDIS. Ubicación privilegiada con acceso inmediato a libramiento.',
-                        features: ['Trifásica', 'Altura 9m', 'Oficinas Climatizadas', 'Patio de Maniobras', 'Vigilancia'],
-                        fotos: ['./3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto1.jpg', './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/fot2.jpg', './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto3.jpg']
+                        operacion: 'renta', tipo: 'industrial', zona: 'San Juan Bosco',
+                        m2: '1,244', recamaras: 'N/D', banos: '6', estacionamiento: '10',
+                        mantenimiento: 'Consultar',
+                        descripcion: 'Excelente bodega ubicada sobre una de las avenidas más importantes de León, con acceso inmediato a Libramiento. Cuenta con oficinas equipadas en 3 niveles, patio de maniobras y altura ideal de 9m.',
+                        features: ['Trifásica', 'Altura 9m', 'Oficinas 3 Niveles', 'Patio Maniobras', 'Cisterna', 'Vigilancia'],
+                        fotos: [
+                            './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto1.jpg',
+                            './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/fot2.jpg',
+                            './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto3.jpg',
+                            './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto4.jpg',
+                            './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto5.jpg',
+                            './3vive_bien_fotos/naves_industriales/nave_industrial_SanJuanBosco_Renta/foto6.jpg'
+                        ]
                     };
                 }
 
@@ -561,7 +780,7 @@
                 document.getElementById('prop-location').textContent = data.ubicacion;
                 document.getElementById('prop-desc').textContent = data.descripcion;
                 document.getElementById('prop-price').textContent = data.precio;
-                document.getElementById('prop-manto').textContent = `Mantenimiento: ${data.mantenimiento || 'N/A'}`;
+                document.getElementById('prop-manto').textContent = data.mantenimiento ? `Mantenimiento: ${data.mantenimiento}` : 'Mantenimiento: N/A';
 
                 document.getElementById('tag-op').textContent = `En ${data.operacion || 'Venta'}`;
                 document.getElementById('tag-tipo').textContent = (data.tipo || 'Casa').toUpperCase();
@@ -577,15 +796,13 @@
                     <div class="feature-item"><i class="fa fa-check-circle"></i> ${f}</div>
                 `).join('');
 
-                // WA
-                const msgWa = encodeURIComponent(`Hola, me interesa la propiedad: ${data.titulo} (${window.location.href})`);
-                document.getElementById('btn-wa').href = `https://wa.me/524778116501?text=${msgWa}`;
-
-                // Fotos
+                // Fotos de la galería
                 const fotos = data.fotos || [data.imagen];
                 const imgMain = document.getElementById('img-main');
-                imgMain.src = fotos[0];
-                imgMain.onload = () => imgMain.classList.add('loaded');
+                if (fotos[0]) {
+                    imgMain.src = fotos[0];
+                    imgMain.onload = () => imgMain.classList.add('loaded');
+                }
 
                 if (fotos[1]) {
                     const i1 = document.getElementById('img-side-1');
@@ -597,49 +814,146 @@
                     i2.src = fotos[2]; i2.onload = () => i2.classList.add('loaded');
                 } else { document.getElementById('img-side-2').parentElement.style.display = 'none'; }
 
-                // Switch a contenido real
+                // Cambio de estado loader -> contenido
                 document.getElementById('skeleton-loader').style.display = 'none';
                 document.getElementById('content-container').style.display = 'block';
 
             } catch (err) {
                 console.error(err);
-                alert("Error al cargar los datos.");
             }
         }
 
         init();
 
-        // Safety Timeout: If Firebase hangs, show something after 5s
+        // Safety Timeout
         setTimeout(() => {
             if (document.getElementById('skeleton-loader').style.display !== 'none') {
-                console.warn("Firebase timeout - switching to fallback view");
                 document.getElementById('skeleton-loader').style.display = 'none';
                 document.getElementById('content-container').style.display = 'block';
             }
         }, 5000);
 
-        // Lead capture
+        // --- SISTEMA DE REGISTRO CONDICIONAL ---
+        window.pedirRegistroProp = () => {
+            const localLeads = JSON.parse(localStorage.getItem('leadsViveBien') || '[]');
+            const titulo = document.getElementById('prop-title').textContent;
+
+            // Si ya está logueado o ya tiene un registro local previo, saltamos el modal
+            if (_currentUser || localLeads.length > 0) {
+                let nombreCliente = "Cliente";
+                if (_currentUser && _currentUser.displayName) nombreCliente = _currentUser.displayName;
+                else if (localLeads.length > 0) nombreCliente = localLeads[0].nombre;
+
+                const msg = encodeURIComponent(`Hola, soy ${nombreCliente} y me interesa la propiedad: ${titulo}`);
+                window.open(`https://wa.me/524778116501?text=${msg}`, '_blank');
+                return;
+            }
+
+            // Si es primera vez, mostramos modal
+            document.getElementById('modal-registro').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.cerrarRegistro = () => {
+            document.getElementById('modal-registro').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        };
+
+        window.enviarRegistro = async () => {
+            const nombre = document.getElementById('reg-nombre').value.trim();
+            const tel = document.getElementById('reg-tel').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+
+            if (!nombre || !tel || !email) {
+                const err = document.getElementById('reg-error');
+                err.textContent = "Por favor completa todos los campos.";
+                err.style.display = "block";
+                return;
+            }
+
+            const lead = {
+                nombre, tel, email,
+                propiedad: document.getElementById('prop-title').textContent,
+                fecha: new Date().toLocaleString('es-MX'),
+                timestamp: new Date().toISOString(),
+                fuente: 'detalle_propiedad_wa'
+            };
+
+            try {
+                // n8n escucha la colección 'leads'
+                await addDoc(collection(db, 'leads'), lead);
+
+                // Persistimos localmente para que no lo pida de nuevo
+                localStorage.setItem('leadsViveBien', JSON.stringify([lead]));
+
+                document.getElementById('reg-paso-1').classList.add('oculto');
+                document.getElementById('reg-paso-2').classList.add('activo');
+
+                const msg = encodeURIComponent(`Hola, soy ${nombre} y me interesa la propiedad: ${lead.propiedad}`);
+                document.getElementById('reg-wa-link').href = `https://wa.me/524778116501?text=${msg}`;
+
+            } catch (err) {
+                alert("Error técnico. Por favor intenta más tarde.");
+            }
+        };
+
+        // --- SISTEMA LEGAL ---
+        window.abrirLegal = (tipo) => {
+            const modal = document.getElementById('modal-legal');
+            const title = document.getElementById('legal-title');
+            const body = document.getElementById('legal-body');
+
+            if (tipo === 'terminos') {
+                title.textContent = "Términos y Condiciones";
+                body.innerHTML = `
+                    <p>Bienvenido a Vive Bien Grupo Inmobiliario. Al usar este sitio, aceptas:</p>
+                    <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+                        <li>El uso de la información es exclusivo para fines de servicios inmobiliarios.</li>
+                        <li>No nos hacemos responsables por fallas en servicios de terceros (WhatsApp/Firebase).</li>
+                        <li>Las imágenes de las propiedades son ilustrativas y pueden variar.</li>
+                    </ul>
+                `;
+            } else {
+                title.textContent = "Aviso de Privacidad";
+                body.innerHTML = `
+                    <p>Vive Bien (en adelante "Nosotros") protege tus datos personales:</p>
+                    <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+                        <li>Finalidad: Brindar información sobre bienes raíces.</li>
+                        <li>Datos recabados: Nombre, teléfono y correo electrónico.</li>
+                        <li>Tus datos son almacenados en Firebase (Google Cloud) con altos estándares de seguridad.</li>
+                    </ul>
+                `;
+            }
+            modal.style.display = 'flex';
+        };
+
+        window.cerrarLegal = () => {
+            document.getElementById('modal-legal').style.display = 'none';
+        };
+
+        // Formulario Lateral
         document.getElementById('form-lead').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button');
             btn.disabled = true;
-            btn.textContent = 'ENVIANDO...';
+            btn.textContent = 'Enviando...';
 
-            const payload = {
+            const lead = {
                 nombre: document.getElementById('lead-nombre').value,
                 tel: document.getElementById('lead-tel').value,
                 email: document.getElementById('lead-email').value,
                 msg: document.getElementById('lead-msg').value,
                 propiedad: document.getElementById('prop-title').textContent,
-                fecha: new Date().toISOString()
+                fecha: new Date().toLocaleString(),
+                fuente: 'detalle_prop_form'
             };
 
             try {
-                await addDoc(collection(db, 'leads'), payload);
-                alert("✅ ¡Enviado con éxito! Un asesor te contactará pronto.");
+                await addDoc(collection(db, 'leads'), lead);
+                alert("✅ ¡Reporte enviado con éxito! Un asesor te contactará pronto.");
                 e.target.reset();
             } catch (err) {
-                alert("Error al enviar. Por favor usa WhatsApp.");
+                alert("Ocurrió un error al enviar el mensaje.");
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'QUIERO MÁS INFORMACIÓN';
