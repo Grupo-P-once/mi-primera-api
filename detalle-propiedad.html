@@ -585,94 +585,96 @@
 
         /* Footer Aesthetics (Standardized) */
         footer {
-            background: var(--azul);
-            color: #fff;
-            padding: 5rem 0 2rem;
+            background: linear-gradient(135deg, #1a0808 0%, #0d1e2c 100%);
+            color: rgba(255, 255, 255, .85);
+            padding: 3.5rem 2rem 2rem;
             margin-top: 5rem;
         }
 
         .footer-grid {
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 1100px;
+            margin: 0 auto 2.5rem;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            padding: 0 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding: 0;
         }
 
         .footer-col h4 {
-            font-family: 'Montserrat';
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        .footer-col h4::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: -8px;
-            width: 40px;
-            height: 3px;
-            background: var(--rojo);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--blanco);
+            margin-bottom: 1rem;
         }
 
         .footer-col p,
         .footer-col a {
-            color: #ccc;
-            margin-bottom: 1rem;
+            font-size: .875rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, .7);
             display: block;
             text-decoration: none;
-            font-size: 0.95rem;
-            transition: color 0.3s;
         }
 
         .footer-col a:hover {
-            color: #fff;
+            color: var(--blanco);
         }
 
         .footer-col i {
-            color: var(--rojo);
-            margin-right: 10px;
-            width: 20px;
+            margin-right: .5rem;
+            color: var(--rojo-claro);
         }
 
+        /* Redes sociales */
         .redes {
             display: flex;
-            gap: 15px;
-            margin-top: 2rem;
+            gap: .8rem;
+            margin-top: .8rem;
         }
 
         .redes a {
-            width: 42px;
-            height: 42px;
-            background: rgba(255, 255, 255, 0.05);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .12);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s;
+            transition: background .2s;
+            font-size: .95rem;
+            text-decoration: none;
+            padding: 0;
             color: #fff;
+        }
+
+        .redes a i {
+            margin: 0;
+            padding: 0;
+            display: block;
+            line-height: 1;
         }
 
         .redes a:hover {
             background: var(--rojo);
-            transform: translateY(-5px);
         }
 
         .footer-bottom {
-            max-width: 1200px;
-            margin: 4rem auto 0;
-            padding: 2rem 20px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: left;
+            font-size: .8rem;
+            color: rgba(255, 255, 255, .45);
+            border-top: 1px solid rgba(255, 255, 255, .1);
+            padding-top: 1.5rem;
             display: flex;
             align-items: center;
             gap: 20px;
             flex-wrap: wrap;
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
         .footer-logo-wrap {
-            background-color: var(--blanco, #fff);
+            background-color: #000;
             width: 65px;
             height: 65px;
             border-radius: 50%;
@@ -681,7 +683,8 @@
             align-items: center;
             justify-content: center;
             padding: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
         }
 
         .footer-logo-wrap img {
@@ -692,9 +695,6 @@
 
         .footer-copy {
             flex: 1;
-            text-align: left;
-            font-size: 0.85rem;
-            color: #888;
         }
 
         @media (max-width: 900px) {
@@ -1035,46 +1035,59 @@
 
     <footer>
         <div class="footer-grid">
+            <!-- Columna 1: Descripción de la empresa -->
             <div class="footer-col">
                 <h4>Vive Bien Grupo Inmobiliario</h4>
-                <p>Tu aliado de confianza en el mercado inmobiliario de León, Guanajuato. Expertos en naves
-                    residenciales e industriales.</p>
+                <p>Tu aliado de confianza en el mercado inmobiliario de León, Guanajuato. Ayudándote a encontrar el
+                    espacio ideal desde 2009.</p>
+                <!-- Redes sociales -->
                 <div class="redes">
-                    <a href="https://www.facebook.com/profile.php?id=61582687400323" target="_blank"><i
-                            class="fab fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com/vive_bien_mx/" target="_blank"><i
+                    <a href="https://www.facebook.com/profile.php?id=61582687400323" target="_blank"
+                        aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/vive_bien_mx/" target="_blank" aria-label="Instagram"><i
                             class="fab fa-instagram"></i></a>
-                    <a href="https://wa.me/524778116501" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://wa.me/524778116501" target="_blank" aria-label="WhatsApp"><i
+                            class="fab fa-whatsapp"></i></a>
                 </div>
             </div>
+
+            <!-- Columna 2: Contacto -->
             <div class="footer-col">
-                <h4>Contacto Directo</h4>
+                <h4>Contacto</h4>
                 <p><i class="fa fa-phone"></i> 477 811 6501</p>
                 <p><i class="fa fa-envelope"></i> jpepeponce200903@gmail.com</p>
-                <p><i class="fa fa-clock"></i> Lun – Sáb: 9:00 – 19:00</p>
+                <p><i class="fa fa-clock"></i> Lun – Vie: 9:00 – 18:00</p>
+                <p><i class="fa fa-clock"></i> Sáb – Dom: 11:00 – 14:00</p>
             </div>
+
+            <!-- Columna 3: Dirección -->
             <div class="footer-col">
                 <h4>Ubicación</h4>
-                <p><i class="fa fa-location-dot"></i> Blvd. Campestre 2910 - LOCAL 10,<br>Cañada del Refugio, León, Gto.
-                </p>
+                <p><i class="fa fa-location-dot"></i> Blvd. Campestre 2910 - LOCAL 10,<br />
+                    Cañada del Refugio, C.P. 37358,<br />
+                    León, Guanajuato.</p>
             </div>
+
+            <!-- Columna 4: Enlaces rápidos -->
             <div class="footer-col">
                 <h4>Propiedades</h4>
-                <a href="propiedades.html#casas">Casas en Venta</a>
+                <a href="propiedades.html#casas">Casas en venta</a>
                 <a href="propiedades.html#naves">Naves Industriales</a>
                 <a href="propiedades.html#terrenos">Terrenos</a>
                 <a href="valuador.html">Valuador Online</a>
             </div>
         </div>
+
         <div class="footer-bottom">
             <a href="https://grupo-p-once.github.io/Grupo-P-ONCE/" target="_blank" style="text-decoration: none;">
-                <div class="footer-logo-wrap" style="transition: transform 0.3s ease; background-color: #000;"
-                    onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <div class="footer-logo-wrap" onmouseover="this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.transform='scale(1)'">
                     <img src="logo-p11-blanco.png" alt="Logo P11">
                 </div>
             </a>
             <div class="footer-copy">
                 &copy; 2026 Vive Bien Grupo Inmobiliario, una empresa de Grupo P-ONCE. Todos los derechos reservados.
+                &nbsp;|&nbsp; León, Guanajuato, México.
             </div>
         </div>
     </footer>
