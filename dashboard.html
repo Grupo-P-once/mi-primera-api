@@ -431,6 +431,26 @@
         .prop-card-body {
             padding: 1rem;
         }
+
+        /* Preview de imagen local */
+        #preview-container {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: #f9f9f9;
+            margin-top: 10px;
+        }
+
+        #preview-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
     </style>
 </head>
 
@@ -671,8 +691,27 @@
                                 placeholder="Ej. 1244 m2, Seguridad 24/7, A pie de calle" required>
                         </div>
                         <div class="form-group form-full">
-                            <label>URL de la Imagen Principal (Para web y celular)</label>
-                            <input type="url" id="prop-imagen" placeholder="https://mi-imagen.com/foto.jpg" required>
+                            <label><i class="fa fa-image"></i> Imagen de la Propiedad</label>
+                            <div
+                                style="display: flex; gap: 10px; align-items: center; background: #f0f0f0; padding: 10px; border-radius: 8px;">
+                                <div style="flex: 1;">
+                                    <span
+                                        style="font-size: 0.75rem; color: #666; display: block; margin-bottom: 5px;">Subir
+                                        desde el ordenador</span>
+                                    <input type="file" id="prop-file" accept="image/*"
+                                        onchange="window.previewImagen(this)" style="font-size: 0.8rem; width: 100%;">
+                                </div>
+                                <div style="width: 1px; height: 40px; background: #ccc;"></div>
+                                <div style="flex: 1;">
+                                    <span style="font-size: 0.75rem; color: #666; display: block; margin-bottom: 5px;">O
+                                        pegar URL externa</span>
+                                    <input type="url" id="prop-imagen" placeholder="https://..."
+                                        style="font-size: 0.8rem; padding: 5px; width: 100%;">
+                                </div>
+                            </div>
+                            <div id="preview-container">
+                                <img id="upload-preview" src="" alt="Vista previa">
+                            </div>
                         </div>
                         <div class="form-group form-full">
                             <label>Descripción Larga (Para modal de detalles)</label>
@@ -1116,10 +1155,49 @@
             }
         };
 
+        window.previewImagen = function (input) {
+            const previewContainer = document.getElementById('preview-container');
+            const previewImg = document.getElementById('upload-preview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result;
+                    previewContainer.style.display = 'flex';
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        };
+
         window.guardarPropiedad = async function (e) {
             e.preventDefault();
             const rawFeatures = document.getElementById('prop-features').value;
             const featuresArray = rawFeatures.split(',').map(f => f.trim()).filter(f => f !== '');
+
+            // Determinar imagen: si hay archivo local tiene prioridad, si no el URL
+            const fileInput = document.getElementById('prop-file');
+            let finalImage = document.getElementById('prop-imagen').value.trim();
+
+            if (fileInput.files && fileInput.files[0]) {
+                // Convertir a Base64 sincrónicamente (usamos Promesa para esperar)
+                const getBase64 = (file) => new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = error => reject(error);
+                });
+                try {
+                    finalImage = await getBase64(fileInput.files[0]);
+                } catch (err) {
+                    console.error("Error al procesar imagen local", err);
+                }
+            }
+
+            if (!finalImage) {
+                alert("Por favor selecciona una imagen o pega un URL.");
+                return;
+            }
 
             const propData = {
                 titulo: document.getElementById('prop-titulo').value.trim(),
@@ -1130,7 +1208,7 @@
                 tipo: document.getElementById('prop-tipo').value,
                 operacion: document.getElementById('prop-operacion').value,
                 features: featuresArray,
-                imagen: document.getElementById('prop-imagen').value.trim(),
+                imagen: finalImage,
                 descripcion: document.getElementById('prop-desc').value.trim(),
                 estado: document.getElementById('prop-estado').value,
                 creadaEn: new Date().toISOString()
@@ -1145,6 +1223,7 @@
                 await addDoc(window._colPropiedades, propData);
                 document.getElementById('prop-msg').textContent = '¡Propiedad guardada exitosamente!';
                 e.target.reset();
+                document.getElementById('preview-container').style.display = 'none';
                 setTimeout(() => document.getElementById('prop-msg').textContent = '', 3000);
                 window.cargarPropiedadesFirebase(); // Recargar grid
             } catch (err) {

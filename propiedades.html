@@ -984,7 +984,10 @@
       }
 
       #seccion-buscador-sticky {
-        position: static !important;
+        position: sticky !important;
+        top: 0;
+        /* En móvil, si el header no es sticky o cambia, lo dejamos arriba */
+        z-index: 1001;
       }
 
       nav a {
@@ -1067,8 +1070,9 @@
       background: var(--azul);
       padding: 0.5rem 1rem;
       position: sticky;
-      top: 72px;
-      z-index: 999;
+      top: 119px;
+      /* Casi pegadito al header de 120px para evitar gap visual */
+      z-index: 998;
     }
 
     /* ===== BOTÓN FLOTANTE WHATSAPP ===== */
