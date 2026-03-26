@@ -106,17 +106,29 @@ export default function Footer() {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         flexWrap: 'wrap', gap: '1rem',
       }}>
-        {/* Logo Grupo Ponce circular */}
-        <div style={{
-          width: '64px', height: '64px', borderRadius: '50%',
-          background: 'rgba(255,255,255,.1)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontFamily: 'Montserrat, sans-serif', fontWeight: 800,
-          fontSize: '.8rem', color: '#fff', letterSpacing: '.03em',
-          textAlign: 'center', lineHeight: 1.2, border: '1px solid rgba(255,255,255,.2)',
-        }}>
+        {/* Logo Grupo Ponce circular — clickable */}
+        <a
+          href="https://grupo-p-once.github.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            width: '64px', height: '64px', borderRadius: '50%',
+            background: 'rgba(255,255,255,.1)',
+            fontFamily: 'Montserrat, sans-serif', fontWeight: 800,
+            fontSize: '.8rem', color: '#fff', letterSpacing: '.03em',
+            textAlign: 'center', lineHeight: 1.2,
+            border: '1px solid rgba(255,255,255,.2)',
+            textDecoration: 'none',
+            cursor: 'pointer',
+            transition: 'border-color .2s',
+            flexShrink: 0,
+          }}
+          onMouseEnter={e => (e.currentTarget.style.borderColor = '#C0392B')}
+          onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,.2)')}
+        >
           GRUPO<br />P·ONCE
-        </div>
+        </a>
 
         <p style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.45)', textAlign: 'center', flex: 1 }}>
           © {new Date().getFullYear()} Vive Bien Grupo Inmobiliario. Todos los derechos reservados. | León, Guanajuato, México.

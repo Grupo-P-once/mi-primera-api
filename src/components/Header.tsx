@@ -68,6 +68,7 @@ export default function Header() {
         {[
           { href: '/', label: 'Inicio' },
           { href: '/propiedades', label: 'Propiedades' },
+          { href: '/nosotros', label: 'Nosotros' },
           { href: '/valuador', label: 'Valuador' },
           { href: '/#contacto', label: 'Contacto' },
         ].map(l => (
@@ -102,6 +103,7 @@ export default function Header() {
         }}>
           <Link href="/" onClick={() => setMenuOpen(false)} style={{ fontWeight: 600, color: '#222831' }}>Inicio</Link>
           <Link href="/propiedades" onClick={() => setMenuOpen(false)} style={{ fontWeight: 600, color: '#222831' }}>Propiedades</Link>
+          <Link href="/nosotros" onClick={() => setMenuOpen(false)} style={{ fontWeight: 600, color: '#222831' }}>Nosotros</Link>
           <Link href="/valuador" onClick={() => setMenuOpen(false)} style={{ fontWeight: 600, color: '#222831' }}>Valuador</Link>
           <Link href="/#contacto" onClick={() => setMenuOpen(false)} style={{ fontWeight: 600, color: '#222831' }}>Contacto</Link>
           <Link href="/dashboard" onClick={() => setMenuOpen(false)} style={{ fontWeight: 700, color: '#1B365D' }}>

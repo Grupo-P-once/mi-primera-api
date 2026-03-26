@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   onAuthStateChanged,
   User,
@@ -11,7 +12,7 @@ import {
   collection, getDocs, addDoc, updateDoc,
   deleteDoc, doc, serverTimestamp,
 } from 'firebase/firestore'
-import { auth, db } from '@/lib/firebase'
+import { auth, db, googleProvider } from '@/lib/firebase'
 import Link from 'next/link'
 
 interface Propiedad {
@@ -36,6 +37,8 @@ const EMPTY: Omit<Propiedad, 'id'> = {
   metros: undefined, recamaras: undefined, banos: undefined, whatsapp: '',
 }
 
+const ADMIN_EMAILS = ['jpepeponce200903@gmail.com']
+
 type Tab = 'metricas' | 'props' | 'leads'
 type AuthTab = 'login' | 'register'
 
@@ -49,6 +52,7 @@ export default function DashboardPage() {
   const [pass, setPass] = useState('')
   const [regName, setRegName] = useState('')
   const [loginErr, setLoginErr] = useState('')
+  const [googleLoading, setGoogleLoading] = useState(false)
 
   // Dashboard state
   const [tab, setTab] = useState<Tab>('metricas')
@@ -58,14 +62,18 @@ export default function DashboardPage() {
   const [editando, setEditando] = useState<Partial<Propiedad> | null>(null)
   const [saving, setSaving] = useState(false)
 
+  const isAdmin = user ? ADMIN_EMAILS.includes(user.email || '') : false
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, u => {
       setUser(u)
       setAuthLoading(false)
-      if (u) {
+      if (u && ADMIN_EMAILS.includes(u.email || '')) {
         cargarPropiedades()
         cargarLeads()
         cargarContactos()
+      } else if (u) {
+        cargarLeadsCliente(u.email || '')
       }
     })
     return unsub
@@ -91,6 +99,17 @@ export default function DashboardPage() {
     }
   }
 
+  async function loginConGoogle() {
+    setLoginErr('')
+    setGoogleLoading(true)
+    try {
+      await signInWithPopup(auth, googleProvider)
+    } catch (err: any) {
+      setLoginErr('No se pudo iniciar sesión con Google. Intenta de nuevo.')
+    }
+    setGoogleLoading(false)
+  }
+
   async function cargarPropiedades() {
     const snap = await getDocs(collection(db, 'propiedades'))
     setPropiedades(snap.docs.map(d => ({ id: d.id, ...d.data() } as Propiedad)))
@@ -100,6 +119,14 @@ export default function DashboardPage() {
     try {
       const snap = await getDocs(collection(db, 'leads'))
       setLeads(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+    } catch { }
+  }
+
+  async function cargarLeadsCliente(correo: string) {
+    try {
+      const snap = await getDocs(collection(db, 'leads'))
+      const todos = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      setLeads(todos.filter((l: any) => l.email === correo))
     } catch { }
   }
 
@@ -145,7 +172,7 @@ export default function DashboardPage() {
       <div style={{
         background: '#fff', padding: '3rem', borderRadius: '12px',
         boxShadow: '0 10px 40px rgba(0,0,0,.3)', textAlign: 'center',
-        width: '90%', maxWidth: '400px',
+        width: '90%', maxWidth: '420px',
       }}>
         <i className="fa fa-user-circle" style={{ fontSize: '2.5rem', color: '#8B1A1A', marginBottom: '1rem', display: 'block' }} />
         <h2 style={{ fontFamily: 'var(--font-montserrat)', color: '#1B365D', marginBottom: '.5rem' }}>Mi Cuenta</h2>
@@ -198,6 +225,40 @@ export default function DashboardPage() {
           </form>
         )}
 
+        {/* Divider */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '20px 0 4px' }}>
+          <div style={{ flex: 1, height: '1px', background: '#ddd' }} />
+          <span style={{ color: '#aaa', fontSize: '.82rem', whiteSpace: 'nowrap', fontWeight: 600 }}>— o continúa con —</span>
+          <div style={{ flex: 1, height: '1px', background: '#ddd' }} />
+        </div>
+
+        {/* Google button */}
+        <button
+          onClick={loginConGoogle}
+          disabled={googleLoading}
+          style={{
+            width: '100%', padding: '12px', marginTop: '12px',
+            background: '#fff', color: '#3c4043',
+            border: '1.5px solid #dadce0', borderRadius: '6px',
+            fontWeight: 700, cursor: googleLoading ? 'not-allowed' : 'pointer',
+            fontSize: '.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            gap: '10px', transition: 'box-shadow .2s',
+            opacity: googleLoading ? .7 : 1,
+            fontFamily: 'inherit',
+          }}
+          onMouseEnter={e => { if (!googleLoading) (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 2px 8px rgba(0,0,0,.15)' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = '' }}
+        >
+          {/* Google "G" SVG */}
+          <svg width="18" height="18" viewBox="0 0 48 48" style={{ flexShrink: 0 }}>
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+          </svg>
+          {googleLoading ? 'Conectando...' : 'Continuar con Google'}
+        </button>
+
         <Link href="/" style={{ display: 'block', marginTop: '20px', color: '#1B365D', fontSize: '.85rem' }}>
           ← Volver al inicio
         </Link>
@@ -205,7 +266,144 @@ export default function DashboardPage() {
     </div>
   )
 
-  /* ── Dashboard ── */
+  /* ── CLIENT PORTAL (non-admin) ── */
+  if (!isAdmin) return (
+    <div style={{ minHeight: '100vh', background: '#F4F6F8', fontFamily: 'var(--font-montserrat)' }}>
+      {/* Header */}
+      <header style={{
+        background: 'rgba(255,255,255,.6)', backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(0,0,0,.05)', borderRadius: '50px',
+        padding: '.8rem 2rem', boxShadow: '0 2px 8px rgba(0,0,0,.05)',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        maxWidth: '1000px', margin: '15px auto', position: 'sticky', top: '15px', zIndex: 1000,
+      }}>
+        <h1 style={{ color: '#1B365D', fontSize: '1.1rem', fontWeight: 700 }}>
+          <i className="fa fa-user-circle" style={{ marginRight: '.5rem', color: '#8B1A1A' }} />
+          Portal de Cliente
+        </h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <span style={{ fontSize: '.85rem', color: '#555', background: '#f0f0f0', padding: '5px 15px', borderRadius: '20px', fontWeight: 600 }}>
+            {user.displayName || user.email}
+          </span>
+          <Link href="/" style={{ color: '#8B1A1A', fontWeight: 600, fontSize: '.85rem' }}>← Ver sitio</Link>
+          <button onClick={() => signOut(auth)} style={{
+            background: 'transparent', color: '#8B1A1A', border: '1px solid #8B1A1A',
+            padding: '5px 15px', borderRadius: '20px', cursor: 'pointer', fontSize: '.85rem', fontWeight: 600,
+          }}>
+            <i className="fa fa-sign-out-alt" style={{ marginRight: '.4rem' }} />Cerrar Sesión
+          </button>
+        </div>
+      </header>
+
+      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem' }}>
+        {/* Welcome banner */}
+        <div style={{
+          background: 'linear-gradient(135deg, #1B365D 0%, #8B1A1A 100%)',
+          borderRadius: '20px', padding: '2.5rem', color: '#fff', marginBottom: '2rem',
+          display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap',
+        }}>
+          <div style={{
+            width: '70px', height: '70px', borderRadius: '50%',
+            background: 'rgba(255,255,255,.15)', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          }}>
+            {user.photoURL ? (
+              <img src={user.photoURL} alt="" style={{ width: '70px', height: '70px', borderRadius: '50%', objectFit: 'cover' }} />
+            ) : (
+              <i className="fa fa-user" style={{ fontSize: '2rem' }} />
+            )}
+          </div>
+          <div style={{ flex: 1 }}>
+            <h2 style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 800, fontSize: '1.5rem', margin: '0 0 .4rem' }}>
+              ¡Bienvenido{user.displayName ? `, ${user.displayName.split(' ')[0]}` : ''}!
+            </h2>
+            <p style={{ opacity: .85, margin: 0, fontSize: '.95rem' }}>
+              Este es tu portal personal. Aquí puedes ver tus consultas enviadas y explorar propiedades.
+            </p>
+          </div>
+          <Link href="/propiedades" style={{
+            background: 'rgba(255,255,255,.2)', color: '#fff', padding: '.8rem 1.8rem',
+            borderRadius: '10px', textDecoration: 'none', fontWeight: 700,
+            fontSize: '.9rem', backdropFilter: 'blur(4px)',
+            border: '1px solid rgba(255,255,255,.3)', whiteSpace: 'nowrap',
+          }}>
+            <i className="fa fa-search" style={{ marginRight: '.4rem' }} />Ver Propiedades
+          </Link>
+        </div>
+
+        {/* Mis consultas */}
+        <div style={{ background: '#fff', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 15px rgba(0,0,0,.06)', marginBottom: '2rem' }}>
+          <h3 style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 800, color: '#1B365D', marginBottom: '1.5rem', fontSize: '1.1rem' }}>
+            <i className="fa fa-envelope-open" style={{ color: '#8B1A1A', marginRight: '.5rem' }} />
+            Mis Consultas Enviadas
+          </h3>
+          {leads.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#aaa' }}>
+              <i className="fa fa-inbox" style={{ fontSize: '2.5rem', marginBottom: '1rem', display: 'block', opacity: .3 }} />
+              <p style={{ marginBottom: '1rem' }}>No has enviado consultas aún.</p>
+              <Link href="/propiedades" style={{
+                display: 'inline-block', background: '#8B1A1A', color: '#fff',
+                padding: '.7rem 1.5rem', borderRadius: '8px', textDecoration: 'none', fontWeight: 700,
+              }}>
+                Explorar propiedades
+              </Link>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {leads.map((l: any) => (
+                <div key={l.id} style={{
+                  background: '#F4F6F8', borderRadius: '12px', padding: '1.2rem 1.5rem',
+                  borderLeft: '4px solid #1B365D', display: 'flex', justifyContent: 'space-between',
+                  alignItems: 'center', flexWrap: 'wrap', gap: '.8rem',
+                }}>
+                  <div>
+                    <div style={{ fontWeight: 700, color: '#1B365D', marginBottom: '.25rem', fontSize: '.95rem' }}>
+                      {l.interes || 'Consulta general'}
+                    </div>
+                    <div style={{ fontSize: '.82rem', color: '#888' }}>
+                      <i className="fa fa-calendar" style={{ marginRight: '.3rem' }} />
+                      {l.createdAt?.toDate?.()?.toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' }) || 'Fecha no disponible'}
+                    </div>
+                    {l.mensaje && <div style={{ fontSize: '.85rem', color: '#555', marginTop: '.3rem', fontStyle: 'italic' }}>"{l.mensaje}"</div>}
+                  </div>
+                  <span style={{ background: '#e6f4ea', color: '#279546', padding: '4px 12px', borderRadius: '20px', fontSize: '.78rem', fontWeight: 700 }}>
+                    <i className="fa fa-check" style={{ marginRight: '.3rem' }} />Recibida
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Quick links */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: '1rem' }}>
+          {[
+            { href: '/propiedades?tipo=nave', icon: 'fa-industry', label: 'Naves Industriales', color: '#1B365D' },
+            { href: '/propiedades?tipo=casa', icon: 'fa-house', label: 'Casas en Venta', color: '#8B1A1A' },
+            { href: '/propiedades?tipo=terreno', icon: 'fa-map', label: 'Terrenos', color: '#279546' },
+            { href: '/propiedades?tipo=comercial', icon: 'fa-store', label: 'Locales Comerciales', color: '#D97706' },
+          ].map(q => (
+            <Link key={q.href} href={q.href} style={{
+              background: '#fff', borderRadius: '12px', padding: '1.5rem',
+              boxShadow: '0 2px 10px rgba(0,0,0,.06)', textDecoration: 'none',
+              display: 'flex', alignItems: 'center', gap: '1rem',
+              borderLeft: `4px solid ${q.color}`, transition: 'transform .2s',
+            }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.transform = 'translateY(-2px)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.transform = '' }}
+            >
+              <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: q.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <i className={`fa ${q.icon}`} style={{ color: '#fff', fontSize: '1rem' }} />
+              </div>
+              <span style={{ fontWeight: 700, color: '#1B365D', fontSize: '.9rem' }}>{q.label}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+
+  /* ── ADMIN DASHBOARD ── */
   return (
     <div style={{ minHeight: '100vh', background: '#F4F6F8', fontFamily: 'var(--font-montserrat)' }}>
       {/* Header */}
@@ -471,6 +669,7 @@ export default function DashboardPage() {
                     <option value="casa">Casa</option>
                     <option value="terreno">Terreno</option>
                     <option value="comercial">Local</option>
+                    <option value="departamento">Departamento</option>
                   </select>
                 </div>
                 <div>
