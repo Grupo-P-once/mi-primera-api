@@ -86,7 +86,7 @@ function PropiedadesContent() {
 
       {/* Hero */}
       <section style={{
-        background: 'linear-gradient(135deg,rgba(27,54,93,.85) 0%,rgba(139,26,26,.75) 100%), url("https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&auto=format&fit=crop") center/cover no-repeat',
+        background: 'linear-gradient(135deg,rgba(10,20,40,.72) 0%,rgba(139,26,26,.55) 100%), url("https://images.unsplash.com/photo-1622547748225-3fc4abd2cca0?w=1600&auto=format&fit=crop") center/cover no-repeat',
         padding: '4rem 2rem 3rem', textAlign: 'center', color: '#fff',
       }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>

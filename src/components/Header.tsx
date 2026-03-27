@@ -31,18 +31,9 @@ export default function Header() {
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       padding: '0 2rem', height: '120px',
     }}>
-      {/* Brand */}
-      <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '.8rem', textDecoration: 'none' }}>
-        <Image src="/logo_transparent.png" alt="Vive Bien" width={100} height={100} style={{ objectFit: 'contain' }} priority />
-        <div style={{ fontFamily: 'Montserrat, sans-serif', lineHeight: 1.15 }}>
-          <div>
-            <span style={{ color: '#8B1A1A', fontWeight: 800, fontSize: '1.8rem' }}>VIVE </span>
-            <span style={{ color: '#8B1A1A', fontWeight: 800, fontSize: '1.8rem' }}>BIEN</span>
-          </div>
-          <span style={{ color: '#1B365D', fontWeight: 600, fontSize: '.85rem', display: 'block', letterSpacing: '.04em' }}>
-            Grupo inmobiliario
-          </span>
-        </div>
+      {/* Brand — solo logo */}
+      <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+        <Image src="/logo_transparent.png" alt="Vive Bien" width={130} height={100} style={{ objectFit: 'contain' }} priority />
       </Link>
 
       {/* Desktop nav */}
