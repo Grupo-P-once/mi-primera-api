@@ -377,6 +377,134 @@ export default function NosotrosPage() {
         </div>
       </section>
 
+      {/* Grupo P-Once — Nuestra Familia Empresarial */}
+      <section style={{
+        background: 'linear-gradient(135deg, #1a1a14 0%, #2a2a1e 50%, #1a1a14 100%)',
+        padding: '6rem 2rem',
+        textAlign: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        {/* subtle texture overlay */}
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(192,156,40,.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+        <div style={{ maxWidth: '1100px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <span style={{
+            display: 'inline-block', letterSpacing: '.2em', fontSize: '.72rem',
+            fontWeight: 700, color: '#C09C28', textTransform: 'uppercase', marginBottom: '1.2rem',
+          }}>
+            Nuestra Familia Empresarial
+          </span>
+          <h2 style={{
+            fontFamily: 'Montserrat, sans-serif', fontWeight: 900,
+            fontSize: 'clamp(2.2rem,5vw,3.8rem)', color: 'rgba(255,255,255,.88)',
+            letterSpacing: '.06em', lineHeight: 1, margin: '0 0 1.5rem',
+          }}>
+            GRUPO P-ONCE
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,.5)', fontSize: '1rem', lineHeight: 1.8, maxWidth: '520px', margin: '0 auto 4rem' }}>
+            Vive Bien es parte de un grupo empresarial con presencia en múltiples sectores en León, Guanajuato.
+          </p>
+
+          {/* Company cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: '1.5rem' }}>
+            {[
+              {
+                nombre: 'VIVE BIEN', sector: 'Bienes Raíces',
+                icon: 'fa-home',
+                desc: 'Tu nuevo hogar comienza aquí. Compra, venta y renta de propiedades en León.',
+                active: true,
+                href: '/',
+              },
+              {
+                nombre: 'INTEN', sector: 'Telecomunicaciones',
+                icon: 'fa-wifi',
+                desc: 'Conectividad sin límites para hogar y empresa. Internet y telefonía móvil.',
+                active: false,
+                href: '#',
+              },
+              {
+                nombre: 'PROIN', sector: 'Desarrollo Inmobiliario',
+                icon: 'fa-building',
+                desc: 'Creamos espacios con visión de futuro. Desarrollo y gestión de proyectos inmobiliarios.',
+                active: false,
+                href: '#',
+              },
+              {
+                nombre: 'ANDAX', sector: 'Construcción',
+                icon: 'fa-tools',
+                desc: 'Seguridad y altura para tus obras. Renta de andamiaje y equipo de construcción.',
+                active: false,
+                href: '#',
+              },
+              {
+                nombre: 'VELARE', sector: 'Diseño de Interiores',
+                icon: 'fa-layer-group',
+                desc: 'Elegancia en cada detalle. Cortinas y persianas premium para hogar y empresa.',
+                active: false,
+                href: 'https://grupo-p-once.github.io/velare/',
+              },
+            ].map(c => (
+              <a key={c.nombre} href={c.href}
+                target={c.href.startsWith('http') ? '_blank' : undefined}
+                rel={c.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                style={{
+                  background: c.active
+                    ? 'linear-gradient(135deg,rgba(192,156,40,.25),rgba(192,156,40,.12))'
+                    : 'rgba(255,255,255,.04)',
+                  border: c.active ? '1px solid rgba(192,156,40,.55)' : '1px solid rgba(255,255,255,.08)',
+                  borderRadius: '16px', padding: '2rem 1.5rem',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.8rem',
+                  textDecoration: 'none',
+                  transition: 'transform .2s, border-color .2s',
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.transform = 'translateY(-5px)'; (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(192,156,40,.6)' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.transform = ''; (e.currentTarget as HTMLAnchorElement).style.borderColor = c.active ? 'rgba(192,156,40,.55)' : 'rgba(255,255,255,.08)' }}
+              >
+                <div style={{
+                  width: '56px', height: '56px', borderRadius: '50%',
+                  background: c.active ? 'rgba(192,156,40,.3)' : 'rgba(255,255,255,.08)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <i className={`fa ${c.icon}`} style={{ fontSize: '1.3rem', color: c.active ? '#C09C28' : 'rgba(255,255,255,.5)' }} />
+                </div>
+                <div style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 800, fontSize: '.95rem', letterSpacing: '.08em', color: c.active ? '#C09C28' : 'rgba(255,255,255,.75)' }}>
+                  {c.nombre}
+                </div>
+                <div style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: c.active ? 'rgba(192,156,40,.7)' : 'rgba(255,255,255,.3)' }}>
+                  {c.sector}
+                </div>
+                <p style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.4)', lineHeight: 1.6, textAlign: 'center', margin: 0 }}>
+                  {c.desc}
+                </p>
+              </a>
+            ))}
+          </div>
+
+          {/* GP11 logo badge */}
+          <div style={{ marginTop: '3.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+            <div style={{ height: '1px', width: '80px', background: 'rgba(192,156,40,.3)' }} />
+            <a href="https://grupo-p-once.github.io" target="_blank" rel="noopener noreferrer"
+              style={{
+                width: '72px', height: '72px', borderRadius: '50%',
+                background: 'rgba(192,156,40,.12)', border: '2px solid rgba(192,156,40,.4)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'Montserrat, sans-serif', fontWeight: 900,
+                fontSize: '.75rem', color: '#C09C28', letterSpacing: '.04em',
+                textAlign: 'center', lineHeight: 1.2, textDecoration: 'none',
+                transition: 'border-color .2s, background .2s',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#C09C28'; (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(192,156,40,.2)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(192,156,40,.4)'; (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(192,156,40,.12)' }}
+            >
+              GRUPO<br />P·ONCE
+            </a>
+            <div style={{ height: '1px', width: '80px', background: 'rgba(192,156,40,.3)' }} />
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section style={{
         background: 'linear-gradient(135deg, #1B365D 0%, #0d1e2c 50%, #8B1A1A 100%)',
