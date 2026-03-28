@@ -21,9 +21,6 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        <link rel="icon" type="image/png" href="/logo_transparent.png" />
-        <link rel="apple-touch-icon" href="/logo_transparent.png" />
-        <link rel="shortcut icon" type="image/png" href="/logo_transparent.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
