@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import Header from '@/components/Header'
@@ -38,7 +38,8 @@ const tipoColor: Record<string, string> = {
   comercial: '#D97706', departamento: '#5B4FCF',
 }
 
-export default function DetallePropiedad({ params }: { params: { id: string } }) {
+export default function DetallePropiedad({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const [prop, setProp] = useState<Propiedad | null>(null)
   const [loading, setLoading] = useState(true)
   const [mainFoto, setMainFoto] = useState(0)
@@ -50,7 +51,7 @@ export default function DetallePropiedad({ params }: { params: { id: string } })
   useEffect(() => {
     async function load() {
       try {
-        const snap = await getDoc(doc(db, 'propiedades', params.id))
+        const snap = await getDoc(doc(db, 'propiedades', id))
         if (snap.exists()) {
           setProp({ id: snap.id, ...snap.data() } as Propiedad)
         }
@@ -58,7 +59,7 @@ export default function DetallePropiedad({ params }: { params: { id: string } })
       setLoading(false)
     }
     load()
-  }, [params.id])
+  }, [id])
 
   async function enviarSolicitud(e: React.FormEvent) {
     e.preventDefault()
@@ -69,7 +70,7 @@ export default function DetallePropiedad({ params }: { params: { id: string } })
         ...form,
         interes: prop?.titulo,
         origen: 'Detalle propiedad',
-        propiedadId: params.id,
+        propiedadId: id,
         createdAt: serverTimestamp(),
       })
       setSent(true)
@@ -106,7 +107,7 @@ export default function DetallePropiedad({ params }: { params: { id: string } })
 
   const fotos = prop.fotos?.length ? prop.fotos : [PLACEHOLDER]
   const wa = prop.whatsapp || WA_NUMBER
-  const waMsg = encodeURIComponent(`Hola, me interesa la propiedad: ${prop.titulo} (ID: ${params.id})`)
+  const waMsg = encodeURIComponent(`Hola, me interesa la propiedad: ${prop.titulo} (ID: ${id})`)
   const color = tipoColor[prop.tipo] || '#1B365D'
 
   return (

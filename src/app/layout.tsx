@@ -5,10 +5,15 @@ export const metadata: Metadata = {
   title: 'Vive Bien – Grupo Inmobiliario | Naves Industriales y Casas en León, Gto',
   description: 'Vive Bien Grupo Inmobiliario: Especialistas en naves industriales, terrenos y casas en León, Guanajuato. Más de 15 años de experiencia y asesoría personalizada.',
   keywords: 'naves industriales León, bodegas León, terrenos León, inmobiliaria León Guanajuato, Vive Bien, Grupo P-ONCE',
+  icons: {
+    icon: '/logo_transparent.png',
+    apple: '/logo_transparent.png',
+  },
   openGraph: {
     title: 'Vive Bien – Grupo Inmobiliario',
     description: 'Especialistas en naves industriales, terrenos y casas en León, Guanajuato.',
     type: 'website',
+    images: ['/logo_transparent.png'],
   },
 }
 
