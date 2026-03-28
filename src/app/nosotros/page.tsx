@@ -435,16 +435,17 @@ export default function NosotrosPage() {
             <div style={{ height: '1px', width: '80px', background: 'rgba(192,156,40,.3)' }} />
             <a href="https://grupo-p-once.github.io" target="_blank" rel="noopener noreferrer"
               style={{
-                width: '88px', height: '88px', borderRadius: '50%',
-                background: 'rgba(255,255,255,.08)', border: '2px solid rgba(192,156,40,.4)',
+                width: '92px', height: '92px', borderRadius: '50%',
+                background: '#fff', border: '3px solid rgba(192,156,40,.6)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 textDecoration: 'none', overflow: 'hidden',
-                transition: 'border-color .2s, background .2s',
+                boxShadow: '0 0 20px rgba(192,156,40,.3)',
+                transition: 'border-color .2s, box-shadow .2s',
               }}
-              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#C09C28'; (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(192,156,40,.15)' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(192,156,40,.4)'; (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,.08)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#C09C28'; (e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 0 30px rgba(192,156,40,.6)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(192,156,40,.6)'; (e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 0 20px rgba(192,156,40,.3)' }}
             >
-              <img src="/logo-grupo-ponce.png" alt="Grupo P-Once" style={{ width: '72px', height: '72px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+              <img src="/logo-grupo-ponce.png" alt="Grupo P-Once" style={{ width: '78px', height: '78px', objectFit: 'contain' }} />
             </a>
             <div style={{ height: '1px', width: '80px', background: 'rgba(192,156,40,.3)' }} />
           </div>
