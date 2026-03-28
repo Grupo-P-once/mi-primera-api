@@ -2,10 +2,13 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
+import CountUp from 'react-countup'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import RegisterModal from '@/components/RegisterModal'
 import { saveContacto } from '@/lib/firestore'
+import { FadeUp, FadeLeft, FadeRight, ScalePop, HoverCard } from '@/components/Animate'
 
 const WA_NUMBER = '524778116501'
 
@@ -99,25 +102,31 @@ export default function HomePage() {
 
         <div style={{ position: 'relative', zIndex: 2, color: '#fff', padding: '2rem 1.5rem', maxWidth: '900px', width: '100%' }}>
           {/* Badge */}
-          <span style={{
-            display: 'inline-block', background: 'rgba(255,255,255,.12)', backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(255,255,255,.2)', borderRadius: '50px',
-            padding: '.4rem 1.2rem', fontFamily: 'var(--font-montserrat)',
-            fontSize: '.8rem', fontWeight: 600, letterSpacing: '2px',
-            textTransform: 'uppercase', marginBottom: '1.5rem',
-          }}>
+          <motion.span
+            initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            style={{
+              display: 'inline-block', background: 'rgba(255,255,255,.12)', backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255,255,255,.2)', borderRadius: '50px',
+              padding: '.4rem 1.2rem', fontFamily: 'var(--font-montserrat)',
+              fontSize: '.8rem', fontWeight: 600, letterSpacing: '2px',
+              textTransform: 'uppercase', marginBottom: '1.5rem',
+            }}>
             <i className="fa fa-star" style={{ color: '#C0392B', marginRight: '.4rem' }} />
             Tu aliado inmobiliario en León, Gto.
-          </span>
+          </motion.span>
 
-          <h1 style={{
-            fontFamily: 'var(--font-montserrat)', fontSize: 'clamp(2.2rem,5vw,4rem)',
-            fontWeight: 900, lineHeight: 1.1, marginBottom: '1.2rem',
-            textShadow: '0 4px 20px rgba(0,0,0,.5)',
-          }}>
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              fontFamily: 'var(--font-montserrat)', fontSize: 'clamp(2.2rem,5vw,4rem)',
+              fontWeight: 900, lineHeight: 1.1, marginBottom: '1.2rem',
+              textShadow: '0 4px 20px rgba(0,0,0,.5)',
+            }}>
             Encuentra tu próximo{' '}
             <span style={{ color: '#C0392B' }}>espacio ideal</span>
-          </h1>
+          </motion.h1>
 
           <p style={{ fontSize: 'clamp(1rem,2.5vw,1.2rem)', marginBottom: '2rem', opacity: .88, maxWidth: '600px', margin: '0 auto 2rem', lineHeight: 1.7 }}>
             Naves industriales, casas residenciales, terrenos y locales comerciales con atención personalizada y transparencia total.
@@ -125,15 +134,16 @@ export default function HomePage() {
 
           {/* Stats */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
-            {[['100+', 'Propiedades'], ['15', 'Años exp.'], ['500+', 'Clientes']].map(([n, l]) => (
-              <div key={l} style={{
-                background: 'rgba(255,255,255,.08)', backdropFilter: 'blur(12px)',
-                border: '1px solid rgba(255,255,255,.15)', borderRadius: '16px',
-                padding: '1rem 1.5rem', minWidth: '140px',
-              }}>
-                <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '1.8rem', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{n}</div>
-                <div style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.7)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '.3rem' }}>{l}</div>
-              </div>
+            {[{ n: 100, suffix: '+', l: 'Propiedades' }, { n: 15, suffix: '', l: 'Años exp.' }, { n: 500, suffix: '+', l: 'Clientes' }].map((s, i) => (
+              <motion.div key={s.l}
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 + i * 0.15, duration: 0.5 }}
+                style={{ background: 'rgba(255,255,255,.08)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,.15)', borderRadius: '16px', padding: '1rem 1.5rem', minWidth: '140px' }}>
+                <div style={{ fontFamily: 'var(--font-montserrat)', fontSize: '1.8rem', fontWeight: 900, color: '#fff', lineHeight: 1 }}>
+                  <CountUp end={s.n} duration={2.5} suffix={s.suffix} enableScrollSpy scrollSpyOnce />
+                </div>
+                <div style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.7)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '.3rem' }}>{s.l}</div>
+              </motion.div>
             ))}
           </div>
 
@@ -198,7 +208,7 @@ export default function HomePage() {
           display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))',
           gap: '4rem', alignItems: 'center',
         }}>
-          <div>
+          <FadeLeft>
             <h2 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 900, fontSize: '2.2rem', color: '#8B1A1A', marginBottom: '.5rem', lineHeight: 1.15 }}>
               ¿Qué es <span style={{ fontWeight: 700 }}>Vive Bien</span>?
             </h2>
@@ -211,20 +221,24 @@ export default function HomePage() {
             <p style={{ lineHeight: 1.75, fontSize: '.95rem' }}>
               Nos distingue la atención directa, la transparencia en cada operación y nuestro profundo conocimiento del mercado inmobiliario en la zona del Bajío.
             </p>
-          </div>
-          <div style={{ position: 'relative' }}>
-            <img
-              src="/hero-industrial.jpg"
-              onError={e => { (e.currentTarget as HTMLImageElement).src = 'https://images.unsplash.com/photo-1622547748225-3fc4abd2cca0?w=800&auto=format&fit=crop' }}
-              alt="Nave Industrial Vive Bien"
-              style={{
-                width: '100%', maxWidth: '480px', height: '340px',
-                objectFit: 'cover', borderRadius: '20px',
-                boxShadow: '0 24px 60px rgba(27,54,93,.18)',
-                display: 'block',
-              }}
-            />
-          </div>
+          </FadeLeft>
+          <FadeRight delay={0.15}>
+            <div style={{ position: 'relative' }}>
+              <motion.img
+                src="/hero-industrial.jpg"
+                onError={e => { (e.currentTarget as HTMLImageElement).src = 'https://images.unsplash.com/photo-1622547748225-3fc4abd2cca0?w=800&auto=format&fit=crop' }}
+                alt="Nave Industrial Vive Bien"
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.4 }}
+                style={{
+                  width: '100%', maxWidth: '480px', height: '340px',
+                  objectFit: 'cover', borderRadius: '20px',
+                  boxShadow: '0 24px 60px rgba(27,54,93,.18)',
+                  display: 'block', cursor: 'pointer',
+                }}
+              />
+            </div>
+          </FadeRight>
         </div>
       </section>
 
@@ -240,20 +254,20 @@ export default function HomePage() {
             </h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: '2rem' }}>
-            {BENEFICIOS.map(b => (
-              <div key={b.title} style={{ background: '#fff', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,.06)', transition: 'transform .3s' }}
-                onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-6px)')}
-                onMouseLeave={e => (e.currentTarget.style.transform = '')}>
-                <div style={{
-                  width: '54px', height: '54px', background: b.bg, color: b.color,
-                  borderRadius: '14px', display: 'flex', alignItems: 'center',
-                  justifyContent: 'center', fontSize: '1.5rem', marginBottom: '1rem',
-                }}>
-                  <i className={`fa ${b.icon}`} />
-                </div>
-                <h3 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, marginBottom: '.5rem' }}>{b.title}</h3>
-                <p style={{ color: '#666', lineHeight: 1.6, fontSize: '.9rem' }}>{b.desc}</p>
-              </div>
+            {BENEFICIOS.map((b, i) => (
+              <ScalePop key={b.title} delay={i * 0.12}>
+                <HoverCard style={{ background: '#fff', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,.06)', height: '100%' }}>
+                  <div style={{
+                    width: '54px', height: '54px', background: b.bg, color: b.color,
+                    borderRadius: '14px', display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', fontSize: '1.5rem', marginBottom: '1rem',
+                  }}>
+                    <i className={`fa ${b.icon}`} />
+                  </div>
+                  <h3 style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 700, marginBottom: '.5rem' }}>{b.title}</h3>
+                  <p style={{ color: '#666', lineHeight: 1.6, fontSize: '.9rem' }}>{b.desc}</p>
+                </HoverCard>
+              </ScalePop>
             ))}
           </div>
         </div>
@@ -359,16 +373,18 @@ export default function HomePage() {
         >
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: '2rem' }}>
             {TESTIMONIOS.map((t, i) => (
-              <div key={i} style={{
-                background: 'rgba(255,255,255,.05)', backdropFilter: 'blur(10px)',
-                padding: '2.5rem', borderRadius: '20px',
-                border: '1px solid rgba(255,255,255,.1)',
-                boxShadow: '0 10px 30px rgba(0,0,0,.3)', color: '#fff',
-                transition: 'transform .3s ease',
-              }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-10px)'; e.currentTarget.style.borderColor = '#8B1A1A' }}
-                onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.borderColor = 'rgba(255,255,255,.1)' }}
-              >
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -10, borderColor: '#8B1A1A' }}
+                style={{
+                  background: 'rgba(255,255,255,.05)', backdropFilter: 'blur(10px)',
+                  padding: '2.5rem', borderRadius: '20px',
+                  border: '1px solid rgba(255,255,255,.1)',
+                  boxShadow: '0 10px 30px rgba(0,0,0,.3)', color: '#fff',
+                }}>
                 <p style={{ fontStyle: 'italic', opacity: .9, lineHeight: 1.6, marginBottom: '2rem', fontSize: '1.05rem' }}>
                   {t.texto}
                 </p>
@@ -385,7 +401,7 @@ export default function HomePage() {
                     <small style={{ color: 'rgba(255,255,255,.6)', fontWeight: 600 }}>{t.rol}</small>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
