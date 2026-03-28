@@ -94,7 +94,7 @@ export default function HomePage() {
         {/* Top line decoration */}
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, height: '4px', zIndex: 5,
-          background: 'linear-gradient(90deg,#8B1A1A,#FF6B00,#8B1A1A)',
+          background: 'linear-gradient(90deg,#8B1A1A,#1B365D,#8B1A1A)',
         }} />
 
         <div style={{ position: 'relative', zIndex: 2, color: '#fff', padding: '2rem 1.5rem', maxWidth: '900px', width: '100%' }}>
@@ -106,7 +106,7 @@ export default function HomePage() {
             fontSize: '.8rem', fontWeight: 600, letterSpacing: '2px',
             textTransform: 'uppercase', marginBottom: '1.5rem',
           }}>
-            <i className="fa fa-star" style={{ color: '#FF6B00', marginRight: '.4rem' }} />
+            <i className="fa fa-star" style={{ color: '#C0392B', marginRight: '.4rem' }} />
             Tu aliado inmobiliario en León, Gto.
           </span>
 
@@ -116,7 +116,7 @@ export default function HomePage() {
             textShadow: '0 4px 20px rgba(0,0,0,.5)',
           }}>
             Encuentra tu próximo{' '}
-            <span style={{ color: '#FF6B00' }}>espacio ideal</span>
+            <span style={{ color: '#C0392B' }}>espacio ideal</span>
           </h1>
 
           <p style={{ fontSize: 'clamp(1rem,2.5vw,1.2rem)', marginBottom: '2rem', opacity: .88, maxWidth: '600px', margin: '0 auto 2rem', lineHeight: 1.7 }}>
