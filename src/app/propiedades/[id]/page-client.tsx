@@ -26,6 +26,7 @@ interface Propiedad {
   amenidades?: string[]
   whatsapp?: string
   mantenimiento?: number
+  video_url?: string
 }
 
 const WA_NUMBER = process.env.NEXT_PUBLIC_WA_NUMBER || '524778116501'
@@ -65,6 +66,13 @@ export default function DetallePropiedad({ params }: { params: Promise<{ id: str
         if (error) throw error
         if (data) {
           setProp({ ...data, alturaLibre: data.altura_libre } as Propiedad)
+          // Save to viewed history
+          try {
+            const key = 'vb_historial'
+            const prev: string[] = JSON.parse(localStorage.getItem(key) || '[]')
+            const next = [data.id, ...prev.filter((x: string) => x !== data.id)].slice(0, 12)
+            localStorage.setItem(key, JSON.stringify(next))
+          } catch {}
         }
       } catch (e) {
         console.error('Error cargando propiedad:', e)
@@ -250,6 +258,30 @@ export default function DetallePropiedad({ params }: { params: Promise<{ id: str
                   <i className="fa fa-info-circle" style={{ marginRight: '.5rem', color: '#8B1A1A' }} />Sobre esta propiedad
                 </h3>
                 <p style={{ lineHeight: 1.8, color: '#555', fontSize: '.95rem' }}>{prop.descripcion}</p>
+              </div>
+            )}
+
+            {prop.video_url && (
+              <div style={{ background: '#fff', borderRadius: '16px', padding: '1.8rem', marginBottom: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,.06)' }}>
+                <h3 style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 800, color: '#1B365D', marginBottom: '1rem', fontSize: '1.1rem' }}>
+                  <i className="fa fa-play-circle" style={{ marginRight: '.5rem', color: '#8B1A1A' }} />Video de la propiedad
+                </h3>
+                {prop.video_url.includes('youtube.com') || prop.video_url.includes('youtu.be') ? (
+                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: '10px', overflow: 'hidden' }}>
+                    <iframe
+                      src={`https://www.youtube.com/embed/${prop.video_url.includes('youtu.be/') ? prop.video_url.split('youtu.be/')[1]?.split('?')[0] : new URLSearchParams(prop.video_url.split('?')[1] || '').get('v') || ''}`}
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none', borderRadius: '10px' }}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title={`Video de ${prop.titulo}`}
+                    />
+                  </div>
+                ) : (
+                  <video controls style={{ width: '100%', borderRadius: '10px', maxHeight: '400px' }}>
+                    <source src={prop.video_url} />
+                    Tu navegador no soporta video HTML5.
+                  </video>
+                )}
               </div>
             )}
 

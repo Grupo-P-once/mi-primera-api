@@ -7,7 +7,7 @@ import CountUp from 'react-countup'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import RegisterModal from '@/components/RegisterModal'
-import { saveContacto } from '@/lib/firestore'
+import { supabase } from '@/lib/supabase'
 import { FadeUp, FadeLeft, FadeRight, ScalePop, HoverCard } from '@/components/Animate'
 
 const WA_NUMBER = '524778116501'
@@ -476,13 +476,14 @@ function ContactForm() {
     if (!acepto) { alert('Debes aceptar el aviso de privacidad'); return }
     setEstado('enviando')
     try {
-      await saveContacto({
+      const { error } = await supabase.from('contactos').insert({
         nombre: data.nombre,
         telefono: data.telefono,
         email: data.email,
         interes: data.interes,
         mensaje: data.mensaje,
       })
+      if (error) throw error
       setEstado('ok')
     } catch {
       setEstado('err')

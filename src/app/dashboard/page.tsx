@@ -30,6 +30,8 @@ interface Propiedad {
   andenes?: number
   amenidades?: string[]
   mantenimiento?: number
+  video_url?: string
+  destacada?: boolean
 }
 
 const EMPTY: Omit<Propiedad, 'id'> = {
@@ -37,6 +39,7 @@ const EMPTY: Omit<Propiedad, 'id'> = {
   ubicacion: '', descripcion: '', fotos: [], estatus: 'disponible',
   metros: undefined, recamaras: undefined, banos: undefined, whatsapp: '',
   altura_libre: undefined, andenes: undefined, amenidades: [], mantenimiento: undefined,
+  video_url: '', destacada: false,
 }
 
 const ADMIN_EMAILS = ['jpepeponce200903@gmail.com']
@@ -634,7 +637,10 @@ export default function DashboardPage() {
                 <tbody>
                   {propiedades.map(p => (
                     <tr key={p.id} style={{ borderTop: '1px solid #eee' }}>
-                      <td style={{ padding: '.85rem 1rem', fontSize: '.9rem', fontWeight: 600 }}>{p.titulo}</td>
+                      <td style={{ padding: '.85rem 1rem', fontSize: '.9rem', fontWeight: 600 }}>
+                        {p.destacada && <i className="fa fa-star" style={{ color: '#D97706', marginRight: '.4rem', fontSize: '.85rem' }} />}
+                        {p.titulo}
+                      </td>
                       <td style={{ padding: '.85rem 1rem', fontSize: '.9rem' }}>
                         <span style={{
                           background: '#1B365D', color: '#fff', padding: '3px 10px',
@@ -780,6 +786,26 @@ export default function DashboardPage() {
                   onChange={e => setEditando(d => ({ ...d, amenidades: e.target.value.split(',').map(s => s.trim()).filter(Boolean) }))}
                   style={{ width: '100%', padding: '.75rem 1rem', borderRadius: '8px', border: '1.5px solid #DDE', fontSize: '.92rem', boxSizing: 'border-box' }} />
               </div>
+
+              <div>
+                <label style={{ fontSize: '.85rem', fontWeight: 600, color: '#1B365D', display: 'block', marginBottom: '.3rem' }}>
+                  Video URL <span style={{ fontWeight: 400, color: '#888' }}>(YouTube o MP4)</span>
+                </label>
+                <input type="url" value={editando.video_url || ''} placeholder="https://youtube.com/watch?v=..."
+                  onChange={e => setEditando(d => ({ ...d, video_url: e.target.value }))}
+                  style={{ width: '100%', padding: '.75rem 1rem', borderRadius: '8px', border: '1.5px solid #DDE', fontSize: '.92rem', boxSizing: 'border-box' }} />
+              </div>
+
+              <label style={{ display: 'flex', alignItems: 'center', gap: '.7rem', cursor: 'pointer', padding: '.75rem 1rem', background: editando.destacada ? '#FEF9C3' : '#F4F6F8', borderRadius: '8px', border: `2px solid ${editando.destacada ? '#D97706' : '#DDE'}`, transition: 'all .2s' }}>
+                <input type="checkbox" checked={!!editando.destacada}
+                  onChange={e => setEditando(d => ({ ...d, destacada: e.target.checked }))}
+                  style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: '#D97706' }} />
+                <span style={{ fontWeight: 700, color: editando.destacada ? '#92400e' : '#1B365D', fontSize: '.9rem', fontFamily: 'Montserrat, sans-serif' }}>
+                  <i className="fa fa-star" style={{ color: '#D97706', marginRight: '.4rem' }} />
+                  Marcar como Propiedad Destacada
+                </span>
+                {editando.destacada && <span style={{ marginLeft: 'auto', fontSize: '.75rem', color: '#92400e', fontWeight: 600 }}>⭐ Aparecerá destacada en el sitio</span>}
+              </label>
 
               <div>
                 <label style={{ fontSize: '.85rem', fontWeight: 600, color: '#1B365D', display: 'block', marginBottom: '.3rem' }}>Descripción</label>

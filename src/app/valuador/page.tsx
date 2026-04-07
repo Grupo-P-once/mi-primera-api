@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { saveLead } from '@/lib/firestore'
+import { supabase } from '@/lib/supabase'
 
 const WA_NUMBER = '524778116501'
 
@@ -18,31 +18,47 @@ export default function ValuadorPage() {
   const [m2, setM2] = useState('')
   const [resultado, setResultado] = useState<{ min: number; max: number } | null>(null)
   const [guardado, setGuardado] = useState(false)
+  const [tipo, setTipo] = useState('casa')
+  const [comparables, setComparables] = useState<number>(0)
+  const [loadingComp, setLoadingComp] = useState(false)
 
   // Lead capture after result
   const [nombre, setNombre] = useState('')
   const [telefono, setTelefono] = useState('')
 
-  function calcular() {
+  async function calcular() {
     const z = ZONAS[zona]
     const metros = parseFloat(m2)
-
     if (!z || !metros || isNaN(metros) || metros <= 0) {
       alert('Por favor, selecciona una zona y escribe una cantidad válida de metros cuadrados.')
       return
     }
-
-    setResultado({ min: z.min * metros, max: z.max * metros })
+    const min = z.min * metros
+    const max = z.max * metros
+    setResultado({ min, max })
+    // Load real comparables from Supabase
+    setLoadingComp(true)
+    try {
+      const { count } = await supabase
+        .from('propiedades')
+        .select('*', { count: 'exact', head: true })
+        .eq('tipo', tipo)
+        .eq('estatus', 'disponible')
+        .gte('precio', min * 0.7)
+        .lte('precio', max * 1.3)
+      setComparables(count || 0)
+    } catch { setComparables(0) }
+    setLoadingComp(false)
   }
 
   async function solicitarAvaluo() {
-    const msg = `Hola Vive Bien. Usé el Valuador web y me gustaría solicitar un avalúo oficial o vender mi propiedad. Zona: ${ZONAS[zona]?.label || zona}, ${m2}m².`
+    const msg = `Hola Vive Bien. Usé el Valuador web y me gustaría solicitar un avalúo oficial. Tipo: ${tipo}, Zona: ${ZONAS[zona]?.label || zona}, ${m2}m².`
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
-
-    // Save lead if name/phone provided
     if (nombre && telefono) {
       try {
-        await saveLead({ nombre, telefono, interes: 'avaluo', origen: 'valuador' })
+        await supabase.from('leads').insert({
+          nombre, telefono, interes: `avaluo - ${tipo}`, origen: 'valuador',
+        })
         setGuardado(true)
       } catch { }
     }
@@ -105,6 +121,33 @@ export default function ValuadorPage() {
             </div>
           </div>
 
+          {/* Tipo de propiedad */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{ display: 'block', fontWeight: 700, color: '#1B365D', marginBottom: '.5rem', fontFamily: 'var(--font-montserrat)' }}>
+              Tipo de propiedad
+            </label>
+            <div style={{ display: 'flex', gap: '.6rem', flexWrap: 'wrap' }}>
+              {[
+                { value: 'casa', label: '🏠 Casa' },
+                { value: 'nave', label: '🏭 Nave/Bodega' },
+                { value: 'terreno', label: '🗺️ Terreno' },
+                { value: 'comercial', label: '🏪 Local Comercial' },
+                { value: 'departamento', label: '🏢 Departamento' },
+              ].map(t => (
+                <button key={t.value} type="button" onClick={() => { setTipo(t.value); setResultado(null) }}
+                  style={{
+                    padding: '.5rem 1rem', borderRadius: '8px', border: '2px solid',
+                    borderColor: tipo === t.value ? '#1B365D' : '#E0E0E0',
+                    background: tipo === t.value ? '#1B365D' : '#fff',
+                    color: tipo === t.value ? '#fff' : '#555',
+                    cursor: 'pointer', fontWeight: 600, fontSize: '.88rem', transition: 'all .2s',
+                  }}>
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button onClick={calcular} style={{
             width: '100%', background: '#1B365D', color: '#fff',
             border: 'none', padding: '15px', fontFamily: 'var(--font-montserrat)',
@@ -153,6 +196,23 @@ export default function ValuadorPage() {
               <div style={{ fontSize: '.85rem', color: '#555', textAlign: 'center', background: '#FFF3CD', padding: '1rem', borderRadius: '8px', border: '1px solid #FFEEBA', marginBottom: '1.5rem' }}>
                 <i className="fa fa-circle-info" style={{ color: '#d39e00', marginRight: '5px' }} />
                 <strong>Aviso Importante:</strong> Estos valores son rangos <strong>referenciales y no oficiales</strong> basados en estimaciones comerciales de mercado. Factores como acabados, conservación y ubicación exacta pueden alterar este valor. Para un Avalúo Oficial certificado en León, se requiere una visita presencial.
+              </div>
+
+              {/* Comparables reales de Supabase */}
+              <div style={{ marginBottom: '1.2rem', padding: '.85rem 1.1rem', background: '#EFF6FF', borderRadius: '10px', border: '1px solid #BFDBFE', display: 'flex', alignItems: 'center', gap: '.7rem', fontSize: '.88rem' }}>
+                <i className="fa fa-database" style={{ color: '#1B365D', fontSize: '1rem', flexShrink: 0 }} />
+                {loadingComp ? (
+                  <span style={{ color: '#555' }}>Buscando propiedades similares...</span>
+                ) : comparables > 0 ? (
+                  <span style={{ color: '#1e40af', fontWeight: 600 }}>
+                    Hay <strong>{comparables}</strong> propiedad{comparables !== 1 ? 'es' : ''} de tipo <strong>{tipo}</strong> disponible{comparables !== 1 ? 's' : ''} en un rango similar en nuestro catálogo.{' '}
+                    <a href={`/propiedades?tipo=${tipo}`} style={{ color: '#1B365D', textDecoration: 'underline' }}>Ver propiedades →</a>
+                  </span>
+                ) : (
+                  <span style={{ color: '#555' }}>
+                    No hay propiedades de tipo <strong>{tipo}</strong> en ese rango en este momento, pero contáctanos — podemos ayudarte.
+                  </span>
+                )}
               </div>
 
               {/* Lead capture */}

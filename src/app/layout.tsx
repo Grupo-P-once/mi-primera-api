@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import WAFloat from '@/components/WAFloat'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://vive-bien-grupo-p-once.vercel.app'),
@@ -42,7 +43,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>{children}</body>
+      <body>{children}<WAFloat /></body>
     </html>
   )
 }
